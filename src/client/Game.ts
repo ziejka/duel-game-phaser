@@ -1,6 +1,6 @@
-import "phaser";
-import { Preloader } from './scenes/Preloader';
+import "phaser"
 import { Main } from './scenes/Main'
+import { Preloader } from './scenes/Preloader'
 
 const config: GameConfig = {
     type: Phaser.AUTO,
@@ -11,6 +11,6 @@ const config: GameConfig = {
         Preloader,
         Main
     ]
-};
+}
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(config)
