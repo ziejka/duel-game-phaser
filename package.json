@@ -16,6 +16,7 @@
     "devDependencies": {
         "@types/node": "^10.12.2",
         "@types/webpack": "^4.4.17",
+        "@types/ws": "^6.0.1",
         "raw-loader": "^0.5.1",
         "ts-loader": "^5.3.0",
         "ts-node": "^7.0.1",
@@ -27,9 +28,11 @@
     },
     "dependencies": {
         "@types/express": "^4.16.0",
+        "@types/socket.io": "^2.1.0",
         "copy-webpack-plugin": "^4.6.0",
         "express": "^4.16.4",
         "html-webpack-plugin": "^3.2.0",
-        "phaser": "^3.15.1"
+        "phaser": "^3.15.1",
+        "socket.io": "^2.1.1"
     }
 }
