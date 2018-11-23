@@ -62,4 +62,4 @@ typings/
 
 # build directory
 dist/
-.vscode/*
+.vscode

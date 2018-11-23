@@ -1,16 +1,15 @@
-import { on } from 'cluster'
 import * as http from 'http'
 import * as WebSocket from 'ws'
+import { UserList } from './user'
 
-export const createWebSocket = (server: http.Server): void => {
+const userList: UserList = new UserList()
+
+export const createWebSocket = (server: http.Server): WebSocket.Server => {
     const wss = new WebSocket.Server({ server })
 
     wss.on('connection', (ws: WebSocket) => {
-        // tslint:disable-next-line:no-console
-        console.log('Connected bith')
-
-        ws.on('message', (message: string) => {
-            ws.send(`Thank you for msg ${message}`)
-        })
+        userList.addUser(ws)
     })
+
+    return wss
 }
