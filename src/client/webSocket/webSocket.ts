@@ -9,6 +9,7 @@ const onMessage = (msg: any) => {
 }
 
 export const openWebSoket = () => {
+    // const idQuery: string = '/?id=myAwesomeId'
     ws = new WebSocket(SERVER)
     ws.onmessage = onMessage
 }

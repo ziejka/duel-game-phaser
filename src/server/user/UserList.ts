@@ -1,4 +1,5 @@
 import * as WebSocket from 'ws'
+import { GUID } from '../../shared/types'
 import { User } from './Uesr'
 
 export class UserList {
@@ -9,8 +10,8 @@ export class UserList {
         this.interval = this.createInterval()
     }
 
-    addUser(ws: WebSocket): User {
-        const user = new User(ws, this.removeUser.bind(this))
+    addUser(ws: WebSocket, guid: GUID, findRandomRoomRequest: (player: User) => void): User {
+        const user = new User(ws, this.removeUser.bind(this), findRandomRoomRequest, guid)
         this.userList.push(user)
         this.showUsers()
         return user

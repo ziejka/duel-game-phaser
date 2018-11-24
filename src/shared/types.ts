@@ -6,3 +6,7 @@ export interface Message {
     type: MessageTypes,
     payload?: any
 }
+
+export interface GUID {
+    id: string
+}
