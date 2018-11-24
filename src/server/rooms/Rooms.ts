@@ -14,12 +14,6 @@ export class Rooms {
         } else {
             room.addPlayer(player)
         }
-        // tslint:disable-next-line:no-console
-        console.log('=======================')
-        this.allRooms.forEach(r => {
-            // tslint:disable-next-line:no-console
-            console.log(r.showPlayers())
-        })
 
     }
 
