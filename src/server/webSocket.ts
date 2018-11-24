@@ -7,7 +7,7 @@ import { UserList } from './user'
 
 const userList: UserList = new UserList()
 const rooms: Rooms = new Rooms()
-const findRandomRoomRequest = rooms.findRandomRoom.bind(rooms)
+const findRandomRoomRequest = rooms.findRandomRoomRequest.bind(rooms)
 
 export const createWebSocket = (server: http.Server): WebSocket.Server => {
     const wss = new WebSocket.Server({ server })

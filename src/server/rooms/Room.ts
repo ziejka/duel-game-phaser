@@ -3,13 +3,13 @@ import { Message } from '../../shared/types'
 import { User } from '../user'
 
 export class Room {
-    private onRoomClose: (room: Room) => void
+    private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
     private players: User[] = []
 
-    constructor(player: User, onRoomClose: (room: Room) => void) {
+    constructor(player: User, closeRoomRequest: (room: Room) => void) {
         this.connectPlayer(player)
-        this.onRoomClose = onRoomClose
+        this.closeRoomRequest = closeRoomRequest
     }
 
     addPlayer(player: User) {
@@ -23,7 +23,7 @@ export class Room {
     private connectPlayer(player: User) {
         this.players.push(player)
         if (this.players.length === 2) {
-            this.onRoomClose(this)
+            this.closeRoomRequest(this)
         }
     }
 

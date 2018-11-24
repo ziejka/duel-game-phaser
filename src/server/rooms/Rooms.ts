@@ -5,7 +5,7 @@ export class Rooms {
     private allRooms: Room[] = []
     private openRooms: Room[] = []
 
-    findRandomRoom(player: User): void {
+    findRandomRoomRequest(player: User): void {
         const randomroomIndex: number = Math.floor(Math.random() * this.openRooms.length)
         const room: Room = this.openRooms[randomroomIndex]
 
@@ -17,13 +17,13 @@ export class Rooms {
     }
 
     private createRoom(player: User): Room {
-        const onRoomClose = this.onRoomClose.bind(this)
-        const room: Room = new Room(player, onRoomClose)
+        const closeRoomRequest = this.closeRoomRequest.bind(this)
+        const room: Room = new Room(player, closeRoomRequest)
         this.allRooms.push(room)
         return room
     }
 
-    private onRoomClose(room: Room) {
+    private closeRoomRequest(room: Room) {
         this.openRooms = this.openRooms.filter(r => r !== room)
     }
 }
