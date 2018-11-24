@@ -5,7 +5,7 @@ let ws: WebSocket
 
 const onMessage = (msg: any) => {
     // tslint:disable-next-line:no-console
-    console.log(msg)
+    console.log(msg.data)
 }
 
 export const openWebSoket = () => {

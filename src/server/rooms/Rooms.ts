@@ -14,7 +14,6 @@ export class Rooms {
         } else {
             room.addPlayer(player)
         }
-
     }
 
     private createRoom(player: User): Room {
