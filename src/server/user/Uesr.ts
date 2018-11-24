@@ -4,7 +4,8 @@ import { Player } from '../../shared/player'
 import { GUID, Message, MessageTypes } from '../../shared/types'
 
 export class User implements Player {
-    public ID: string
+    isPlayerReady: boolean = false
+    private ID: string
     private ws: WebSocket
     private findRandomRoomRequest: (player: User) => void
 
@@ -23,7 +24,7 @@ export class User implements Player {
             removeUser(this)
         })
         this.ws.on('message', onMessage)
-        this.sendMsg(`User connected: ${this.ID}`)
+        this.sayHi()
     }
 
     sendMsg(msg: string): void {
@@ -37,10 +38,23 @@ export class User implements Player {
         return this.ws.readyState === WebSocket.OPEN
     }
 
+    private sayHi() {
+        const msg: Message = {
+            type: MessageTypes.USAER_DATA,
+            payload: {
+                ID: this.ID
+            }
+        }
+        this.sendMsg(JSON.stringify(msg))
+    }
+
     private onMessage(message: string): void {
         const msg: Message = JSON.parse(message)
         if (msg.type === MessageTypes.NEW_GAME) {
             this.findRandomRoomRequest(this)
+        }
+        if (msg.type === MessageTypes.PLAYER_READY) {
+            this.isPlayerReady = true
         }
     }
 }

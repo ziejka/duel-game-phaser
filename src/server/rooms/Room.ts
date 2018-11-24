@@ -1,5 +1,5 @@
 import { Round } from '../../shared/core/round'
-import { Message } from '../../shared/types'
+import { Message, MessageTypes } from '../../shared/types'
 import { User } from '../user'
 
 export class Room {
@@ -16,15 +16,16 @@ export class Room {
         this.connectPlayer(player)
     }
 
-    showPlayers(): string[] {
-        return this.players.map(player => player.ID)
-    }
-
     private connectPlayer(player: User) {
         this.players.push(player)
         if (this.players.length === 2) {
             this.closeRoomRequest(this)
+            this.requestToStart()
         }
+    }
+
+    private requestToStart() {
+        this.sendToAll({ type: MessageTypes.START_REQUEST })
     }
 
     private sendToAll(msg: Message) {

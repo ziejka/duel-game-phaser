@@ -13,7 +13,6 @@ export class UserList {
     addUser(ws: WebSocket, guid: GUID, findRandomRoomRequest: (player: User) => void): User {
         const user = new User(ws, this.removeUser.bind(this), findRandomRoomRequest, guid)
         this.userList.push(user)
-        this.showUsers()
         return user
     }
 
@@ -24,10 +23,10 @@ export class UserList {
     }
 
     private createInterval(): NodeJS.Timeout {
-        return setInterval(this.showUsers.bind(this), 100000000)
+        return setInterval(this.showUsers.bind(this), 3000)
     }
 
     private showUsers(): void {
-        // this.userList.forEach(user => user.sendMsg(`${this.userList.length} -> users connected ${Date.now()}`))
+        this.userList.forEach(user => user.sendMsg(JSON.stringify({ type: 'ping', payload: user.isPlayerReady })))
     }
 }
