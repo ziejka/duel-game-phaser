@@ -1,9 +1,10 @@
 import { Scene } from 'phaser'
 import { config } from '../config/preload'
+import { GameScenes } from './scenes'
 
 export class Preloader extends Scene {
     constructor() {
-        super("preloader")
+        super(GameScenes.Preloader)
     }
 
     preload() {
@@ -31,7 +32,7 @@ export class Preloader extends Scene {
     }
 
     create() {
-        this.scene.start('main')
+        this.scene.start(GameScenes.Menu)
     }
 
     loadAtlas() {

@@ -1,6 +1,7 @@
-import { Message, MessageTypes } from '../../shared/types'
+import { MessageTypes } from '../../shared/types/messageTypes'
+import { Message } from '../../shared/types/types'
 import { Events } from '../state/events'
-import { States } from '../state/state'
+import { GameState } from '../state/state'
 
 const SERVER = 'ws://localhost:3000'
 let ws: WebSocket
@@ -8,9 +9,7 @@ let ws: WebSocket
 const onMessage = (emit: (event: string | symbol, ...args: any[]) => boolean) => (msg: any) => {
     const message: Message = JSON.parse(msg.data)
     if (message.type === MessageTypes.START_REQUEST) {
-        // tslint:disable-next-line:no-console
-        console.log(JSON.parse(msg.data))
-        emit(Events.UPDATE_STATE, States.READY)
+        emit(Events.UPDATE_STATE, GameState.READY)
     }
 }
 

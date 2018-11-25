@@ -1,5 +1,6 @@
 import { Round } from '../../shared/core/round'
-import { Message, MessageTypes } from '../../shared/types'
+import { MessageTypes } from '../../shared/types/messageTypes'
+import { Message } from '../../shared/types/types'
 import { User } from '../user'
 
 export class Room {

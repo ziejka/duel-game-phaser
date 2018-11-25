@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws'
-import { GUID } from '../../shared/types'
+import { GUID } from '../../shared/types/types'
 import { User } from './Uesr'
 
 export class UserList {

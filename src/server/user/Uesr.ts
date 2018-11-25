@@ -1,7 +1,8 @@
 import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
-import { Player } from '../../shared/player'
-import { GUID, Message, MessageTypes } from '../../shared/types'
+import { MessageTypes } from '../../shared/types/messageTypes'
+import { Player } from '../../shared/types/player'
+import { GUID, Message } from '../../shared/types/types'
 
 export class User implements Player {
     isPlayerReady: boolean = false

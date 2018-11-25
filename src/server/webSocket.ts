@@ -1,7 +1,7 @@
 import * as http from 'http'
 import * as url from 'url'
 import * as WebSocket from 'ws'
-import { GUID } from '../shared/types'
+import { GUID } from '../shared/types/types'
 import { Rooms } from './rooms/Rooms'
 import { UserList } from './user'
 

@@ -1,3 +1,3 @@
-export enum States {
+export enum GameState {
     READY
 }

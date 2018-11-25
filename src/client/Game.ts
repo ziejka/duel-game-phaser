@@ -1,5 +1,6 @@
 import "phaser"
 import { Main } from './scenes/Main'
+import { Menu } from './scenes/Menu'
 import { Preloader } from './scenes/Preloader'
 
 const config: GameConfig = {
@@ -9,6 +10,7 @@ const config: GameConfig = {
     height: 540,
     scene: [
         Preloader,
+        Menu,
         Main
     ]
 }
