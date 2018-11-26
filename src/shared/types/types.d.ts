@@ -8,3 +8,7 @@ export interface Message {
 export interface GUID {
     id: string
 }
+
+export interface RoundStartPayload {
+    roundNumber: number
+}

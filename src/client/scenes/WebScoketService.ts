@@ -1,8 +1,8 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message } from '../../shared/types/types'
-import { Events } from '../state/events'
-import { GameData, GameState } from '../state/state'
+import { Message, RoundStartPayload } from '../../shared/types/types'
+import { GameEvents } from '../state/events'
+import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
 
 const SERVER = 'ws://localhost:3000'
@@ -30,7 +30,7 @@ export class WebScoketService extends Phaser.Scene {
         this.close()
         this.ws = new WebSocket(SERVER)
         this.ws.onmessage = this.onMessage
-        this.registry.set(GameData.IsStartGameVisible, false)
+        this.registry.set(RegistryFields.sStartGameVisible, false)
     }
 
     private _onMessage(msg: any): void {
@@ -42,12 +42,17 @@ export class WebScoketService extends Phaser.Scene {
 
     private createMsgCallbacks(): { [key: string]: any } {
         return {
-            [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this)
+            [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
+            [MessageTypes.START_ROUND]: this.startround.bind(this)
         }
     }
 
+    private startround(payload: RoundStartPayload) {
+        this.events.emit(GameEvents.START_ROUND, payload)
+    }
+
     private onStartRequestMsg() {
-        this.registry.set(GameData.IsStartGameVisible, true)
+        this.registry.set(RegistryFields.sStartGameVisible, true)
     }
 
     private close() {

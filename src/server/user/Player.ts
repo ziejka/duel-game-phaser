@@ -5,7 +5,7 @@ import { GUID, Message } from '../../shared/types/types'
 import { RoomCallbacks } from '../rooms/interfaces'
 
 export class Player {
-    isPlayerReady: boolean = false
+    isReady: boolean = false
     isInRoom: boolean = false
     roomCallbacks!: RoomCallbacks
     private ID: string
@@ -18,17 +18,16 @@ export class Player {
                 findRandomRoomRequest: (player: Player) => void,
                 guid: GUID) {
 
-        this.msgCallbacks = this.createMsgCallbacks()
         const onMessage = this.onMessage.bind(this)
         const onConnectionClose = this.onConnectionClose.bind(this)
+
+        this.msgCallbacks = this.createMsgCallbacks()
 
         this.ID = guid.id || v1()
         this.ws = ws
         this.findRandomRoomRequest = findRandomRoomRequest
 
-        this.ws.on('error', () => {
-            removeUser(this)
-        })
+        this.ws.on('error', removeUser.bind(null, this))
         this.ws.on('message', onMessage)
         this.ws.on('close', onConnectionClose)
         this.sayHi()
@@ -75,14 +74,15 @@ export class Player {
         }
     }
 
-    private onNewGameMsg() {
-        if (!this.isInRoom) {
-            this.findRandomRoomRequest(this)
-            this.isInRoom = true
-        }
+    private onNewGameMsg(): void {
+        if (this.isInRoom) { return }
+        this.findRandomRoomRequest(this)
+        this.isInRoom = true
     }
 
-    private onPlayerReadyMsg() {
-        this.isPlayerReady = true
+    private onPlayerReadyMsg(): void {
+        if (this.isReady) { return }
+        this.isReady = true
+        this.roomCallbacks.onPlayerReady()
     }
 }

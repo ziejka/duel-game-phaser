@@ -8,5 +8,6 @@ export interface RoomsCallbacks {
 
 export interface RoomCallbacks {
     removePlayerFromRoom: (player: Player) => void
+    onPlayerReady: () => void
 
 }

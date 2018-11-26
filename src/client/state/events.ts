@@ -1,3 +1,3 @@
-export enum Events {
-    UPDATE_STATE = 'updateSate'
+export enum GameEvents {
+    START_ROUND = 'startRoundEvent'
 }
