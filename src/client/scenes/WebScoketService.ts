@@ -2,7 +2,7 @@ import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Message } from '../../shared/types/types'
 import { Events } from '../state/events'
-import { GameState } from '../state/state'
+import { GameData, GameState } from '../state/state'
 import { Scenes } from './scenes'
 
 const SERVER = 'ws://localhost:3000'
@@ -28,13 +28,13 @@ export class WebScoketService extends Phaser.Scene {
         this.close()
         this.ws = new WebSocket(SERVER)
         this.ws.onmessage = this.onMessage
-        this.registry.set('startRequest', false)
+        this.registry.set(GameData.IsStartGameVisible, false)
     }
 
     private _onMessage(msg: any): void {
         const message: Message = JSON.parse(msg.data)
         if (message.type === MessageTypes.START_REQUEST) {
-            this.registry.set('startRequest', true)
+            this.registry.set(GameData.IsStartGameVisible, true)
         }
     }
 
