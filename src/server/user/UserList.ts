@@ -7,7 +7,7 @@ export class UserList {
     private interval: NodeJS.Timeout
 
     constructor() {
-        this.interval = this.createInterval()
+        // this.interval = this.createInterval()
     }
 
     addUser(ws: WebSocket, guid: GUID, findRandomRoomRequest: (player: User) => void): User {
@@ -27,6 +27,5 @@ export class UserList {
     }
 
     private showUsers(): void {
-        this.userList.forEach(user => user.sendMsg(JSON.stringify({ type: 'ping', payload: user.isPlayerReady })))
     }
 }

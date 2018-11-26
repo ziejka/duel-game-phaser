@@ -2,13 +2,14 @@ import * as Phaser from 'phaser'
 import { Events } from '../state/events'
 import { GameState } from '../state/state'
 import { createMenuElement } from '../utils/Utils'
-import { GameScenes } from './scenes'
+import { Scenes } from './scenes'
+import { WebScoketService } from './WebScoketService'
 
 export class Main extends Phaser.Scene {
     private startGameBtn!: Phaser.GameObjects.Text
 
     constructor() {
-        super(GameScenes.Main)
+        super(Scenes.Main)
     }
 
     create() {
@@ -19,20 +20,31 @@ export class Main extends Phaser.Scene {
 
         pos = new Phaser.Geom.Point(322, 300)
         this.startGameBtn = this.add.existing(createMenuElement(this, 'START GAME!!!', pos)) as Phaser.GameObjects.Text
-        this.startGameBtn.visible = false
+        this.setStartVisibility()
+        this.startGameBtn.visible = this.registry.get('startRequest')
 
-        const menuScene = this.scene.get(GameScenes.Menu)
+        this.registry.events.on('changedata', this.updateData, this)
 
-        menuScene.events.on(Events.UPDATE_STATE, this.onUpdateState, this)
+        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
+        webScoketService.events.on(Events.UPDATE_STATE, this.onUpdateState, this)
     }
 
-    onUpdateState(newState: GameState) {
+    onUpdateState(newState: GameState): void {
         if (newState === GameState.READY) {
-            this.startGameBtn.visible = true
+            this.setStartVisibility()
         }
     }
 
+    private updateData(parent: Phaser.Scene, key: string, data: any): void {
+        if (key === 'startRequest') {
+            this.startGameBtn.visible = data
+        }
+    }
+
+    private setStartVisibility() {
+    }
+
     private onMenuClick(): void {
-        this.scene.start(GameScenes.Menu)
+        this.scene.start(Scenes.Menu)
     }
 }
