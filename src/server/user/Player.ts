@@ -14,12 +14,12 @@ export class Player {
     constructor(ws: WebSocket,
                 removeUser: (user: Player) => void,
                 findRandomRoomRequest: (player: Player) => void,
-                guid?: GUID) {
+                guid: GUID) {
 
         const onMessage = this.onMessage.bind(this)
         const onConnectionClose = this.onConnectionClose.bind(this)
 
-        this.ID = guid ? guid.id : v1()
+        this.ID = guid.id || v1()
         this.ws = ws
         this.findRandomRoomRequest = findRandomRoomRequest
 
@@ -27,8 +27,7 @@ export class Player {
             removeUser(this)
         })
         this.ws.on('message', onMessage)
-        // tslint:disable-next-line:no-console
-        this.ws.on('close', () => onConnectionClose)
+        this.ws.on('close', onConnectionClose)
         this.sayHi()
     }
 

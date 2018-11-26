@@ -2,19 +2,25 @@ import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Message } from '../../shared/types/types'
 import { Player } from '../user'
+import { RoomsCallbacks } from './interfaces'
 
 export class Room {
+    private onPlayerRemoved: () => void
     private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
     private players: Player[] = []
 
-    constructor(player: Player, closeRoomRequest: (room: Room) => void) {
-        this.connectPlayer(player)
-        this.closeRoomRequest = closeRoomRequest
+    constructor(roomsCallbacs: RoomsCallbacks) {
+        this.closeRoomRequest = roomsCallbacs.closeRoomRequest
+        this.onPlayerRemoved = roomsCallbacs.onPlayerRemoved
     }
 
     addPlayer(player: Player) {
-        this.connectPlayer(player)
+        this.players.push(player)
+        if (this.players.length === 2) {
+            this.closeRoomRequest(this)
+            this.requestToStart()
+        }
     }
 
     isOpen(): boolean {
@@ -25,12 +31,9 @@ export class Room {
         return this.players.length > 0
     }
 
-    private connectPlayer(player: Player) {
-        this.players.push(player)
-        if (this.players.length === 2) {
-            this.closeRoomRequest(this)
-            this.requestToStart()
-        }
+    removePlayerFromRoom(player: Player) {
+        this.players = this.players.filter(p => p !== player)
+        this.onPlayerRemoved()
     }
 
     private requestToStart() {

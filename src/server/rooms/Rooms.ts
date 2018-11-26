@@ -1,38 +1,50 @@
 import { Player } from '../user'
+import { RoomsCallbacks } from './interfaces'
 import { Room } from './Room'
 
 export class Rooms {
     private allRooms: Room[] = []
     private openRooms: Room[] = []
+    private roomsCallbacs: RoomsCallbacks
+
+    constructor() {
+        this.roomsCallbacs = {
+            closeRoomRequest: this.closeRoomRequest.bind(this),
+            onPlayerRemoved: this.onPlayerRemoved.bind(this)
+        }
+    }
 
     findRandomRoomRequest(player: Player): void {
         const randomroomIndex: number = Math.floor(Math.random() * this.openRooms.length)
-        const room: Room = this.openRooms[randomroomIndex]
+        let room: Room = this.openRooms[randomroomIndex]
 
         if (!room) {
-            this.openRooms.push(this.createRoom(player))
-        } else {
-            room.addPlayer(player)
+            room = this.createRoom()
+            this.openRooms.push(room)
         }
-        this.openRooms = this.openRooms.filter(r => r.isOpen())
+        room.addPlayer(player)
+        player.removePlayerFromRoom = room.removePlayerFromRoom.bind(room)
+        this.clearRoms()
     }
 
-    removePlayer(player: Player) {
-
-    }
-
-    private createRoom(player: Player): Room {
-        const closeRoomRequest = this.closeRoomRequest.bind(this)
-        const room: Room = new Room(player, closeRoomRequest)
+    private createRoom(): Room {
+        const room: Room = new Room(this.roomsCallbacs)
         this.allRooms.push(room)
         return room
     }
 
-    private clearRoms() {
-        this.allRooms = this.allRooms.filter(r => r.hasAnyPlayers())
+    private onPlayerRemoved() {
+        this.clearRoms()
     }
 
-    private closeRoomRequest(room: Room) {
+    private clearRoms() {
+        this.allRooms = this.allRooms.filter(r => r.hasAnyPlayers())
+        this.openRooms = this.allRooms.filter(r => r.isOpen())
+        // tslint:disable-next-line:no-console
+        console.log(`${Date.now()} All: ${this.allRooms.length}   OpenAll: ${this.openRooms.length}`)
+    }
+
+    private closeRoomRequest(room: Room): void {
         this.openRooms = this.openRooms.filter(r => r !== room)
     }
 }
