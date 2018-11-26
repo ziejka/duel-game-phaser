@@ -2,20 +2,23 @@ import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID, Message } from '../../shared/types/types'
+import { RoomCallbacks } from '../rooms/interfaces'
 
 export class Player {
     isPlayerReady: boolean = false
     isInRoom: boolean = false
-    removePlayerFromRoom!: (player: Player) => void
+    roomCallbacks!: RoomCallbacks
     private ID: string
     private ws: WebSocket
     private findRandomRoomRequest: (player: Player) => void
+    private msgCallbacks: { [key: string]: any }
 
     constructor(ws: WebSocket,
                 removeUser: (user: Player) => void,
                 findRandomRoomRequest: (player: Player) => void,
                 guid: GUID) {
 
+        this.msgCallbacks = this.createMsgCallbacks()
         const onMessage = this.onMessage.bind(this)
         const onConnectionClose = this.onConnectionClose.bind(this)
 
@@ -44,7 +47,7 @@ export class Player {
 
     private onConnectionClose() {
         try {
-            this.removePlayerFromRoom(this)
+            this.roomCallbacks.removePlayerFromRoom(this)
         } catch { }
     }
 
@@ -60,12 +63,26 @@ export class Player {
 
     private onMessage(message: string): void {
         const msg: Message = JSON.parse(message)
-        if (!this.isInRoom && msg.type === MessageTypes.NEW_GAME) {
+        try {
+            this.msgCallbacks[msg.type](msg.payload)
+        } catch { }
+    }
+
+    private createMsgCallbacks(): { [key: string]: any } {
+        return {
+            [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
+            [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this)
+        }
+    }
+
+    private onNewGameMsg() {
+        if (!this.isInRoom) {
             this.findRandomRoomRequest(this)
             this.isInRoom = true
         }
-        if (msg.type === MessageTypes.PLAYER_READY) {
-            this.isPlayerReady = true
-        }
+    }
+
+    private onPlayerReadyMsg() {
+        this.isPlayerReady = true
     }
 }

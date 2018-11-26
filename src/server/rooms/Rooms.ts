@@ -5,10 +5,10 @@ import { Room } from './Room'
 export class Rooms {
     private allRooms: Room[] = []
     private openRooms: Room[] = []
-    private roomsCallbacs: RoomsCallbacks
+    private callbacks: RoomsCallbacks
 
     constructor() {
-        this.roomsCallbacs = {
+        this.callbacks = {
             closeRoomRequest: this.closeRoomRequest.bind(this),
             onPlayerRemoved: this.onPlayerRemoved.bind(this)
         }
@@ -23,12 +23,12 @@ export class Rooms {
             this.openRooms.push(room)
         }
         room.addPlayer(player)
-        player.removePlayerFromRoom = room.removePlayerFromRoom.bind(room)
+        player.roomCallbacks = room.callbacs
         this.clearRoms()
     }
 
     private createRoom(): Room {
-        const room: Room = new Room(this.roomsCallbacs)
+        const room: Room = new Room(this.callbacks)
         this.allRooms.push(room)
         return room
     }

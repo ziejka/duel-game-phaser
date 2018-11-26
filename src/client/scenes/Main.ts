@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser'
-import { Events } from '../state/events'
+import { MessageTypes } from '../../shared/types/messageTypes'
 import { GameData, GameState } from '../state/state'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
@@ -13,26 +13,20 @@ export class Main extends Phaser.Scene {
     }
 
     create() {
+        this.createMenuButtons()
+        this.registry.events.on('changedata', this.updateData, this)
+    }
+
+    private createMenuButtons() {
         this.add.text(15, 15, "MAIN SCENE")
 
         let pos = new Phaser.Geom.Point(700, 15)
         this.add.existing(createMenuElement(this, 'BACK TO MENU', pos, this.onMenuClick))
 
         pos = new Phaser.Geom.Point(322, 300)
-        this.startGameBtn = this.add.existing(createMenuElement(this, 'START GAME!!!', pos)) as Phaser.GameObjects.Text
-        this.setStartVisibility()
+        this.startGameBtn = this.add.existing(
+            createMenuElement(this, 'START GAME!!!', pos, this.startGame)) as Phaser.GameObjects.Text
         this.startGameBtn.visible = this.registry.get(GameData.IsStartGameVisible)
-
-        this.registry.events.on('changedata', this.updateData, this)
-
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.events.on(Events.UPDATE_STATE, this.onUpdateState, this)
-    }
-
-    onUpdateState(newState: GameState): void {
-        if (newState === GameState.READY) {
-            this.setStartVisibility()
-        }
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
@@ -41,7 +35,10 @@ export class Main extends Phaser.Scene {
         }
     }
 
-    private setStartVisibility() {
+    private startGame(): void {
+        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
+        webScoketService.send({ type: MessageTypes.PLAYER_READY })
+        this.startGameBtn.visible = false
     }
 
     private onMenuClick(): void {

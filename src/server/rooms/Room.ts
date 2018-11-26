@@ -2,9 +2,10 @@ import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Message } from '../../shared/types/types'
 import { Player } from '../user'
-import { RoomsCallbacks } from './interfaces'
+import { RoomCallbacks, RoomsCallbacks } from './interfaces'
 
 export class Room {
+    callbacs: RoomCallbacks
     private onPlayerRemoved: () => void
     private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
@@ -13,6 +14,9 @@ export class Room {
     constructor(roomsCallbacs: RoomsCallbacks) {
         this.closeRoomRequest = roomsCallbacs.closeRoomRequest
         this.onPlayerRemoved = roomsCallbacs.onPlayerRemoved
+        this.callbacs = {
+            removePlayerFromRoom: this.removePlayerFromRoom.bind(this)
+        }
     }
 
     addPlayer(player: Player) {
