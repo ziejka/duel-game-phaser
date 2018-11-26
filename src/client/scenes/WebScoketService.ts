@@ -8,6 +8,7 @@ import { Scenes } from './scenes'
 const SERVER = 'ws://localhost:3000'
 
 export class WebScoketService extends Phaser.Scene {
+    [key: string]: any
     private onMessage: (msg: any) => void
     private ws!: WebSocket
 
@@ -33,9 +34,13 @@ export class WebScoketService extends Phaser.Scene {
 
     private _onMessage(msg: any): void {
         const message: Message = JSON.parse(msg.data)
-        if (message.type === MessageTypes.START_REQUEST) {
-            this.registry.set(GameData.IsStartGameVisible, true)
-        }
+        try {
+            this[message.type](message.payload)
+        } catch { }
+    }
+
+    private [MessageTypes.START_REQUEST]() {
+        this.registry.set(GameData.IsStartGameVisible, true)
     }
 
     private close() {
