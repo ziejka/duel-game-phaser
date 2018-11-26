@@ -1,11 +1,11 @@
-import { User } from '../user'
+import { Player } from '../user'
 import { Room } from './Room'
 
 export class Rooms {
     private allRooms: Room[] = []
     private openRooms: Room[] = []
 
-    findRandomRoomRequest(player: User): void {
+    findRandomRoomRequest(player: Player): void {
         const randomroomIndex: number = Math.floor(Math.random() * this.openRooms.length)
         const room: Room = this.openRooms[randomroomIndex]
 
@@ -14,13 +14,22 @@ export class Rooms {
         } else {
             room.addPlayer(player)
         }
+        this.openRooms = this.openRooms.filter(r => r.isOpen())
     }
 
-    private createRoom(player: User): Room {
+    removePlayer(player: Player) {
+
+    }
+
+    private createRoom(player: Player): Room {
         const closeRoomRequest = this.closeRoomRequest.bind(this)
         const room: Room = new Room(player, closeRoomRequest)
         this.allRooms.push(room)
         return room
+    }
+
+    private clearRoms() {
+        this.allRooms = this.allRooms.filter(r => r.hasAnyPlayers())
     }
 
     private closeRoomRequest(room: Room) {

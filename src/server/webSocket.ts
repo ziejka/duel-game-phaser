@@ -3,9 +3,9 @@ import * as url from 'url'
 import * as WebSocket from 'ws'
 import { GUID } from '../shared/types/types'
 import { Rooms } from './rooms/Rooms'
-import { UserList } from './user'
+import { PlayersList } from './user'
 
-const userList: UserList = new UserList()
+const userList: PlayersList = new PlayersList()
 const rooms: Rooms = new Rooms()
 const findRandomRoomRequest = rooms.findRandomRoomRequest.bind(rooms)
 

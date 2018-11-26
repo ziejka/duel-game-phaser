@@ -1,2 +1,2 @@
-export { User } from './Uesr'
-export { UserList } from './UserList'
+export { Player } from './Player'
+export { PlayersList } from './PlayersList'

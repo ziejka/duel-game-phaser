@@ -1,22 +1,22 @@
 import * as WebSocket from 'ws'
 import { GUID } from '../../shared/types/types'
-import { User } from './Uesr'
+import { Player } from './Player'
 
-export class UserList {
-    private userList: User[] = []
-    private interval: NodeJS.Timeout
+export class PlayersList {
+    private userList: Player[] = []
+    // private interval: NodeJS.Timeout
 
     constructor() {
         // this.interval = this.createInterval()
     }
 
-    addUser(ws: WebSocket, guid: GUID, findRandomRoomRequest: (player: User) => void): User {
-        const user = new User(ws, this.removeUser.bind(this), findRandomRoomRequest, guid)
+    addUser(ws: WebSocket, guid: GUID, findRandomRoomRequest: (player: Player) => void): Player {
+        const user = new Player(ws, this.removeUser.bind(this), findRandomRoomRequest, guid)
         this.userList.push(user)
         return user
     }
 
-    removeUser(user: User): User {
+    removeUser(user: Player): Player {
         this.userList = this.userList.filter(u => u !== user)
         this.showUsers()
         return user
