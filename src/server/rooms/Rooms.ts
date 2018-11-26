@@ -40,8 +40,6 @@ export class Rooms {
     private clearRoms() {
         this.allRooms = this.allRooms.filter(r => r.hasAnyPlayers())
         this.openRooms = this.allRooms.filter(r => r.isOpen())
-        // tslint:disable-next-line:no-console
-        console.log(`${Date.now()} All: ${this.allRooms.length}   OpenAll: ${this.openRooms.length}`)
     }
 
     private closeRoomRequest(room: Room): void {
