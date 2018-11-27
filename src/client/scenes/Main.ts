@@ -1,23 +1,35 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { RoundStartPayload } from '../../shared/types/types'
+import { GameMenu } from '../assets/componenets/gameMenu/gameMenu'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
-import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
 import { WebScoketService } from './WebScoketService'
 
+interface Callbacks {
+    onMenuClick: () => void
+    onBeginDuelClicked: () => void
+}
+
 export class Main extends Phaser.Scene {
-    private beginDuelBtn!: Phaser.GameObjects.Text
+    callbacks: Callbacks
+    private gameMenu!: GameMenu
 
     constructor() {
         super(Scenes.Main)
+        this.callbacks = {
+            onMenuClick: this.onMenuClick,
+            onBeginDuelClicked: this.onBeginDuelClicked
+        }
     }
 
     create() {
-        this.createMenuButtons()
+        this.gameMenu = new GameMenu(this)
+        this.add.existing(this.gameMenu)
         this.setUpEvents()
 
+        this.gameMenu.beginDuelBtn.visible = this.registry.get(RegistryFields.sStartGameVisible)
     }
 
     private setUpEvents() {
@@ -27,32 +39,20 @@ export class Main extends Phaser.Scene {
         this.registry.events.on('changedata', this.updateData, this)
     }
 
-    private createMenuButtons() {
-        this.add.text(15, 15, "MAIN SCENE")
-
-        let pos = new Phaser.Geom.Point(700, 15)
-        this.add.existing(createMenuElement(this, 'BACK TO MENU', pos, this.onMenuClick))
-
-        pos = new Phaser.Geom.Point(322, 300)
-        this.beginDuelBtn = this.add.existing(
-            createMenuElement(this, 'BEGIN DUEL!!!', pos, this.onBeginDuelClicked)) as Phaser.GameObjects.Text
-        this.beginDuelBtn.visible = this.registry.get(RegistryFields.sStartGameVisible)
-    }
-
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
         if (key === RegistryFields.sStartGameVisible) {
-            this.beginDuelBtn.visible = data
+            this.gameMenu.beginDuelBtn.visible = data
         }
     }
 
     private startRound(payload: RoundStartPayload) {
-        this.add.text(300, 300, `ROUND ${payload.roundNumber} STARTED ! ! !`)
+        const info = this.add.text(300, 15, `ROUND ${payload.roundNumber}`)
     }
 
     private onBeginDuelClicked(): void {
         const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
         webScoketService.send({ type: MessageTypes.PLAYER_READY })
-        this.beginDuelBtn.visible = false
+        this.gameMenu.beginDuelBtn.visible = false
     }
 
     private onMenuClick(): void {
