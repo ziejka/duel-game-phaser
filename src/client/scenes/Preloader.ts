@@ -27,24 +27,13 @@ export class Preloader extends Scene {
         })
 
         // load assets declared in the preload config
-        this.loadAtlas()
+        this.load.spritesheet('cowboy', '../assets/spritesheets/cawboy.png',
+            { frameHeight: 94, frameWidth: 80 })
         this.loadAudio()
     }
 
     create() {
         this.scene.start(Scenes.Menu)
-    }
-
-    loadAtlas() {
-        const sheetPath = config.ssPath
-        const sheets = config.sheets
-
-        this.load.setPath(sheetPath)
-
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < sheets.length; i++) {
-            this.load.atlas(sheets[i], `${sheets[i]}.png`, `${sheets[i]}.json`)
-        }
     }
 
     loadAudio() {
