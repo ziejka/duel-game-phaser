@@ -1,7 +1,11 @@
 export class Round {
-    private price: number = 0
+    private startTime: number = 0
 
-    start(): any {
+    start(startTime: number): void {
+        this.startTime = startTime
     }
-    // private interval: NodeJS.Timeout
+
+    end(endTime: number): number {
+        return endTime - this.startTime
+    }
 }

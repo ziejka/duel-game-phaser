@@ -57,7 +57,7 @@ export class Room {
 
     private onPlayerReady() {
         if (this.players.every(p => p.isReady)) {
-            this.round.start()
+            this.round.start(Date.now())
             this.noRound++
             const payload: RoundStartPayload = { roundNumber: this.noRound }
             this.sendToAll({
