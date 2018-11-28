@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { RoundStartPayload } from '../../shared/types/types'
+import { CountingStopped, RoundStartPayload } from '../../shared/types/types'
 import { GameMenu } from '../componenets/gameMenu/gameMenu'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
@@ -22,9 +22,12 @@ enum Animations {
 export class Main extends Phaser.Scene {
     callbacks: Callbacks
     player!: Phaser.GameObjects.Sprite
+    private shouldUpdatePrice: boolean = false
     private gameMenu!: GameMenu
     private centerX!: number
     private centerY!: number
+    private score!: Phaser.GameObjects.Text
+    private price: number = 0
 
     constructor() {
         super(Scenes.Main)
@@ -43,8 +46,26 @@ export class Main extends Phaser.Scene {
         this.add.existing(this.gameMenu)
         this.setUpEvents()
         this.player = this.createPlayer()
+        this.score = this.add.text(400, 525, 'Price: 0')
+        this.score.visible = false
 
-        this.gameMenu.beginDuelBtn.visible = this.registry.get(RegistryFields.sStartGameVisible)
+        this.input.on('pointerdown', this.stopCounting, this)
+
+        this.gameMenu.beginDuelBtn.visible = this.registry.get(RegistryFields.StartGameVisible)
+    }
+
+    update() {
+        if (this.shouldUpdatePrice) {
+            this.price++
+            this.score.setText('Price: ' + this.price)
+        }
+    }
+
+    private stopCounting() {
+        if (this.shouldUpdatePrice) {
+            const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
+            webScoketService.stopCounting()
+        }
     }
 
     private createPlayer(): Phaser.GameObjects.Sprite {
@@ -85,13 +106,20 @@ export class Main extends Phaser.Scene {
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
-        if (key === RegistryFields.sStartGameVisible) {
+        if (key === RegistryFields.StartGameVisible) {
             this.gameMenu.beginDuelBtn.visible = data
+        }
+        if (key === RegistryFields.Price) {
+            this.shouldUpdatePrice = false
+            this.price = data.price
+            this.score.setText('Price: ' + this.price)
         }
     }
 
     private startRound(payload: RoundStartPayload) {
-        const info = this.add.text(300, 0, `ROUND ${payload.roundNumber}`)
+        this.add.text(300, 0, `ROUND ${payload.roundNumber}`)
+        this.score.visible = true
+        this.shouldUpdatePrice = true
     }
 
     private onBeginDuelClicked(): void {

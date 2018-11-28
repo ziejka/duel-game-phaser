@@ -70,8 +70,13 @@ export class Player {
     private createMsgCallbacks(): { [key: string]: any } {
         return {
             [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
-            [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this)
+            [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
+            [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this)
         }
+    }
+
+    private onStopCountingRequest() {
+        this.roomCallbacks.stopCounting()
     }
 
     private onNewGameMsg(): void {

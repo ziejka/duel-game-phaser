@@ -1,6 +1,6 @@
 import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message } from '../../shared/types/types'
+import { CountingStopped, Message } from '../../shared/types/types'
 import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
 import { RoomCallbacks, RoomsCallbacks } from './interfaces'
@@ -18,7 +18,8 @@ export class Room {
         this.onPlayerRemoved = roomsCallbacs.onPlayerRemoved
         this.callbacs = {
             removePlayerFromRoom: this.removePlayerFromRoom.bind(this),
-            onPlayerReady: this.onPlayerReady.bind(this)
+            onPlayerReady: this.onPlayerReady.bind(this),
+            stopCounting: this.stopCounting.bind(this)
         }
     }
 
@@ -42,6 +43,15 @@ export class Room {
         this.players = this.players.filter(p => p !== player)
         this.noRound = 0
         this.onPlayerRemoved()
+    }
+
+    private stopCounting() {
+        const price = this.round.end(Date.now())
+        const payload: CountingStopped = { price }
+        this.sendToAll({
+            type: MessageTypes.COUNTING_STOPPED,
+            payload
+        })
     }
 
     private requestToStart() {

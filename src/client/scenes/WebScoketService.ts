@@ -30,7 +30,14 @@ export class WebScoketService extends Phaser.Scene {
         this.close()
         this.ws = new WebSocket(SERVER)
         this.ws.onmessage = this.onMessage
-        this.registry.set(RegistryFields.sStartGameVisible, false)
+        this.registry.set(RegistryFields.StartGameVisible, false)
+    }
+
+    stopCounting() {
+        const msg: Message = {
+            type: MessageTypes.STOP_COUNTING
+        }
+        this.send(msg)
     }
 
     private _onMessage(msg: any): void {
@@ -43,8 +50,13 @@ export class WebScoketService extends Phaser.Scene {
     private createMsgCallbacks(): { [key: string]: any } {
         return {
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
-            [MessageTypes.START_ROUND]: this.startround.bind(this)
+            [MessageTypes.START_ROUND]: this.startround.bind(this),
+            [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this)
         }
+    }
+
+    private onCountingStopped(price: number) {
+        this.registry.set(RegistryFields.Price, price)
     }
 
     private startround(payload: RoundStartPayload) {
@@ -52,7 +64,7 @@ export class WebScoketService extends Phaser.Scene {
     }
 
     private onStartRequestMsg() {
-        this.registry.set(RegistryFields.sStartGameVisible, true)
+        this.registry.set(RegistryFields.StartGameVisible, true)
     }
 
     private close() {

@@ -12,3 +12,7 @@ export interface GUID {
 export interface RoundStartPayload {
     roundNumber: number
 }
+
+export interface CountingStopped {
+    price: number
+}
