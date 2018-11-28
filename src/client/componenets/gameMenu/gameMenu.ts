@@ -11,12 +11,12 @@ export class GameMenu extends Phaser.GameObjects.Container {
         super(scene)
 
         const { onMenuClick, onBeginDuelClicked } = scene.callbacks
-        this.title = scene.add.text(15, 15, "MAIN SCENE")
+        this.title = scene.add.text(15, 0, "MAIN SCENE")
 
-        let pos = new Phaser.Geom.Point(800, 15)
+        let pos = new Phaser.Geom.Point(800, 0)
         this.backBtn = createMenuElement(scene, 'BACK TO MENU', pos, onMenuClick)
 
-        pos = new Phaser.Geom.Point(322, 300)
+        pos = new Phaser.Geom.Point(400, 0)
         this.beginDuelBtn = createMenuElement(scene, 'BEGIN DUEL!!!', pos, onBeginDuelClicked)
 
         this.add([this.title, this.backBtn, this.beginDuelBtn])

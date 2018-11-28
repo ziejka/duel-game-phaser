@@ -12,13 +12,23 @@ interface Callbacks {
     onBeginDuelClicked: () => void
 }
 
+enum Animations {
+    idle = 'idle',
+    ready = 'ready',
+    shoot = 'shoot',
+    dead = 'dead'
+}
+
 export class Main extends Phaser.Scene {
     callbacks: Callbacks
     player!: Phaser.GameObjects.Sprite
     private gameMenu!: GameMenu
+    private centerX!: number
+    private centerY!: number
 
     constructor() {
         super(Scenes.Main)
+
         this.callbacks = {
             onMenuClick: this.onMenuClick,
             onBeginDuelClicked: this.onBeginDuelClicked
@@ -26,6 +36,9 @@ export class Main extends Phaser.Scene {
     }
 
     create() {
+        this.centerX = this.sys.canvas.width / 2
+        this.centerY = this.sys.canvas.height / 2
+        this.add.sprite(this.centerX, this.centerY, 'bg').setScale(1.5)
         this.gameMenu = new GameMenu(this)
         this.add.existing(this.gameMenu)
         this.setUpEvents()
@@ -35,27 +48,32 @@ export class Main extends Phaser.Scene {
     }
 
     private createPlayer(): Phaser.GameObjects.Sprite {
-        const player = this.add.sprite(300, 300, 'cowboy')
-        player.setScale(2)
+        const player = this.add.sprite(this.centerX, this.centerY + 100, 'player')
+
         this.anims.create({
-            key: 'idle',
-            frames: this.anims.generateFrameNames('cowboy', { start: 0, end: 7 }),
+            key: Animations.idle,
+            frames: this.anims.generateFrameNames('player', { start: 0, end: 4 }),
             repeat: -1,
             frameRate: 10
         })
         this.anims.create({
-            key: 'shoot',
-            frames: this.anims.generateFrameNames('cowboy', { start: 4, end: 7 }),
+            key: Animations.ready,
+            frames: this.anims.generateFrameNames('player', { start: 5, end: 7 }),
+            frameRate: 10
+        })
+        this.anims.create({
+            key: Animations.shoot,
+            frames: this.anims.generateFrameNames('player', { start: 5, end: 15 }),
             repeat: -1,
             frameRate: 10
         })
         this.anims.create({
-            key: 'kill',
-            frames: this.anims.generateFrameNames('cowboy', { start: 27, end: 30 }),
+            key: Animations.dead,
+            frames: this.anims.generateFrameNames('player', { start: 31, end: 37 }),
             repeat: -1,
             frameRate: 10
         })
-        player.anims.play('kill')
+        player.anims.play('idle')
         return player
     }
 
@@ -73,7 +91,7 @@ export class Main extends Phaser.Scene {
     }
 
     private startRound(payload: RoundStartPayload) {
-        const info = this.add.text(300, 15, `ROUND ${payload.roundNumber}`)
+        const info = this.add.text(300, 0, `ROUND ${payload.roundNumber}`)
     }
 
     private onBeginDuelClicked(): void {

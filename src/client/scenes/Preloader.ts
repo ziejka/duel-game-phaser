@@ -4,12 +4,14 @@ import { Scenes } from './scenes'
 
 export class Preloader extends Scene {
     constructor() {
-        super(Scenes.Preloader)
+        super({
+            key: Scenes.Preloader
+        })
     }
 
     preload() {
         // add the loading bar to use as a display for the loading progress of the remainder of the assets
-        const barBg = this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'barBg')
+        this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'barBg')
         const bar = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'bar')
 
         const mask = this.make.graphics({
@@ -27,8 +29,9 @@ export class Preloader extends Scene {
         })
 
         // load assets declared in the preload config
-        this.load.spritesheet('cowboy', '../assets/spritesheets/cawboy.png',
-            { frameHeight: 94, frameWidth: 80 })
+        this.load.image('bg', '../assets/images/bg.png')
+        this.load.spritesheet('player', '../assets/spritesheets/player.png',
+            { frameHeight: 240, frameWidth: 240 })
         this.loadAudio()
     }
 
