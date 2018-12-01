@@ -53,8 +53,8 @@ export class Room {
     }
 
     private stopCounting() {
-        const price = this.round.end(Date.now())
-        const payload: CountingStopped = { price }
+        const reward = this.round.end(Date.now())
+        const payload: CountingStopped = { reward }
         this.sendToAll({
             type: MessageTypes.COUNTING_STOPPED,
             payload

@@ -73,8 +73,8 @@ export class WebScoketService extends Phaser.Scene {
         this.events.emit(GameEvents.ROND_LOST)
     }
 
-    private onCountingStopped(price: number) {
-        this.registry.set(RegistryFields.Price, price)
+    private onCountingStopped(reward: number) {
+        this.registry.set(RegistryFields.Reward, reward)
     }
 
     private startround(payload: RoundStartPayload) {

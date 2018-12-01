@@ -1,8 +1,8 @@
 import * as Phaser from 'phaser'
-import { Main } from '../../scenes/Main'
-import { createMenuElement } from '../../utils/Utils'
+import { Main } from '../scenes/Main'
+import { createMenuElement } from '../utils/Utils'
 
-export class GameMenu extends Phaser.GameObjects.Container {
+export class RoundMenu extends Phaser.GameObjects.Container {
     beginDuelBtn: Phaser.GameObjects.Text
     backBtn: Phaser.GameObjects.Text
     private title: Phaser.GameObjects.Text

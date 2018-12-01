@@ -14,5 +14,5 @@ export interface RoundStartPayload {
 }
 
 export interface CountingStopped {
-    price: number
+    reward: number
 }
