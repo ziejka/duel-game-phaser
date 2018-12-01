@@ -40,6 +40,13 @@ export class WebScoketService extends Phaser.Scene {
         this.send(msg)
     }
 
+    hitPointClicked() {
+        const msg: Message = {
+            type: MessageTypes.HIT_POINT_CLICKED
+        }
+        this.send(msg)
+    }
+
     private _onMessage(msg: any): void {
         const message: Message = JSON.parse(msg.data)
         try {
@@ -51,8 +58,19 @@ export class WebScoketService extends Phaser.Scene {
         return {
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startround.bind(this),
-            [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this)
+            [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
+            [MessageTypes.ROUND_LOST]: this.onRoundLost.bind(this),
+            [MessageTypes.ROUND_WON]: this.onRoundWon.bind(this)
         }
+    }
+
+    private onRoundWon() {
+        this.registry.set(RegistryFields.StartGameVisible, true)
+        this.events.emit(GameEvents.ROND_WON)
+    }
+    private onRoundLost() {
+        this.registry.set(RegistryFields.StartGameVisible, true)
+        this.events.emit(GameEvents.ROND_LOST)
     }
 
     private onCountingStopped(price: number) {

@@ -7,6 +7,8 @@ import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
 import { WebScoketService } from './WebScoketService'
 
+const FRAME_RATE = 15
+
 interface Callbacks {
     onMenuClick: () => void
     onBeginDuelClicked: () => void
@@ -16,7 +18,8 @@ enum Animations {
     idle = 'idle',
     ready = 'ready',
     shoot = 'shoot',
-    dead = 'dead'
+    dead = 'dead',
+    won = 'won'
 }
 
 export class Main extends Phaser.Scene {
@@ -28,6 +31,7 @@ export class Main extends Phaser.Scene {
     private centerY!: number
     private score!: Phaser.GameObjects.Text
     private price: number = 0
+    private hitPoint!: Phaser.GameObjects.Arc
 
     constructor() {
         super(Scenes.Main)
@@ -47,7 +51,9 @@ export class Main extends Phaser.Scene {
         this.setUpEvents()
         this.player = this.createPlayer()
         this.score = this.add.text(400, 525, 'Price: 0')
+        this.registry.set(RegistryFields.Price, this.price)
         this.score.visible = false
+        this.hitPoint = this.createHitPoint()
 
         this.input.on('pointerdown', this.stopCounting, this)
 
@@ -59,6 +65,19 @@ export class Main extends Phaser.Scene {
             this.price++
             this.score.setText('Price: ' + this.price)
         }
+    }
+
+    private createHitPoint(): Phaser.GameObjects.Arc {
+        const hitPoint = this.add.circle(0, 0, 20, 0x1388e8)
+        hitPoint.visible = false
+        hitPoint.on('pointerdown', this.onHitPoint, this)
+        hitPoint.setInteractive()
+        return hitPoint
+    }
+
+    private onHitPoint() {
+        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
+        webScoketService.hitPointClicked()
     }
 
     private stopCounting() {
@@ -75,34 +94,55 @@ export class Main extends Phaser.Scene {
             key: Animations.idle,
             frames: this.anims.generateFrameNames('player', { start: 0, end: 4 }),
             repeat: -1,
-            frameRate: 10
+            frameRate: FRAME_RATE
         })
         this.anims.create({
             key: Animations.ready,
             frames: this.anims.generateFrameNames('player', { start: 5, end: 7 }),
-            frameRate: 10
+            frameRate: FRAME_RATE
         })
         this.anims.create({
             key: Animations.shoot,
-            frames: this.anims.generateFrameNames('player', { start: 5, end: 15 }),
-            repeat: -1,
-            frameRate: 10
+            frames: this.anims.generateFrameNames('player', { start: 13, end: 15 }),
+            frameRate: FRAME_RATE
         })
         this.anims.create({
             key: Animations.dead,
             frames: this.anims.generateFrameNames('player', { start: 31, end: 37 }),
-            repeat: -1,
-            frameRate: 10
+            frameRate: FRAME_RATE
         })
-        player.anims.play('idle')
+        this.anims.create({
+            key: Animations.won,
+            frames: this.anims.generateFrameNames('player', { start: 16, end: 29 }),
+            repeat: -1,
+            frameRate: FRAME_RATE
+        })
+        player.anims.play(Animations.idle)
+        player.on('animationcomplete', this.onAnimationCompleate, this)
         return player
+    }
+
+    private onAnimationCompleate(anim: Phaser.Animations.Animation, frame: any) {
+        this.events.emit('animationcomplete_' + anim.key, anim, frame)
     }
 
     private setUpEvents() {
         const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
         webScoketService.events.on(GameEvents.START_ROUND, this.startRound, this)
+        webScoketService.events.on(GameEvents.ROND_LOST, this.roundLost, this)
+        webScoketService.events.on(GameEvents.ROND_WON, this.roundWon, this)
+
+        this.events.on('animationcomplete_shoot', () => { this.player.anims.play(Animations.won) }, this)
 
         this.registry.events.on('changedata', this.updateData, this)
+    }
+
+    private roundWon() {
+        this.player.anims.play(Animations.shoot)
+    }
+
+    private roundLost() {
+        this.player.anims.play(Animations.dead)
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
@@ -113,7 +153,16 @@ export class Main extends Phaser.Scene {
             this.shouldUpdatePrice = false
             this.price = data.price
             this.score.setText('Price: ' + this.price)
+            this.showHitPoint()
         }
+    }
+
+    private showHitPoint() {
+        const x = Math.random() * (this.sys.canvas.width - 100) + 100
+        const y = Math.random() * (this.sys.canvas.height - 100) + 100
+        this.hitPoint.setPosition(x, y)
+        this.hitPoint.visible = true
+        this.player.anims.play(Animations.ready)
     }
 
     private startRound(payload: RoundStartPayload) {

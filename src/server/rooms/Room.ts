@@ -19,7 +19,8 @@ export class Room {
         this.callbacs = {
             removePlayerFromRoom: this.removePlayerFromRoom.bind(this),
             onPlayerReady: this.onPlayerReady.bind(this),
-            stopCounting: this.stopCounting.bind(this)
+            stopCounting: this.stopCounting.bind(this),
+            playerWon: this.playerWon.bind(this)
         }
     }
 
@@ -43,6 +44,12 @@ export class Room {
         this.players = this.players.filter(p => p !== player)
         this.noRound = 0
         this.onPlayerRemoved()
+    }
+
+    private playerWon(player: Player) {
+        const lostPlayer = this.players.find(p => p !== player)
+        lostPlayer.result(false)
+        player.result(true)
     }
 
     private stopCounting() {

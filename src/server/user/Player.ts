@@ -1,3 +1,4 @@
+import { constants } from 'fs'
 import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
@@ -44,6 +45,14 @@ export class Player {
         return this.ws.readyState === WebSocket.OPEN
     }
 
+    result(playerWon: boolean) {
+        const msg: Message = {
+            type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST
+        }
+        this.isReady = false
+        this.sendMsg(JSON.stringify(msg))
+    }
+
     private onConnectionClose() {
         try {
             this.roomCallbacks.removePlayerFromRoom(this)
@@ -71,8 +80,13 @@ export class Player {
         return {
             [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
-            [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this)
+            [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
+            [MessageTypes.HIT_POINT_CLICKED]: this.onHitPointClicked.bind(this)
         }
+    }
+
+    private onHitPointClicked() {
+        this.roomCallbacks.playerWon(this)
     }
 
     private onStopCountingRequest() {
