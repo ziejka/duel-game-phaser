@@ -10,6 +10,6 @@ export interface RoomCallbacks {
     removePlayerFromRoom: (player: Player) => void
     onPlayerReady: () => void
     stopCounting: () => void
-    playerWon: (player: Player) => void
+    endRound: (player: Player) => void
 
 }

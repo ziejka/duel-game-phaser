@@ -9,6 +9,8 @@ export const createMenuElement = (scene: Phaser.Scene,
                                   position: Phaser.Geom.Point,
                                   onClickCallback: () => void = () => { }): Phaser.GameObjects.Text => {
     const btn = new Phaser.GameObjects.Text(scene, position.x, position.y, text, {})
+    btn.setFontSize(25)
+    btn.setStroke('#000000', 3)
     btn.setInteractive()
     btn.on('pointerdown', onClickCallback, scene)
     btn.on('pointerup', btn.clearTint, btn)

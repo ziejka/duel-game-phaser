@@ -5,13 +5,14 @@ import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
 import { RoomCallbacks, RoomsCallbacks } from './interfaces'
 
+const ROUND_START_DELEY: number = 3000
+
 export class Room {
     callbacs: RoomCallbacks
     private onPlayerRemoved: () => void
     private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
     private players: Player[] = []
-    private noRound: number = 0
 
     constructor(roomsCallbacs: RoomsCallbacks) {
         this.closeRoomRequest = roomsCallbacs.closeRoomRequest
@@ -20,7 +21,7 @@ export class Room {
             removePlayerFromRoom: this.removePlayerFromRoom.bind(this),
             onPlayerReady: this.onPlayerReady.bind(this),
             stopCounting: this.stopCounting.bind(this),
-            playerWon: this.playerWon.bind(this)
+            endRound: this.endRound.bind(this)
         }
     }
 
@@ -42,14 +43,16 @@ export class Room {
 
     removePlayerFromRoom(player: Player) {
         this.players = this.players.filter(p => p !== player)
-        this.noRound = 0
         this.onPlayerRemoved()
     }
 
-    private playerWon(player: Player) {
+    private endRound(player: Player) {
         const lostPlayer = this.players.find(p => p !== player)
-        lostPlayer.result(false)
+        if (lostPlayer) {
+            lostPlayer.result(false)
+        }
         player.result(true)
+        setTimeout(this.startNewRound.bind(this), ROUND_START_DELEY)
     }
 
     private stopCounting() {
@@ -72,15 +75,19 @@ export class Room {
         })
     }
 
+    private startNewRound() {
+        this.round.newRound()
+        this.round.start(Date.now())
+        const payload: RoundStartPayload = { roundNumber: this.round.roundNumber }
+        this.sendToAll({
+            type: MessageTypes.START_ROUND,
+            payload
+        })
+    }
+
     private onPlayerReady() {
         if (this.players.every(p => p.isReady)) {
-            this.round.start(Date.now())
-            this.noRound++
-            const payload: RoundStartPayload = { roundNumber: this.noRound }
-            this.sendToAll({
-                type: MessageTypes.START_ROUND,
-                payload
-            })
+            this.startNewRound()
         }
     }
 

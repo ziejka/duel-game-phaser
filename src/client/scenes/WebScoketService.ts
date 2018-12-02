@@ -59,18 +59,14 @@ export class WebScoketService extends Phaser.Scene {
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startround.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
-            [MessageTypes.ROUND_LOST]: this.onRoundLost.bind(this),
-            [MessageTypes.ROUND_WON]: this.onRoundWon.bind(this)
+            [MessageTypes.ROUND_LOST]: this.onRoundEnd.bind(this, false),
+            [MessageTypes.ROUND_WON]: this.onRoundEnd.bind(this, true)
         }
     }
 
-    private onRoundWon() {
-        this.registry.set(RegistryFields.StartGameVisible, true)
-        this.events.emit(GameEvents.ROND_WON)
-    }
-    private onRoundLost() {
-        this.registry.set(RegistryFields.StartGameVisible, true)
-        this.events.emit(GameEvents.ROND_LOST)
+    private onRoundEnd(isRounWon: boolean) {
+        const event = isRounWon ? GameEvents.ROND_WON : GameEvents.ROND_LOST
+        this.events.emit(event)
     }
 
     private onCountingStopped(reward: number) {

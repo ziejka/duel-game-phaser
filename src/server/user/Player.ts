@@ -86,7 +86,7 @@ export class Player {
     }
 
     private aimClicked() {
-        this.roomCallbacks.playerWon(this)
+        this.roomCallbacks.endRound(this)
     }
 
     private onStopCountingRequest() {

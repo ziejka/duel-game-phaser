@@ -37,7 +37,7 @@ export class Menu extends Phaser.Scene {
 
     private createMultiMenu() {
         const container = this.add.container(0, 0),
-            playWithRanom = createMenuElement(this, 'Find oponent', this.createPosition(-25),
+            playWithRanom = createMenuElement(this, 'Find oponent', this.createPosition(-50),
                 this.onPlayRandomClicked),
             playWithFriend = createMenuElement(this, 'Play with friend', this.createPosition(0))
 
@@ -49,7 +49,7 @@ export class Menu extends Phaser.Scene {
     private createMainMenu(): Phaser.GameObjects.Container {
         const container = this.add.container(0, 0),
             multi = createMenuElement(this, 'Play multi', this.createPosition(-50), this.onMultClick),
-            single = createMenuElement(this, 'Play single', this.createPosition(-25))
+            single = createMenuElement(this, 'Play single', this.createPosition(25))
 
         container.add([multi, single])
 
