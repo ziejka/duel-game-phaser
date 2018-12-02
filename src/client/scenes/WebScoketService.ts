@@ -40,9 +40,9 @@ export class WebScoketService extends Phaser.Scene {
         this.send(msg)
     }
 
-    hitPointClicked() {
+    aimClicked() {
         const msg: Message = {
-            type: MessageTypes.HIT_POINT_CLICKED
+            type: MessageTypes.AIM_CLICKED
         }
         this.send(msg)
     }

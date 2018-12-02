@@ -81,11 +81,11 @@ export class Player {
             [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
             [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
-            [MessageTypes.HIT_POINT_CLICKED]: this.onHitPointClicked.bind(this)
+            [MessageTypes.AIM_CLICKED]: this.aimClicked.bind(this)
         }
     }
 
-    private onHitPointClicked() {
+    private aimClicked() {
         this.roomCallbacks.playerWon(this)
     }
 

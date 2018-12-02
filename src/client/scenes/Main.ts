@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { RoundStartPayload } from '../../shared/types/types'
-import { HitPoint } from '../componenets/HitPoint'
+import { Aim } from '../componenets/Aim'
 import { Player, PlayerAnims } from '../componenets/Player'
 import { RoundMenu } from '../componenets/RoundMenu'
 import { Images } from '../config/images'
@@ -13,7 +13,7 @@ import { WebScoketService } from './WebScoketService'
 interface Callbacks {
     onMenuClick: () => void
     onBeginDuelClicked: () => void
-    onHitPointClicked: () => void
+    onAimClicked: () => void
 }
 
 export class Main extends Phaser.Scene {
@@ -25,7 +25,7 @@ export class Main extends Phaser.Scene {
     private centerY!: number
     private score!: Phaser.GameObjects.Text
     private reward: number = 0
-    private hitPoint!: HitPoint
+    private aim!: Aim
 
     constructor() {
         super(Scenes.Main)
@@ -33,7 +33,7 @@ export class Main extends Phaser.Scene {
         this.callbacks = {
             onMenuClick: this.onMenuClick,
             onBeginDuelClicked: this.onBeginDuelClicked,
-            onHitPointClicked: this.onHitPoint
+            onAimClicked: this.onAimClicked
         }
     }
 
@@ -45,7 +45,7 @@ export class Main extends Phaser.Scene {
         this.gameMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
         this.player = this.add.existing(new Player(this, this.centerX, this.centerY)) as Player
         this.score = this.createScore()
-        this.hitPoint = this.add.existing(new HitPoint(this)) as HitPoint
+        this.aim = this.add.existing(new Aim(this)) as Aim
 
         this.setUpEvents()
 
@@ -66,9 +66,10 @@ export class Main extends Phaser.Scene {
         return score
     }
 
-    private onHitPoint() {
+    private onAimClicked() {
         const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.hitPointClicked()
+        webScoketService.aimClicked()
+        this.aim.hide()
     }
 
     private stopCounting() {
@@ -111,7 +112,7 @@ export class Main extends Phaser.Scene {
         this.score.setText('Reward ' + this.reward)
         const x = Math.random() * (this.sys.canvas.width - 100) + 100
         const y = Math.random() * (this.sys.canvas.height - 100) + 100
-        this.hitPoint.show(x, y)
+        this.aim.show(x, y)
         this.player.anims.play(PlayerAnims.ready)
     }
 
