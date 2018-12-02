@@ -5,7 +5,7 @@ import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
 
-const SERVER = 'ws://localhost:3000'
+const SERVER = `ws://${window.location.host}`
 
 export class WebScoketService extends Phaser.Scene {
     private msgCallbacks: { [key: string]: any }
