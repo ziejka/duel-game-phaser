@@ -22,8 +22,6 @@ export class Rooms {
             room = this.createRoom()
             this.openRooms.push(room)
         }
-        // tslint:disable-next-line:no-console
-        console.log(`All rooms: ${this.allRooms.length}  --- Open rooms: ${this.openRooms.length}`)
         room.addPlayer(player)
         player.roomCallbacks = room.callbacs
         this.clearRoms()

@@ -72,8 +72,6 @@ export class Player {
                 wallet: this.wallet
             }
         }
-        // tslint:disable-next-line:no-console
-        console.log(`Player connected`)
         this.sendMsg(JSON.stringify(msg))
     }
 
