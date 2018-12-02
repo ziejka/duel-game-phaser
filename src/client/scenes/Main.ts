@@ -106,11 +106,12 @@ export class Main extends Phaser.Scene {
         this.isCountingFaze = true
     }
 
-    private roundEnd(isWonRound: boolean): () => void {
+    private roundEnd(isWonRound: boolean): (walletAmount: number) => void {
         const anim = isWonRound ? PlayerAnims.won : PlayerAnims.dead
-        return () => {
+        return (walletAmount: number) => {
             this.aim.hide()
             this.player.anims.play(anim)
+            this.wallet.setWallet(walletAmount)
         }
     }
 

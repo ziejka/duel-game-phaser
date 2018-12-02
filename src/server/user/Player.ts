@@ -1,7 +1,7 @@
 import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { GUID, Message } from '../../shared/types/types'
+import { GUID, Message, RoundResultPayload } from '../../shared/types/types'
 import { RoomCallbacks } from '../rooms/interfaces'
 
 export class Player {
@@ -47,11 +47,12 @@ export class Player {
 
     result(playerWon: boolean, amount: number) {
         this.wallet += playerWon ? amount : -amount
+        const payload: RoundResultPayload = {
+            wallet: this.wallet
+        }
         const msg: Message = {
             type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST,
-            payload: {
-                wallet: this.wallet
-            }
+            payload
         }
         this.isReady = false
         this.sendMsg(JSON.stringify(msg))

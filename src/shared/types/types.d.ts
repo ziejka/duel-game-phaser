@@ -13,6 +13,10 @@ export interface RoundStartPayload {
     roundNumber: number
 }
 
+export interface RoundResultPayload {
+    wallet: number
+}
+
 export interface CountingStopped {
     reward: number
 }

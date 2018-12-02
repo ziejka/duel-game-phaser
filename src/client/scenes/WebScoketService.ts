@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message, RoundStartPayload } from '../../shared/types/types'
+import { Message, RoundResultPayload, RoundStartPayload } from '../../shared/types/types'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
@@ -59,14 +59,17 @@ export class WebScoketService extends Phaser.Scene {
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startround.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
-            [MessageTypes.ROUND_LOST]: this.onRoundEnd.bind(this, false),
-            [MessageTypes.ROUND_WON]: this.onRoundEnd.bind(this, true)
+            [MessageTypes.ROUND_LOST]: this.onRoundEnd(false).bind(this),
+            [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this)
         }
     }
 
     private onRoundEnd(isRounWon: boolean) {
         const event = isRounWon ? GameEvents.ROND_WON : GameEvents.ROND_LOST
-        this.events.emit(event)
+        return (payload: RoundResultPayload) => {
+            this.events.emit(event, payload.wallet)
+        }
+
     }
 
     private onCountingStopped(reward: number) {

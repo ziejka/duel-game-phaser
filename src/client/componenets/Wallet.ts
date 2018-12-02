@@ -15,6 +15,11 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.add([this.score, this.walletAmount])
     }
 
+    setWallet(walletAmount: number): any {
+        this.amount = walletAmount
+        this.updateWallet()
+    }
+
     startRound(): any {
         this.reward = 0
     }
