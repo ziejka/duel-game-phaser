@@ -1,13 +1,16 @@
 export class Round {
-    roundNumber = 0
+    roundNumber: number = 0
+    reward: number = 0
     private startTime: number = 0
 
     start(startTime: number): void {
         this.startTime = startTime
+        this.reward = 0
     }
 
     end(endTime: number): number {
-        return endTime - this.startTime
+        this.reward = endTime - this.startTime
+        return this.reward
     }
 
     newRound() {

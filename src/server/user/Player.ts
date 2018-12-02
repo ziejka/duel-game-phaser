@@ -1,4 +1,3 @@
-import { constants } from 'fs'
 import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
@@ -13,6 +12,7 @@ export class Player {
     private ws: WebSocket
     private findRandomRoomRequest: (player: Player) => void
     private msgCallbacks: { [key: string]: any }
+    private wallet: number = 10000
 
     constructor(ws: WebSocket,
                 removeUser: (user: Player) => void,
@@ -45,9 +45,13 @@ export class Player {
         return this.ws.readyState === WebSocket.OPEN
     }
 
-    result(playerWon: boolean) {
+    result(playerWon: boolean, amount: number) {
+        this.wallet += playerWon ? amount : -amount
         const msg: Message = {
-            type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST
+            type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST,
+            payload: {
+                wallet: this.wallet
+            }
         }
         this.isReady = false
         this.sendMsg(JSON.stringify(msg))
@@ -63,7 +67,8 @@ export class Player {
         const msg: Message = {
             type: MessageTypes.USAER_DATA,
             payload: {
-                ID: this.ID
+                ID: this.ID,
+                wallet: this.wallet
             }
         }
         this.sendMsg(JSON.stringify(msg))
