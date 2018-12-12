@@ -49,9 +49,9 @@ export class Room {
     private endRound(player: Player) {
         const lostPlayer = this.players.find(p => p !== player)
         if (lostPlayer) {
-            lostPlayer.result(false, this.round.reward)
+            lostPlayer.result(false, this.round.reward / 2)
         }
-        player.result(true, this.round.reward)
+        player.result(true, this.round.reward / 2)
         setTimeout(this.startNewRound.bind(this), ROUND_START_DELEY)
     }
 

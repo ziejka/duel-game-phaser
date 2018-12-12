@@ -93,9 +93,7 @@ export class Main extends Phaser.Scene {
     }
 
     private activateAim() {
-        const x = Math.floor(Math.random() * (this.sys.canvas.width - 300)) + 300
-        const y = Math.floor(Math.random() * (this.sys.canvas.height - 300)) + 300
-        this.aim.show(x, y)
+        this.aim.show()
         this.player.anims.play(PlayerAnims.ready)
     }
 

@@ -13,7 +13,9 @@ export class Aim extends Phaser.GameObjects.Sprite {
         this.visible = false
     }
 
-    show(x: number, y: number): any {
+    show(): any {
+        const x = Math.floor(Math.random() * (this.scene.sys.canvas.width - 200)) + 100
+        const y = Math.floor(Math.random() * (this.scene.sys.canvas.height - 200)) + 100
         this.setPosition(x, y)
         this.visible = true
     }

@@ -12,7 +12,7 @@ export class Player {
     private ws: WebSocket
     private findRandomRoomRequest: (player: Player) => void
     private msgCallbacks: { [key: string]: any }
-    private wallet: number = 10000
+    private wallet: number = 1000
 
     constructor(ws: WebSocket,
                 removeUser: (user: Player) => void,
