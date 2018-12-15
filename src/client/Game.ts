@@ -46,3 +46,9 @@ const resize = () => {
 const game = new Phaser.Game(config)
 window.addEventListener('resize', resize)
 game.events.once('ready', resize)
+
+// DEBUG ONLY
+declare global {
+    interface Window { log: any }
+}
+window.log = window.log || {}

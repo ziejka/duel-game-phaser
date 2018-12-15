@@ -40,10 +40,10 @@ export class Main extends Phaser.Scene {
     create() {
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
-        this.add.sprite(this.centerX, this.centerY, Images.Bg).setScale(1.5)
+        this.add.sprite(this.centerX, this.centerY, Images.Bg).setScale(1.2)
 
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
-        this.player = this.add.existing(new Player(this, this.centerX, this.centerY)) as Player
+        this.player = this.add.existing(new Player(this, this.centerX, this.centerY + 100)) as Player
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.aim = this.add.existing(new Aim(this)) as Aim
 
