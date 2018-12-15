@@ -22,7 +22,7 @@ export class RoundMenu extends Phaser.GameObjects.Container {
         pos = new Phaser.Geom.Point(scene.centerX - 100, scene.centerY - 200)
         this.beginDuelBtn = createMenuElement(scene, 'BEGIN DUEL!!!', pos, onBeginDuelClicked)
 
-        this.roundNumber = scene.add.text(300, 0, `ROUND`)
+        this.roundNumber = scene.add.text(250, 0, `ROUND`, { color: '#000000' })
         this.roundNumber.visible = false
 
         this.add([this.title, this.backBtn, this.beginDuelBtn, this.roundNumber])

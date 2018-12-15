@@ -7,7 +7,8 @@ const START_AMOUNT: number = 1000
 const textStyle = {
     color: '#FFFFFF',
     stroke: '#000000',
-    strokeThickness: 2
+    fontSize: 24,
+    strokeThickness: 3
 }
 
 export class Wallet extends Phaser.GameObjects.Container {
@@ -54,7 +55,7 @@ export class Wallet extends Phaser.GameObjects.Container {
     }
 
     private updateWallet() {
-        this.score.setText(`Reward $${this.reward.toFixed()}`)
+        this.score.setText(`Reward: $${this.reward.toFixed()}`)
         this.walletAmount.setText(`Wallet: $${this.amount.toFixed()}`)
         this.drawBars()
     }
@@ -65,21 +66,21 @@ export class Wallet extends Phaser.GameObjects.Container {
         const playerWidth = Math.floor((this.amount * maxWidth) / (START_AMOUNT * 2))
         const enemyWidth = Math.floor((enemyWallet * maxWidth) / (START_AMOUNT * 2))
         this.barsGraphic.clear()
-        this.barsGraphic.fillStyle(0xc1c1c1)
-        this.barsGraphic.fillRect(200, 518, maxWidth, 9)
-        this.barsGraphic.fillRect(600, 518, maxWidth, 9)
+        this.barsGraphic.fillStyle(0x000000)
+        this.barsGraphic.fillRect(10, 38, maxWidth, 9)
+        this.barsGraphic.fillRect(320, 38, maxWidth, 9)
         this.barsGraphic.fillStyle(0xFFFFFF)
-        this.barsGraphic.fillRect(200, 520, playerWidth, 5)
-        this.barsGraphic.fillRect(600, 520, enemyWidth, 5)
+        this.barsGraphic.fillRect(12, 40, playerWidth, 5)
+        this.barsGraphic.fillRect(322, 40, enemyWidth, 5)
     }
 
     private createScore(scene: Main): Phaser.GameObjects.Text {
-        const score = scene.add.text(scene.centerX - 50, scene.sys.canvas.height - 20, 'Reward $0', textStyle)
+        const score = scene.add.text(10, 80, 'Reward: $0', textStyle)
         scene.registry.set(RegistryFields.Reward, this.reward)
         return score
     }
 
     private createWalletAmount(scene: Main): Phaser.GameObjects.Text {
-        return scene.add.text(10, scene.sys.canvas.height - 20, `Wallet: $${this.amount}`, textStyle)
+        return scene.add.text(10, 50, `Wallet: $${this.amount}`, textStyle)
     }
 }
