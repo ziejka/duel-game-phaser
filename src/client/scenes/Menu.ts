@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
+import * as TextStyles from '../config/textStyles'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
 import { WebScoketService } from './WebScoketService'
@@ -15,7 +16,7 @@ export class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(15, 15, "MENU SCENE")
+        this.add.text(15, 15, "MENU SCENE", TextStyles.menuText)
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.mainMenu = this.createMainMenu()
@@ -57,6 +58,6 @@ export class Menu extends Phaser.Scene {
     }
 
     private createPosition(yOffset: number): Phaser.Geom.Point {
-        return new Phaser.Geom.Point(this.centerX, this.centerY + yOffset)
+        return new Phaser.Geom.Point(this.centerX - 70, this.centerY + yOffset)
     }
 }

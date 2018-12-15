@@ -20,10 +20,10 @@ interface Callbacks {
 export class Main extends Phaser.Scene {
     callbacks: Callbacks
     player!: Player
+    centerX!: number
+    centerY!: number
     private isCountingFaze: boolean = false
     private roundMenu!: RoundMenu
-    private centerX!: number
-    private centerY!: number
     private wallet!: Wallet
     private aim!: Aim
 

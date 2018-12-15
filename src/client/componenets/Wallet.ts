@@ -1,7 +1,14 @@
 import * as Phaser from 'phaser'
+import { Main } from 'scenes/Main'
 import { RegistryFields } from '../state/state'
 
 const START_AMOUNT: number = 1000
+
+const textStyle = {
+    color: '#FFFFFF',
+    stroke: '#000000',
+    strokeThickness: 2
+}
 
 export class Wallet extends Phaser.GameObjects.Container {
     private reward: number = 0
@@ -12,7 +19,7 @@ export class Wallet extends Phaser.GameObjects.Container {
     private barsGraphic: Phaser.GameObjects.Graphics
     private countingStartTime: number = 0
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Main) {
         super(scene)
         this.score = this.createScore(scene)
         this.walletAmount = this.createWalletAmount(scene)
@@ -66,13 +73,13 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.barsGraphic.fillRect(600, 520, enemyWidth, 5)
     }
 
-    private createScore(scene: Phaser.Scene): Phaser.GameObjects.Text {
-        const score = scene.add.text(400, 525, 'Reward $0')
+    private createScore(scene: Main): Phaser.GameObjects.Text {
+        const score = scene.add.text(scene.centerX - 50, scene.sys.canvas.height - 20, 'Reward $0', textStyle)
         scene.registry.set(RegistryFields.Reward, this.reward)
         return score
     }
 
-    private createWalletAmount(scene: Phaser.Scene): Phaser.GameObjects.Text {
-        return scene.add.text(100, 525, `Wallet: $${this.amount}`)
+    private createWalletAmount(scene: Main): Phaser.GameObjects.Text {
+        return scene.add.text(10, scene.sys.canvas.height - 20, `Wallet: $${this.amount}`, textStyle)
     }
 }
