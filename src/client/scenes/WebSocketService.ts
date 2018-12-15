@@ -7,13 +7,13 @@ import { Scenes } from './scenes'
 
 const SERVER = `ws://${window.location.hostname}:3000`
 
-export class WebScoketService extends Phaser.Scene {
+export class WebSocketService extends Phaser.Scene {
     private msgCallbacks: { [key: string]: any }
     private onMessage: (msg: any) => void
     private ws!: WebSocket
 
     constructor() {
-        super(Scenes.WebScoketService)
+        super(Scenes.WebSocketService)
         this.onMessage = this._onMessage.bind(this)
         this.msgCallbacks = this.createMsgCallbacks()
     }
@@ -57,15 +57,15 @@ export class WebScoketService extends Phaser.Scene {
     private createMsgCallbacks(): { [key: string]: any } {
         return {
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
-            [MessageTypes.START_ROUND]: this.startround.bind(this),
+            [MessageTypes.START_ROUND]: this.startRound.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
             [MessageTypes.ROUND_LOST]: this.onRoundEnd(false).bind(this),
             [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this)
         }
     }
 
-    private onRoundEnd(isRounWon: boolean) {
-        const event = isRounWon ? GameEvents.ROND_WON : GameEvents.ROND_LOST
+    private onRoundEnd(isRoundWon: boolean) {
+        const event = isRoundWon ? GameEvents.ROUND_WON : GameEvents.ROUND_LOST
         return (payload: RoundResultPayload) => {
             this.events.emit(event, payload.wallet)
         }
@@ -76,7 +76,7 @@ export class WebScoketService extends Phaser.Scene {
         this.registry.set(RegistryFields.Reward, reward)
     }
 
-    private startround(payload: RoundStartPayload) {
+    private startRound(payload: RoundStartPayload) {
         this.events.emit(GameEvents.START_ROUND, payload)
     }
 

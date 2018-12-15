@@ -2,7 +2,7 @@ import "phaser"
 import { Main } from './scenes/Main'
 import { Menu } from './scenes/Menu'
 import { Preloader } from './scenes/Preloader'
-import { WebScoketService } from './scenes/WebScoketService'
+import { WebSocketService } from './scenes/WebSocketService'
 
 const config: GameConfig = {
     type: Phaser.AUTO,
@@ -11,7 +11,7 @@ const config: GameConfig = {
     height: 960,
     scene: [
         Preloader,
-        WebScoketService,
+        WebSocketService,
         Menu,
         Main
     ]

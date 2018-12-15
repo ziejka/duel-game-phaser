@@ -1,15 +1,15 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { RoundStartPayload } from '../../shared/types/types'
-import { Aim } from '../componenets/Aim'
-import { Player, PlayerAnims } from '../componenets/Player'
-import { RoundMenu } from '../componenets/RoundMenu'
-import { Wallet } from '../componenets/Wallet'
+import { Aim } from '../components/Aim'
+import { Player, PlayerAnims } from '../components/Player'
+import { RoundMenu } from '../components/RoundMenu'
+import { Wallet } from '../components/Wallet'
 import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
-import { WebScoketService } from './WebScoketService'
+import { WebSocketService } from './WebSocketService'
 
 interface Callbacks {
     onMenuClick: () => void
@@ -59,24 +59,24 @@ export class Main extends Phaser.Scene {
     }
 
     private setUpEvents() {
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.events.on(GameEvents.START_ROUND, this.startRound, this)
-        webScoketService.events.on(GameEvents.ROND_LOST, this.roundEnd(false), this)
-        webScoketService.events.on(GameEvents.ROND_WON, this.roundEnd(true), this)
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
+        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
+        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
 
         this.registry.events.on('changedata', this.updateData, this)
         this.input.on('pointerdown', this.stopCounting, this)
     }
 
     private onAimClicked() {
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.aimClicked()
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.aimClicked()
     }
 
     private stopCounting() {
         if (this.isCountingFaze) {
-            const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-            webScoketService.stopCounting()
+            const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+            webSocketService.stopCounting()
             this.isCountingFaze = false
         }
     }
@@ -114,8 +114,8 @@ export class Main extends Phaser.Scene {
     }
 
     private onBeginDuelClicked(): void {
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.send({ type: MessageTypes.PLAYER_READY })
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.send({ type: MessageTypes.PLAYER_READY })
         this.roundMenu.beginDuelBtn.visible = false
         this.player.play(PlayerAnims.idle)
     }

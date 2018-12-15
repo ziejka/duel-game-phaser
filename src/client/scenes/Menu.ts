@@ -3,7 +3,7 @@ import { MessageTypes } from '../../shared/types/messageTypes'
 import * as TextStyles from '../config/textStyles'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
-import { WebScoketService } from './WebScoketService'
+import { WebSocketService } from './WebSocketService'
 
 export class Menu extends Phaser.Scene {
     private centerX!: number
@@ -24,32 +24,32 @@ export class Menu extends Phaser.Scene {
     }
 
     private onPlayRandomClicked() {
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.send({ type: MessageTypes.NEW_GAME })
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.send({ type: MessageTypes.NEW_GAME })
         this.scene.start(Scenes.Main)
     }
 
-    private onMultClick(): void {
+    private onMultiClick(): void {
         this.mainMenu.visible = false
-        const webScoketService: WebScoketService = this.scene.get(Scenes.WebScoketService) as WebScoketService
-        webScoketService.open()
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.open()
         this.multiMenu.visible = true
     }
 
     private createMultiMenu() {
         const container = this.add.container(0, 0),
-            playWithRanom = createMenuElement(this, 'Find oponent', this.createPosition(-50),
+            playWithRandom = createMenuElement(this, 'Find opponent', this.createPosition(-50),
                 this.onPlayRandomClicked),
             playWithFriend = createMenuElement(this, 'Play with friend', this.createPosition(0))
 
-        container.add([playWithRanom, playWithFriend])
+        container.add([playWithRandom, playWithFriend])
         container.visible = false
         return container
     }
 
     private createMainMenu(): Phaser.GameObjects.Container {
         const container = this.add.container(0, 0),
-            multi = createMenuElement(this, 'Play multi', this.createPosition(-50), this.onMultClick),
+            multi = createMenuElement(this, 'Play multi', this.createPosition(-50), this.onMultiClick),
             single = createMenuElement(this, 'Play single', this.createPosition(25))
 
         container.add([multi, single])
