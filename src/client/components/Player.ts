@@ -50,10 +50,10 @@ export class Player extends Phaser.GameObjects.Sprite {
             frameRate: FRAME_RATE
         })
         this.anims.play(PlayerAnims.idle)
-        this.on('animationcomplete', this.onAnimationCompleate, this)
+        this.on('animationcomplete', this.onAnimationComplete, this)
     }
 
-    private onAnimationCompleate(anim: Phaser.Animations.Animation, frame: any) {
+    private onAnimationComplete(anim: Phaser.Animations.Animation, frame: any) {
         this.scene.events.emit('animationcomplete_' + anim.key, anim, frame)
     }
 }

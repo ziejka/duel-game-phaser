@@ -3,21 +3,21 @@ import { MessageTypes } from '../../shared/types/messageTypes'
 import { CountingStopped, Message } from '../../shared/types/types'
 import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
-import { RoomCallbacks, RoomsCallbacks } from './interfaces'
+import { RoomApi, RoomsRoomApi } from './interfaces'
 
-const ROUND_START_DELEY: number = 3000
+const ROUND_START_DELAY: number = 3000
 
 export class Room {
-    callbacs: RoomCallbacks
+    callbacks: RoomApi
+    players: Player[] = []
     private onPlayerRemoved: () => void
     private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
-    private players: Player[] = []
 
-    constructor(roomsCallbacs: RoomsCallbacks) {
-        this.closeRoomRequest = roomsCallbacs.closeRoomRequest
-        this.onPlayerRemoved = roomsCallbacs.onPlayerRemoved
-        this.callbacs = {
+    constructor(roomsRoomApi: RoomsRoomApi) {
+        this.closeRoomRequest = roomsRoomApi.closeRoomRequest
+        this.onPlayerRemoved = roomsRoomApi.onPlayerRemoved
+        this.callbacks = {
             removePlayerFromRoom: this.removePlayerFromRoom.bind(this),
             onPlayerReady: this.onPlayerReady.bind(this),
             stopCounting: this.stopCounting.bind(this),
@@ -52,7 +52,7 @@ export class Room {
             lostPlayer.result(false, this.round.reward / 2)
         }
         player.result(true, this.round.reward / 2)
-        setTimeout(this.startNewRound.bind(this), ROUND_START_DELEY)
+        setTimeout(this.startNewRound.bind(this), ROUND_START_DELAY)
     }
 
     private stopCounting() {
@@ -69,9 +69,8 @@ export class Room {
     }
 
     private sendToAll(msg: Message) {
-        const message: string = JSON.stringify(msg)
         this.players.forEach(player => {
-            player.sendMsg(message)
+            player.sendMsg(msg)
         })
     }
 

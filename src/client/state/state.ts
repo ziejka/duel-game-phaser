@@ -1,4 +1,5 @@
 export enum RegistryFields {
     StartGameVisible = 'isStartGameVisible',
-    Reward = 'reward'
+    Reward = 'reward',
+    WaitingPlayersList = 'WaitingPlayersList'
 }

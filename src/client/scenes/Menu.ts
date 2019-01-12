@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import * as TextStyles from '../config/textStyles'
+import { RegistryFields } from '../state/state'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
 import { WebSocketService } from './WebSocketService'
@@ -10,6 +11,7 @@ export class Menu extends Phaser.Scene {
     private centerY!: number
     private mainMenu!: Phaser.GameObjects.Container
     private multiMenu!: Phaser.GameObjects.Container
+    private playersList!: Phaser.GameObjects.Container
 
     constructor() {
         super(Scenes.Menu)
@@ -21,12 +23,39 @@ export class Menu extends Phaser.Scene {
         this.centerY = this.sys.canvas.height / 2
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.createMultiMenu()
+        this.playersList = this.createPlayerList()
+        this.setupEvents()
+    }
+
+    private setupEvents() {
+        this.registry.events.on('changedata', this.updateData, this)
+    }
+
+    private updateData(parent: Phaser.Scene, key: string, data: any): void {
+        if (key === RegistryFields.WaitingPlayersList) {
+            this.updatePlayerList(data)
+            this.mainMenu.visible = false
+            this.multiMenu.visible = false
+        }
+    }
+
+    private updatePlayerList(names: string[]) {
+        names.forEach((name, index) => {
+            const pos = new Phaser.Geom.Point(this.centerX, 20 + 20 * index)
+            this.playersList.add(createMenuElement(this, name, pos))
+        })
+        this.playersList.visible = true
     }
 
     private onPlayRandomClicked() {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
         webSocketService.send({ type: MessageTypes.NEW_GAME })
         this.scene.start(Scenes.Main)
+    }
+
+    private onPlayWithFriendClicked() {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.send({ type: MessageTypes.GET_LIST_OF_PLAYERS })
     }
 
     private onMultiClick(): void {
@@ -40,7 +69,8 @@ export class Menu extends Phaser.Scene {
         const container = this.add.container(0, 0),
             playWithRandom = createMenuElement(this, 'Find opponent', this.createPosition(-50),
                 this.onPlayRandomClicked),
-            playWithFriend = createMenuElement(this, 'Play with friend', this.createPosition(0))
+            playWithFriend = createMenuElement(this, 'Play with friend', this.createPosition(0),
+                this.onPlayWithFriendClicked)
 
         container.add([playWithRandom, playWithFriend])
         container.visible = false
@@ -59,5 +89,9 @@ export class Menu extends Phaser.Scene {
 
     private createPosition(yOffset: number): Phaser.Geom.Point {
         return new Phaser.Geom.Point(this.centerX - 70, this.centerY + yOffset)
+    }
+
+    private createPlayerList(): Phaser.GameObjects.Container {
+        return this.add.container(0, 0)
     }
 }

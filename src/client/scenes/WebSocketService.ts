@@ -1,6 +1,9 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message, RoundResultPayload, RoundStartPayload } from '../../shared/types/types'
+import {
+    InitResponse, Message, RoundResultPayload,
+    RoundStartPayload
+} from '../../shared/types/types'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
@@ -56,12 +59,22 @@ export class WebSocketService extends Phaser.Scene {
 
     private createMsgCallbacks(): { [key: string]: any } {
         return {
+            [MessageTypes.INIT_RESPONSE]: this.onInitResponse.bind(this),
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startRound.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
             [MessageTypes.ROUND_LOST]: this.onRoundEnd(false).bind(this),
-            [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this)
+            [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this),
+            [MessageTypes.WAITING_PLAYERS_LIST]: this.onWaitingPlayerListResponse.bind(this)
         }
+    }
+
+    private onInitResponse(initResponse: InitResponse) {
+
+    }
+
+    private onWaitingPlayerListResponse(payload: string[]) {
+        this.registry.set(RegistryFields.WaitingPlayersList, payload)
     }
 
     private onRoundEnd(isRoundWon: boolean) {

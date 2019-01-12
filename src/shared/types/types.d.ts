@@ -7,6 +7,7 @@ export interface Message {
 
 export interface GUID {
     id: string
+    name: string
 }
 
 export interface RoundStartPayload {
@@ -20,3 +21,5 @@ export interface RoundResultPayload {
 export interface CountingStopped {
     reward: number
 }
+
+export type InitResponse = GUID & RoundResultPayload

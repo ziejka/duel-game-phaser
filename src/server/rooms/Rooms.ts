@@ -1,34 +1,42 @@
 import { Player } from '../user'
-import { RoomsCallbacks } from './interfaces'
+import { RoomsPlayerApi, RoomsRoomApi } from './interfaces'
 import { Room } from './Room'
 
 export class Rooms {
+    playerApi: RoomsPlayerApi
     private allRooms: Room[] = []
     private openRooms: Room[] = []
-    private callbacks: RoomsCallbacks
+    private roomApi: RoomsRoomApi
 
     constructor() {
-        this.callbacks = {
+        this.roomApi = {
             closeRoomRequest: this.closeRoomRequest.bind(this),
             onPlayerRemoved: this.onPlayerRemoved.bind(this)
         }
+        this.playerApi = {
+            findRandomRoomRequest: this.findRandomRoomRequest.bind(this),
+            getListOfWaitingPlayers: this.getListOfWaitingPlayers.bind(this)
+        }
+    }
+    private getListOfWaitingPlayers(): Player[] {
+        return this.openRooms.reduce((prev, curr) => prev.concat(curr.players), [])
     }
 
-    findRandomRoomRequest(player: Player): void {
-        const randomroomIndex: number = Math.floor(Math.random() * this.openRooms.length)
-        let room: Room = this.openRooms[randomroomIndex]
+    private findRandomRoomRequest(player: Player): void {
+        const randomRoomIndex: number = Math.floor(Math.random() * this.openRooms.length)
+        let room: Room = this.openRooms[randomRoomIndex]
 
         if (!room) {
             room = this.createRoom()
             this.openRooms.push(room)
         }
         room.addPlayer(player)
-        player.roomCallbacks = room.callbacs
+        player.roomApi = room.callbacks
         this.clearRoms()
     }
 
     private createRoom(): Room {
-        const room: Room = new Room(this.callbacks)
+        const room: Room = new Room(this.roomApi)
         this.allRooms.push(room)
         return room
     }
