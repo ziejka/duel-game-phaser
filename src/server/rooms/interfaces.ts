@@ -7,8 +7,7 @@ export interface RoomsRoomApi {
 }
 
 export interface RoomsPlayerApi {
-    findRandomRoomRequest: (player: Player) => void
-    getListOfWaitingPlayers: () => Player[]
+    findRandomRoomRequest: (player: Player) => string
 }
 
 export interface RoomApi {

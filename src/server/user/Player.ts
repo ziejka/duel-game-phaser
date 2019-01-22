@@ -1,37 +1,32 @@
-import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID, InitResponse, Message, RoundResultPayload } from '../../shared/types/types'
-import { RoomApi, RoomsPlayerApi } from '../rooms/interfaces'
+import { RoomApi } from '../rooms/interfaces'
+import { PlayerListApi } from './PlayerListApi'
 
 export class Player {
     isReady: boolean = false
+    isWaiting: boolean = true
     isInRoom: boolean = false
-    roomApi!: RoomApi
+    room!: RoomApi
     name: string
     private ID: string
     private ws: WebSocket
-    private roomsPlayerApi: RoomsPlayerApi
     private msgCallbacks: { [key: string]: any }
     private wallet: number = 1000
+    private playerList: PlayerListApi
 
-    constructor(
-        ws: WebSocket,
-        removeUser: (user: Player) => void,
-        roomsPlayerApi: RoomsPlayerApi,
-        guid: GUID) {
+    constructor(guid: GUID, ws: WebSocket, playerList: PlayerListApi) {
+        this.ID = guid.id
+        this.playerList = playerList
+        this.name = guid.name
+        this.ws = ws
 
         const onMessage = this.onMessage.bind(this)
         const onConnectionClose = this.onConnectionClose.bind(this)
+        this.msgCallbacks = this.createOnMsgCallbacks()
 
-        this.msgCallbacks = this.createMsgCallbacks()
-
-        this.ID = guid.id || v1()
-        this.name = guid.name
-        this.ws = ws
-        this.roomsPlayerApi = roomsPlayerApi
-
-        this.ws.on('error', removeUser.bind(null, this))
+        this.ws.on('error', playerList.removeUser.bind(playerList, this))
         this.ws.on('message', onMessage)
         this.ws.on('close', onConnectionClose)
         this.sayHi()
@@ -63,7 +58,7 @@ export class Player {
 
     private onConnectionClose() {
         try {
-            this.roomApi.removePlayerFromRoom(this)
+            this.room.removePlayerFromRoom(this)
         } catch { }
     }
 
@@ -87,7 +82,7 @@ export class Player {
         } catch { }
     }
 
-    private createMsgCallbacks(): { [key: string]: any } {
+    private createOnMsgCallbacks(): { [key: string]: any } {
         return {
             [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
@@ -98,7 +93,7 @@ export class Player {
     }
 
     private getListOfPLayer(): void {
-        const playersNames: string[] = this.roomsPlayerApi.getListOfWaitingPlayers().map(p => p.name)
+        const playersNames: string[] = ['a']
         const msg: Message = {
             type: MessageTypes.WAITING_PLAYERS_LIST,
             payload: playersNames
@@ -107,22 +102,22 @@ export class Player {
     }
 
     private aimClicked(): void {
-        this.roomApi.endRound(this)
+        this.room.endRound(this)
     }
 
     private onStopCountingRequest(): void {
-        this.roomApi.stopCounting()
+        this.room.stopCounting()
     }
 
     private onNewGameMsg(): void {
         if (this.isInRoom) { return }
-        this.roomsPlayerApi.findRandomRoomRequest(this)
+        this.playerList.findRandomPlayer(this)
         this.isInRoom = true
     }
 
     private onPlayerReadyMsg(): void {
         if (this.isReady) { return }
         this.isReady = true
-        this.roomApi.onPlayerReady()
+        this.room.onPlayerReady()
     }
 }

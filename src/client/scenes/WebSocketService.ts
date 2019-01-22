@@ -18,7 +18,7 @@ export class WebSocketService extends Phaser.Scene {
     constructor() {
         super(Scenes.WebSocketService)
         this.onMessage = this._onMessage.bind(this)
-        this.msgCallbacks = this.createMsgCallbacks()
+        this.msgCallbacks = this.createOnMsgCallback()
     }
 
     send(msg: Message) {
@@ -57,7 +57,7 @@ export class WebSocketService extends Phaser.Scene {
         } catch { }
     }
 
-    private createMsgCallbacks(): { [key: string]: any } {
+    private createOnMsgCallback(): { [key: string]: any } {
         return {
             [MessageTypes.INIT_RESPONSE]: this.onInitResponse.bind(this),
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),

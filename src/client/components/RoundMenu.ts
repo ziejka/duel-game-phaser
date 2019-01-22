@@ -12,7 +12,7 @@ export class RoundMenu extends Phaser.GameObjects.Container {
     constructor(scene: Main) {
         super(scene)
 
-        const { onMenuClick, onBeginDuelClicked } = scene.callbacks
+        const { onMenuClick, onBeginDuelClicked } = scene
         this.title = scene.add.text(15, 0, "MAIN SCENE", TextStyles.gameText)
 
         let pos = new Phaser.Geom.Point(400, 0)

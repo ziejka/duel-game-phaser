@@ -1,3 +1,4 @@
+import { v1 } from 'uuid'
 import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { CountingStopped, Message } from '../../shared/types/types'
@@ -7,28 +8,21 @@ import { RoomApi, RoomsRoomApi } from './interfaces'
 
 const ROUND_START_DELAY: number = 3000
 
-export class Room {
-    callbacks: RoomApi
+export class Room implements RoomApi {
+    id: string
     players: Player[] = []
-    private onPlayerRemoved: () => void
-    private closeRoomRequest: (room: Room) => void
     private round: Round = new Round()
+    private rooms: RoomsRoomApi
 
-    constructor(roomsRoomApi: RoomsRoomApi) {
-        this.closeRoomRequest = roomsRoomApi.closeRoomRequest
-        this.onPlayerRemoved = roomsRoomApi.onPlayerRemoved
-        this.callbacks = {
-            removePlayerFromRoom: this.removePlayerFromRoom.bind(this),
-            onPlayerReady: this.onPlayerReady.bind(this),
-            stopCounting: this.stopCounting.bind(this),
-            endRound: this.endRound.bind(this)
-        }
+    constructor(rooms: RoomsRoomApi) {
+        this.id = v1()
+        this.rooms = rooms
     }
 
     addPlayer(player: Player) {
         this.players.push(player)
         if (this.players.length === 2) {
-            this.closeRoomRequest(this)
+            this.rooms.closeRoomRequest(this)
             this.requestToStart()
         }
     }
@@ -43,10 +37,10 @@ export class Room {
 
     removePlayerFromRoom(player: Player) {
         this.players = this.players.filter(p => p !== player)
-        this.onPlayerRemoved()
+        this.rooms.onPlayerRemoved()
     }
 
-    private endRound(player: Player) {
+    endRound(player: Player) {
         const lostPlayer = this.players.find(p => p !== player)
         if (lostPlayer) {
             lostPlayer.result(false, this.round.reward / 2)
@@ -55,13 +49,19 @@ export class Room {
         setTimeout(this.startNewRound.bind(this), ROUND_START_DELAY)
     }
 
-    private stopCounting() {
+    stopCounting() {
         const reward = this.round.end(Date.now())
         const payload: CountingStopped = { reward }
         this.sendToAll({
             type: MessageTypes.COUNTING_STOPPED,
             payload
         })
+    }
+
+    onPlayerReady() {
+        if (this.players.every(p => p.isReady)) {
+            this.startNewRound()
+        }
     }
 
     private requestToStart() {
@@ -82,12 +82,6 @@ export class Room {
             type: MessageTypes.START_ROUND,
             payload
         })
-    }
-
-    private onPlayerReady() {
-        if (this.players.every(p => p.isReady)) {
-            this.startNewRound()
-        }
     }
 
 }

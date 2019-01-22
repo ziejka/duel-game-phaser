@@ -18,7 +18,6 @@ interface Callbacks {
 }
 
 export class Main extends Phaser.Scene {
-    callbacks: Callbacks
     player!: Player
     centerX!: number
     centerY!: number
@@ -29,12 +28,6 @@ export class Main extends Phaser.Scene {
 
     constructor() {
         super(Scenes.Main)
-
-        this.callbacks = {
-            onMenuClick: this.onMenuClick,
-            onBeginDuelClicked: this.onBeginDuelClicked,
-            onAimClicked: this.onAimClicked
-        }
     }
 
     create() {
@@ -58,6 +51,22 @@ export class Main extends Phaser.Scene {
         }
     }
 
+    onAimClicked() {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.aimClicked()
+    }
+
+    onBeginDuelClicked(): void {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.send({ type: MessageTypes.PLAYER_READY })
+        this.roundMenu.beginDuelBtn.visible = false
+        this.player.play(PlayerAnims.idle)
+    }
+
+    onMenuClick(): void {
+        this.scene.start(Scenes.Menu)
+    }
+
     private setUpEvents() {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
         webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
@@ -66,11 +75,6 @@ export class Main extends Phaser.Scene {
 
         this.registry.events.on('changedata', this.updateData, this)
         this.input.on('pointerdown', this.stopCounting, this)
-    }
-
-    private onAimClicked() {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.aimClicked()
     }
 
     private stopCounting() {
@@ -111,16 +115,5 @@ export class Main extends Phaser.Scene {
             this.player.anims.play(anim)
             this.wallet.setWallet(walletAmount)
         }
-    }
-
-    private onBeginDuelClicked(): void {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.send({ type: MessageTypes.PLAYER_READY })
-        this.roundMenu.beginDuelBtn.visible = false
-        this.player.play(PlayerAnims.idle)
-    }
-
-    private onMenuClick(): void {
-        this.scene.start(Scenes.Menu)
     }
 }

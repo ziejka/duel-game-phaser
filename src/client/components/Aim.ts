@@ -6,7 +6,7 @@ export class Aim extends Phaser.GameObjects.Sprite {
     constructor(scene: Main) {
         super(scene, 0, 0, Images.Aim)
         this.visible = false
-        this.on('pointerdown', scene.callbacks.onAimClicked, scene)
+        this.on('pointerdown', scene.onAimClicked, scene)
         this.setInteractive()
     }
     hide(): any {
