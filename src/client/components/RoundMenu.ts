@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser'
-import * as TextStyles from '../config/textStyles'
+import { gameText } from '../config/textStyles'
 import { Main } from '../scenes/Main'
 import { createMenuElement } from '../utils/Utils'
 
@@ -13,7 +13,7 @@ export class RoundMenu extends Phaser.GameObjects.Container {
         super(scene)
 
         const { onMenuClick, onBeginDuelClicked } = scene
-        this.title = scene.add.text(15, 0, "MAIN SCENE", TextStyles.gameText)
+        this.title = scene.add.text(15, 0, "MAIN SCENE", gameText)
 
         let pos = new Phaser.Geom.Point(400, 0)
         this.backBtn = createMenuElement(scene, 'BACK TO MENU', pos, onMenuClick)

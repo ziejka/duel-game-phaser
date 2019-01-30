@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import * as TextStyles from '../config/textStyles'
+import { Message } from '../../shared/types/types'
+import { menuText } from '../config/textStyles'
 import { RegistryFields } from '../state/state'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
@@ -18,7 +19,7 @@ export class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(15, 15, "MENU SCENE", TextStyles.menuText)
+        this.add.text(15, 15, "MENU SCENE", menuText)
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.mainMenu = this.createMainMenu()
@@ -42,20 +43,27 @@ export class Menu extends Phaser.Scene {
     private updatePlayerList(names: string[]) {
         names.forEach((name, index) => {
             const pos = new Phaser.Geom.Point(20, 100 + 20 * index)
-            this.playersList.add(createMenuElement(this, name, pos))
+            this.playersList.add(createMenuElement(this, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
         })
         this.playersList.visible = true
     }
 
-    private onPlayRandomClicked() {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.send({ type: MessageTypes.NEW_GAME })
+    private onPlayRandomClicked(): void {
+        this.sendMsg({ type: MessageTypes.NEW_GAME })
         this.scene.start(Scenes.Main)
     }
 
-    private onPlayWithFriendClicked() {
+    private onPlayWithFriendClicked(): void {
+        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
+    }
+
+    private onSelectedPlayerClicked(name: string): void {
+        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS, payload: name })
+    }
+
+    private sendMsg(msg: Message): void {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.send({ type: MessageTypes.GET_LIST_OF_PLAYERS })
+        webSocketService.send(msg)
     }
 
     private onMultiClick(): void {
