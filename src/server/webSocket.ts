@@ -16,7 +16,7 @@ export const createWebSocket = (server: http.Server): WebSocket.Server => {
         const id: string = v1()
         const guid = {
             id,
-            name: "Player" + Math.floor(Math.random() * 100)
+            name: "Player " + Math.floor(Math.random() * 100)
         }
         userList.addUser(ws, guid)
     })

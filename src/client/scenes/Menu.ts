@@ -41,7 +41,7 @@ export class Menu extends Phaser.Scene {
 
     private updatePlayerList(names: string[]) {
         names.forEach((name, index) => {
-            const pos = new Phaser.Geom.Point(this.centerX, 20 + 20 * index)
+            const pos = new Phaser.Geom.Point(20, 100 + 20 * index)
             this.playersList.add(createMenuElement(this, name, pos))
         })
         this.playersList.visible = true

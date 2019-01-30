@@ -34,6 +34,7 @@ export class WebSocketService extends Phaser.Scene {
         this.ws = new WebSocket(SERVER)
         this.ws.onmessage = this.onMessage
         this.registry.set(RegistryFields.StartGameVisible, false)
+        this.registry.set(RegistryFields.WaitingPlayersList, [])
     }
 
     stopCounting() {
@@ -59,7 +60,7 @@ export class WebSocketService extends Phaser.Scene {
 
     private createOnMsgCallback(): { [key: string]: any } {
         return {
-            [MessageTypes.INIT_RESPONSE]: this.onInitResponse.bind(this),
+            [MessageTypes.USER_DATA]: this.onInitResponse.bind(this),
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startRound.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),

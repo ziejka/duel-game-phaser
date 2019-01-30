@@ -5,7 +5,7 @@ import { Player } from './Player'
 import { PlayerListApi } from './PlayerListApi'
 
 export class PlayersList implements PlayerListApi {
-    private userList: Player[] = []
+    private playersList: Player[] = []
     private roomsPlayerApi: RoomsPlayerApi
 
     constructor(roomsPlayerApi: RoomsPlayerApi) {
@@ -14,17 +14,18 @@ export class PlayersList implements PlayerListApi {
 
     addUser(ws: WebSocket, guid: GUID): Player {
         const user = new Player(guid, ws, this)
-        this.userList.push(user)
+        this.playersList.push(user)
         return user
     }
 
     removeUser(user: Player): Player {
-        this.userList = this.userList.filter(u => u !== user)
+        this.playersList = this.playersList.filter(u => u !== user)
         return user
     }
 
-    getAvailablePlayers = (): string[] =>
-        this.userList.reduce((result: string[], { name, isWaiting }) => [...result, ...isWaiting ? [name] : []], [])
+    getAvailablePlayers = (player: Player): string[] =>
+        this.playersList.reduce((result: string[], p) =>
+            [...result, ...p.isWaiting && p !== player ? [p.name] : []], [])
 
     findRandomPlayer = (player: Player) => this.roomsPlayerApi.findRandomRoomRequest(player)
 

@@ -93,7 +93,7 @@ export class Player {
     }
 
     private getListOfPLayer(): void {
-        const playersNames: string[] = ['a']
+        const playersNames: string[] = this.playerList.getAvailablePlayers(this)
         const msg: Message = {
             type: MessageTypes.WAITING_PLAYERS_LIST,
             payload: playersNames
