@@ -20,6 +20,7 @@ const config: GameConfig = {
 const R: number = (config.width as integer) / (config.height as integer)
 const resize = () => {
     const canvas = document.querySelector("canvas")
+    const overlay = document.getElementById("overlay")
     if (!canvas) {
         return
     }
@@ -41,6 +42,11 @@ const resize = () => {
     const transformValue = `translate(-50%, -50%) scale(${scale})`
     canvas.style.transform = transformValue
     canvas.style.webkitTransform = transformValue
+    if (!overlay) {
+        return
+    }
+    overlay.style.transform = transformValue
+    overlay.style.webkitTransform = transformValue
 }
 
 const game = new Phaser.Game(config)

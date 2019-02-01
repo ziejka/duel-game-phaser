@@ -11,3 +11,36 @@ canvas {
     left: 50%;
     transform: translate(-50%, 0%);
 }
+
+#overlay {
+    width: 540px;
+    height: 960px;
+    display: block;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    pointer-events: none;
+}
+
+input {
+    background: transparent;
+    border: 1px solid white;
+    height: 40px;
+    color: #dedede;
+    padding: 10px;
+    font-family: monospace;
+    display: none;
+}
+
+input:focus {
+    outline: none;
+}
+
+#name {
+    position: absolute;
+    width: 400px;
+    top: 20%;
+    left: 12%;
+}
