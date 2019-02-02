@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Message } from '../../shared/types/types'
+import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
 import { menuText } from '../config/textStyles'
 import { RegistryFields } from '../state/state'
 import { createMenuElement } from '../utils/Utils'
@@ -11,7 +12,7 @@ export class Menu extends Phaser.Scene {
     private centerX!: number
     private centerY!: number
     private mainMenu!: Phaser.GameObjects.Container
-    private multiMenu!: Phaser.GameObjects.Container
+    private multiMenu!: MultiPlayerMenu
     private playersList!: Phaser.GameObjects.Container
 
     constructor() {
@@ -23,9 +24,27 @@ export class Menu extends Phaser.Scene {
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.mainMenu = this.createMainMenu()
-        this.multiMenu = this.createMultiMenu()
+        this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
         this.playersList = this.createPlayerList()
         this.setupEvents()
+    }
+
+    createPosition(yOffset: number): Phaser.Geom.Point {
+        return new Phaser.Geom.Point(this.centerX - 100, this.centerY + yOffset)
+    }
+
+    onPlayRandomClicked(): void {
+        this.sendMsg({ type: MessageTypes.NEW_GAME })
+        this.scene.start(Scenes.Main)
+    }
+
+    onPlayWithFriendClicked(): void {
+        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
+    }
+
+    onStartMultiClick(): void {
+        this.multiMenu.showMultiOptions()
+        this.openWebSocket()
     }
 
     private setupEvents() {
@@ -48,15 +67,6 @@ export class Menu extends Phaser.Scene {
         this.playersList.visible = true
     }
 
-    private onPlayRandomClicked(): void {
-        this.sendMsg({ type: MessageTypes.NEW_GAME })
-        this.scene.start(Scenes.Main)
-    }
-
-    private onPlayWithFriendClicked(): void {
-        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
-    }
-
     private onSelectedPlayerClicked(name: string): void {
         this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS, payload: name })
     }
@@ -68,21 +78,12 @@ export class Menu extends Phaser.Scene {
 
     private onMultiClick(): void {
         this.mainMenu.visible = false
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.open()
-        this.multiMenu.visible = true
+        this.multiMenu.showName()
     }
 
-    private createMultiMenu() {
-        const container = this.add.container(0, 0),
-            playWithRandom = createMenuElement(this, 'Find opponent', this.createPosition(-50),
-                this.onPlayRandomClicked),
-            playWithFriend = createMenuElement(this, 'Play with friend', this.createPosition(0),
-                this.onPlayWithFriendClicked)
-
-        container.add([playWithRandom, playWithFriend])
-        container.visible = false
-        return container
+    private openWebSocket(): void {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.open()
     }
 
     private createMainMenu(): Phaser.GameObjects.Container {
@@ -93,10 +94,6 @@ export class Menu extends Phaser.Scene {
         container.add([multi, single])
 
         return container
-    }
-
-    private createPosition(yOffset: number): Phaser.Geom.Point {
-        return new Phaser.Geom.Point(this.centerX - 70, this.centerY + yOffset)
     }
 
     private createPlayerList(): Phaser.GameObjects.Container {
