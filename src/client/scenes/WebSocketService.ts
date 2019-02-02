@@ -26,12 +26,12 @@ export class WebSocketService extends Phaser.Scene {
         this.ws.send(message)
     }
 
-    open() {
+    open(playerName: string) {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             return
         }
         this.close()
-        this.ws = new WebSocket(SERVER)
+        this.ws = new WebSocket(`${SERVER}?name=${playerName}`)
         this.ws.onmessage = this.onMessage
         this.registry.set(RegistryFields.StartGameVisible, false)
         this.registry.set(RegistryFields.WaitingPlayersList, [])

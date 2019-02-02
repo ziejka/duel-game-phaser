@@ -44,7 +44,11 @@ export class Menu extends Phaser.Scene {
 
     onStartMultiClick(): void {
         this.multiMenu.showMultiOptions()
-        this.openWebSocket()
+    }
+
+    openWebSocket(playerName: string): void {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.open(playerName)
     }
 
     private setupEvents() {
@@ -79,11 +83,6 @@ export class Menu extends Phaser.Scene {
     private onMultiClick(): void {
         this.mainMenu.visible = false
         this.multiMenu.showName()
-    }
-
-    private openWebSocket(): void {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.open()
     }
 
     private createMainMenu(): Phaser.GameObjects.Container {

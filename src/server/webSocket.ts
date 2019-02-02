@@ -1,4 +1,5 @@
 import * as http from 'http'
+import * as url from 'url'
 import { v1 } from 'uuid'
 import * as WebSocket from 'ws'
 import { GUID } from '../shared/types/types'
@@ -12,11 +13,12 @@ export const createWebSocket = (server: http.Server): WebSocket.Server => {
     const wss = new WebSocket.Server({ server })
 
     wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-        // const guid: GUID = req.url ? url.parse(req.url, true).query
+        const query = url.parse(req.url, true).query
+        const name: string = query.name as string // "Player " + Math.floor(Math.random() * 100)
         const id: string = v1()
         const guid = {
             id,
-            name: "Player " + Math.floor(Math.random() * 100)
+            name
         }
         userList.addUser(ws, guid)
     })

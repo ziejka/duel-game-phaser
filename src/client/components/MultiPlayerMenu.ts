@@ -12,7 +12,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         this.multiMenu = this.createMultiMenu(scene)
         this.add(this.multiMenu)
         this.setVisible(false)
-        this.addHTMLListener()
+        this.addHTMLListener(scene)
     }
 
     createMultiMenu(scene: Menu): Phaser.GameObjects.Container {
@@ -38,13 +38,15 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         this.multiMenu.setVisible(true)
     }
 
-    private addHTMLListener(): void {
+    private addHTMLListener(scene: Menu): void {
         const startBtn: HTMLElement | null = document.getElementById('startBtn')
         if (!startBtn) {
             return
         }
         startBtn.addEventListener('pointerdown', (ev: PointerEvent) => {
-            alert('Hello ' + getNameInputValue())
+            hideNameInput()
+            scene.openWebSocket(getNameInputValue())
+            this.multiMenu.setVisible(true)
         })
 
     }
