@@ -1,13 +1,7 @@
 import { Player } from '../user'
-import { Room } from './Room'
-
-export interface RoomsRoomApi {
-    closeRoomRequest: (room: Room) => void
-    onPlayerRemoved: () => void
-}
 
 export interface RoomsPlayerApi {
-    findRandomRoomRequest: (player: Player) => string
+    connectPlayers: (players: Player[]) => void
 }
 
 export interface RoomApi {

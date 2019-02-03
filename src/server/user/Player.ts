@@ -2,21 +2,20 @@ import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID, InitResponse, Message, RoundResultPayload } from '../../shared/types/types'
 import { RoomApi } from '../rooms/interfaces'
-import { PlayerListApi } from './PlayerListApi'
+import { PlayersList } from './PlayersList'
 
 export class Player {
     isReady: boolean = false
     isWaiting: boolean = true
-    isInRoom: boolean = false
     room!: RoomApi
     name: string
     private ID: string
     private ws: WebSocket
     private msgCallbacks: { [key: string]: any }
     private wallet: number = 1000
-    private playerList: PlayerListApi
+    private playerList: PlayersList
 
-    constructor(guid: GUID, ws: WebSocket, playerList: PlayerListApi) {
+    constructor(guid: GUID, ws: WebSocket, playerList: PlayersList) {
         this.ID = guid.id
         this.playerList = playerList
         this.name = guid.name
@@ -26,7 +25,7 @@ export class Player {
         const onConnectionClose = this.onConnectionClose.bind(this)
         this.msgCallbacks = this.createOnMsgCallbacks()
 
-        this.ws.on('error', playerList.removeUser.bind(playerList, this))
+        this.ws.on('error', playerList.removePlayer.bind(playerList, this))
         this.ws.on('message', onMessage)
         this.ws.on('close', onConnectionClose)
         this.sayHi()
@@ -56,9 +55,23 @@ export class Player {
         this.sendMsg(msg)
     }
 
+    connectToRoom(room: RoomApi) {
+        this.room = room
+        this.isWaiting = false
+    }
+
+    sendListOfPLayers(): void {
+        const playersNames: string[] = this.playerList.getAvailablePlayers(this)
+        const msg: Message = {
+            type: MessageTypes.WAITING_PLAYERS_LIST,
+            payload: playersNames
+        }
+        this.sendMsg(msg)
+    }
+
     private onConnectionClose() {
         try {
-            this.room.removePlayerFromRoom(this)
+            this.playerList.removePlayer(this)
         } catch { }
     }
 
@@ -84,21 +97,19 @@ export class Player {
 
     private createOnMsgCallbacks(): { [key: string]: any } {
         return {
-            [MessageTypes.NEW_GAME]: this.onNewGameMsg.bind(this),
+            [MessageTypes.NEW_GAME]: this.connectWithPlayer.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
             [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
             [MessageTypes.AIM_CLICKED]: this.aimClicked.bind(this),
-            [MessageTypes.GET_LIST_OF_PLAYERS]: this.getListOfPLayer.bind(this)
+            [MessageTypes.GET_LIST_OF_PLAYERS]: this.sendListOfPLayers.bind(this),
+            [MessageTypes.CONNECT_WITH_PLAYER]: this.connectWithPlayer.bind(this)
         }
     }
 
-    private getListOfPLayer(): void {
-        const playersNames: string[] = this.playerList.getAvailablePlayers(this)
-        const msg: Message = {
-            type: MessageTypes.WAITING_PLAYERS_LIST,
-            payload: playersNames
-        }
-        this.sendMsg(msg)
+    private connectWithPlayer(playerName?: string) {
+        if (!this.isWaiting) { return }
+        this.playerList.sendDuelInvite(this, playerName)
+        // this.playerList.playWithPlayer(this, playerName)
     }
 
     private aimClicked(): void {
@@ -107,12 +118,6 @@ export class Player {
 
     private onStopCountingRequest(): void {
         this.room.stopCounting()
-    }
-
-    private onNewGameMsg(): void {
-        if (this.isInRoom) { return }
-        this.playerList.findRandomPlayer(this)
-        this.isInRoom = true
     }
 
     private onPlayerReadyMsg(): void {

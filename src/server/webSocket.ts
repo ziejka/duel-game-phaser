@@ -13,12 +13,12 @@ export const createWebSocket = (server: http.Server): WebSocket.Server => {
     const wss = new WebSocket.Server({ server })
 
     wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-        const query = url.parse(req.url, true).query
-        const name: string = query.name as string // "Player " + Math.floor(Math.random() * 100)
+        const query = req.url ? url.parse(req.url, true).query : { name: "Player " + Math.floor(Math.random() * 100) }
+        const name: string = query.name as string
         const id: string = v1()
-        const guid = {
+        const guid: GUID = {
             id,
-            name
+            name: `${name}#${id.substring(4, 8)}`
         }
         userList.addUser(ws, guid)
     })

@@ -1,16 +1,22 @@
 import * as Phaser from 'phaser'
+import { MessageTypes } from '../../shared/types/messageTypes'
 import { Menu } from '../scenes/Menu'
+import { Scenes } from '../scenes/scenes'
 import { getNameInputValue, hideNameInput, showNameInput } from '../utils/HTMLUtils'
 import { createMenuElement } from '../utils/Utils'
 
 export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     private multiMenu: Phaser.GameObjects.Container
+    private playersList: Phaser.GameObjects.Container
+    private menu: Menu
 
     constructor(scene: Menu) {
         super(scene)
 
+        this.menu = scene
         this.multiMenu = this.createMultiMenu(scene)
-        this.add(this.multiMenu)
+        this.playersList = new Phaser.GameObjects.Container(scene).setVisible(false)
+        this.add([this.multiMenu, this.playersList])
         this.setVisible(false)
         this.addHTMLListener(scene)
     }
@@ -38,6 +44,26 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         this.multiMenu.setVisible(true)
     }
 
+    showPlayerList() {
+        this.playersList.setVisible(true)
+        this.multiMenu.setVisible(false)
+    }
+
+    updatePlayerList(names: string[]) {
+        this.playersList.removeAll()
+        names.forEach((name, index) => {
+            const pos = new Phaser.Geom.Point(20, 50 + 40 * index)
+            this.playersList.add(
+                createMenuElement(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
+        })
+    }
+
+    createName(name: string): void {
+        this.add(new Phaser.GameObjects.Text(this.scene, 200, 0, name, {
+            fontSize: 20
+        }))
+    }
+
     private addHTMLListener(scene: Menu): void {
         const startBtn: HTMLElement | null = document.getElementById('startBtn')
         if (!startBtn) {
@@ -50,6 +76,10 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             scene.openWebSocket(name)
             this.multiMenu.setVisible(true)
         })
+    }
 
+    private onSelectedPlayerClicked(name: string): void {
+        this.menu.sendMsg({ type: MessageTypes.CONNECT_WITH_PLAYER, payload: name })
+        this.menu.scene.start(Scenes.Main)
     }
 }

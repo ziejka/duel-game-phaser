@@ -50,13 +50,36 @@ input:focus {
     display: none;
 }
 
-button {
-    font-size: 35px;
+button {    
     font-family: monospace;
     color: #dedede;
-    border: 1px solid;
-    background: none;
+    border: none;
+    background: none;    
+    display: block;
+    cursor: pointer;
+}
+
+#startBtn {
+    font-size: 35px;
     padding: 10px 30px;
     margin: 16% auto;
-    display: block;
+}
+
+#duelInvite {
+    width: 80%;
+    padding: 0 5% 5% 5%;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 30% auto;
+    border: 1px;
+    border-style: dashed;
+    display: none;
+}
+
+#duelInvite button{
+    font-size: 1em;
+}
+
+#duelInvite-yes {
+    color: rgb(137, 228, 0);
 }

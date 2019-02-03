@@ -1,4 +1,4 @@
-type Display = 'none' | 'block'
+type Display = 'none' | 'block' | 'flex'
 type PointerEvents = 'all' | 'none'
 
 function setVisible(id: string, display: Display): void {
@@ -17,6 +17,14 @@ function setInputsAvailable(pointerEvents: PointerEvents): void {
     element.style.pointerEvents = pointerEvents
 }
 
+function setCanvasOpacity(opacity: number): void {
+    const element: HTMLElement | null = window.document.querySelector('canvas')
+    if (!element) {
+        return
+    }
+    element.style.opacity = opacity.toString()
+}
+
 export const showNameInput = (): void => {
     setVisible('nameWrapper', 'block')
     setInputsAvailable('all')
@@ -25,6 +33,15 @@ export const showNameInput = (): void => {
 export const hideNameInput = (): void => {
     setVisible('nameWrapper', 'none')
     setInputsAvailable('none')
+}
+
+export const showDuelInvite = (enemyName: string): void => {
+    const element: HTMLElement | null = window.document.getElementById('duelInvite-msg')
+    if (!element) { return }
+    element.innerHTML = `${enemyName.slice(0, -5)} challenge you to a duel`
+    setVisible('duelInvite', 'flex')
+    setInputsAvailable('all')
+    setCanvasOpacity(0.5)
 }
 
 export const getNameInputValue = (): string => {
@@ -40,6 +57,6 @@ export const retrieveNameFromStorage = (): void => {
     if (!element) {
         return
     }
-    const name: string = localStorage.getItem('name') || ''
+    const name: string = localStorage.getItem('name') || "Player " + Math.floor(Math.random() * 10000)
     element.value = name
 }

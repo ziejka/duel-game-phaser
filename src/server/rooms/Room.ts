@@ -1,10 +1,9 @@
-import { v1 } from 'uuid'
 import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { CountingStopped, Message } from '../../shared/types/types'
 import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
-import { RoomApi, RoomsRoomApi } from './interfaces'
+import { RoomApi } from './interfaces'
 
 const ROUND_START_DELAY: number = 3000
 
@@ -12,19 +11,9 @@ export class Room implements RoomApi {
     id: string
     players: Player[] = []
     private round: Round = new Round()
-    private rooms: RoomsRoomApi
-
-    constructor(rooms: RoomsRoomApi) {
-        this.id = v1()
-        this.rooms = rooms
-    }
 
     addPlayer(player: Player) {
         this.players.push(player)
-        if (this.players.length === 2) {
-            this.rooms.closeRoomRequest(this)
-            this.requestToStart()
-        }
     }
 
     isOpen(): boolean {
@@ -37,7 +26,6 @@ export class Room implements RoomApi {
 
     removePlayerFromRoom(player: Player) {
         this.players = this.players.filter(p => p !== player)
-        this.rooms.onPlayerRemoved()
     }
 
     endRound(player: Player) {

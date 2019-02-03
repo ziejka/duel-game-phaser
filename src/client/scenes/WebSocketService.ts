@@ -35,6 +35,8 @@ export class WebSocketService extends Phaser.Scene {
         this.ws.onmessage = this.onMessage
         this.registry.set(RegistryFields.StartGameVisible, false)
         this.registry.set(RegistryFields.WaitingPlayersList, [])
+        this.registry.set(RegistryFields.UserData, {})
+
     }
 
     stopCounting() {
@@ -66,16 +68,21 @@ export class WebSocketService extends Phaser.Scene {
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
             [MessageTypes.ROUND_LOST]: this.onRoundEnd(false).bind(this),
             [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this),
-            [MessageTypes.WAITING_PLAYERS_LIST]: this.onWaitingPlayerListResponse.bind(this)
+            [MessageTypes.WAITING_PLAYERS_LIST]: this.onWaitingPlayerListResponse.bind(this),
+            [MessageTypes.DUEL_REQUEST]: this.duelRequest.bind(this)
         }
     }
 
-    private onInitResponse(initResponse: InitResponse) {
+    private duelRequest(enemyName: string) {
+        this.events.emit(GameEvents.DUEL_REQUEST, enemyName)
+    }
 
+    private onInitResponse(initResponse: InitResponse) {
+        this.registry.set(RegistryFields.UserData, initResponse)
     }
 
     private onWaitingPlayerListResponse(payload: string[]) {
-        this.registry.set(RegistryFields.WaitingPlayersList, payload)
+        this.events.emit(GameEvents.AVAILABLE_PLAYER_RESPONSE, payload)
     }
 
     private onRoundEnd(isRoundWon: boolean) {
