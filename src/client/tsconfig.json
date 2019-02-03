@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "../../dist/client",
-        "baseUrl": "../client"
+        "baseUrl": "."
     },
     "include": [
         "./Game.ts"

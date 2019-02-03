@@ -34,3 +34,12 @@ export const getNameInputValue = (): string => {
     }
     return element.value
 }
+
+export const retrieveNameFromStorage = (): void => {
+    const element: HTMLInputElement | null = window.document.getElementById('name') as HTMLInputElement
+    if (!element) {
+        return
+    }
+    const name: string = localStorage.getItem('name') || ''
+    element.value = name
+}

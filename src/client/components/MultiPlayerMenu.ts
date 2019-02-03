@@ -44,8 +44,10 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             return
         }
         startBtn.addEventListener('pointerdown', (ev: PointerEvent) => {
+            const name = getNameInputValue()
+            localStorage.setItem('name', name)
             hideNameInput()
-            scene.openWebSocket(getNameInputValue())
+            scene.openWebSocket(name)
             this.multiMenu.setVisible(true)
         })
 

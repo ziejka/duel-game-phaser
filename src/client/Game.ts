@@ -3,6 +3,7 @@ import { Main } from './scenes/Main'
 import { Menu } from './scenes/Menu'
 import { Preloader } from './scenes/Preloader'
 import { WebSocketService } from './scenes/WebSocketService'
+import { retrieveNameFromStorage } from './utils/HTMLUtils'
 
 const config: GameConfig = {
     type: Phaser.AUTO,
@@ -52,6 +53,7 @@ const resize = () => {
 const game = new Phaser.Game(config)
 window.addEventListener('resize', resize)
 game.events.once('ready', resize)
+retrieveNameFromStorage()
 
 // DEBUG ONLY
 declare global {
