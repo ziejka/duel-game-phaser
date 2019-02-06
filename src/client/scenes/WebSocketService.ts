@@ -34,9 +34,8 @@ export class WebSocketService extends Phaser.Scene {
         this.ws = new WebSocket(`${SERVER}?name=${playerName}`)
         this.ws.onmessage = this.onMessage
         this.registry.set(RegistryFields.StartGameVisible, false)
-        this.registry.set(RegistryFields.WaitingPlayersList, [])
         this.registry.set(RegistryFields.UserData, {})
-
+        this.registry.set(RegistryFields.EnemyName, '')
     }
 
     stopCounting() {
@@ -74,7 +73,7 @@ export class WebSocketService extends Phaser.Scene {
     }
 
     private duelRequest(enemyName: string) {
-        this.events.emit(GameEvents.DUEL_REQUEST, enemyName)
+        this.registry.set(RegistryFields.EnemyName, enemyName)
     }
 
     private onInitResponse(initResponse: InitResponse) {

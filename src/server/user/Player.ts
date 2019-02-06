@@ -109,7 +109,6 @@ export class Player {
     private connectWithPlayer(playerName?: string) {
         if (!this.isWaiting) { return }
         this.playerList.sendDuelInvite(this, playerName)
-        // this.playerList.playWithPlayer(this, playerName)
     }
 
     private aimClicked(): void {

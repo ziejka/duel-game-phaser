@@ -44,6 +44,14 @@ export const showDuelInvite = (enemyName: string): void => {
     setCanvasOpacity(0.5)
 }
 
+export const hideDuelInvite = (): void => {
+    const element: HTMLElement | null = window.document.getElementById('duelInvite-msg')
+    if (!element) { return }
+    setVisible('duelInvite', 'none')
+    setInputsAvailable('none')
+    setCanvasOpacity(1)
+}
+
 export const getNameInputValue = (): string => {
     const element: HTMLInputElement | null = window.document.getElementById('name') as HTMLInputElement
     if (!element) {

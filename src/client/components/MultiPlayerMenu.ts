@@ -2,7 +2,7 @@ import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Menu } from '../scenes/Menu'
 import { Scenes } from '../scenes/scenes'
-import { getNameInputValue, hideNameInput, showNameInput } from '../utils/HTMLUtils'
+import { getNameInputValue, hideDuelInvite, hideNameInput, showNameInput } from '../utils/HTMLUtils'
 import { createMenuElement } from '../utils/Utils'
 
 export class MultiPlayerMenu extends Phaser.GameObjects.Container {
@@ -66,7 +66,9 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
 
     private addHTMLListener(scene: Menu): void {
         const startBtn: HTMLElement | null = document.getElementById('startBtn')
-        if (!startBtn) {
+        const acceptDuelInvite: HTMLElement | null = document.getElementById('duelInvite-yes')
+        const rejectDuelInvite: HTMLElement | null = document.getElementById('duelInvite-no')
+        if (!startBtn || !acceptDuelInvite || !rejectDuelInvite) {
             return
         }
         startBtn.addEventListener('pointerdown', (ev: PointerEvent) => {
@@ -75,6 +77,13 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             hideNameInput()
             scene.openWebSocket(name)
             this.multiMenu.setVisible(true)
+        })
+        acceptDuelInvite.addEventListener('pointerdown', (ev: PointerEvent) => {
+            scene.duelAccepted()
+            hideDuelInvite()
+        })
+        rejectDuelInvite.addEventListener('pointerdown', (ev: PointerEvent) => {
+            hideDuelInvite()
         })
     }
 

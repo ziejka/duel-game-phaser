@@ -57,15 +57,14 @@ export class Menu extends Phaser.Scene {
         webSocketService.send(msg)
     }
 
+    duelAccepted(): void {
+        const enemyName: string = this.registry.get(RegistryFields.EnemyName)
+    }
+
     private setupEvents() {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
         this.registry.events.on('changedata', this.updateData, this)
         webSocketService.events.on(GameEvents.AVAILABLE_PLAYER_RESPONSE, this.onAvailablePlayersResponse, this)
-        webSocketService.events.on(GameEvents.DUEL_REQUEST, this.onDuelRequest, this)
-    }
-
-    private onDuelRequest(enemyName: string): void {
-        showDuelInvite(enemyName)
     }
 
     private onAvailablePlayersResponse(playerList: string[]) {
@@ -76,6 +75,10 @@ export class Menu extends Phaser.Scene {
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
         if (key === RegistryFields.UserData) {
             this.multiMenu.createName(data.name)
+            return
+        }
+        if (key === RegistryFields.EnemyName) {
+            showDuelInvite(data)
         }
     }
 
