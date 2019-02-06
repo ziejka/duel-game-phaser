@@ -3,12 +3,10 @@ import { MessageTypes } from '../../shared/types/messageTypes'
 import { CountingStopped, Message } from '../../shared/types/types'
 import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
-import { RoomApi } from './interfaces'
 
 const ROUND_START_DELAY: number = 3000
 
-export class Room implements RoomApi {
-    id: string
+export class Room {
     players: Player[] = []
     private round: Round = new Round()
 
@@ -52,7 +50,7 @@ export class Room implements RoomApi {
         }
     }
 
-    private requestToStart() {
+    requestToStart() {
         this.sendToAll({ type: MessageTypes.START_REQUEST })
     }
 

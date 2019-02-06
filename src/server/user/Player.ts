@@ -1,13 +1,13 @@
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID, InitResponse, Message, RoundResultPayload } from '../../shared/types/types'
-import { RoomApi } from '../rooms/interfaces'
+import { Room } from '../rooms/Room'
 import { PlayersList } from './PlayersList'
 
 export class Player {
     isReady: boolean = false
     isWaiting: boolean = true
-    room!: RoomApi
+    room!: Room
     name: string
     private ID: string
     private ws: WebSocket
@@ -55,7 +55,7 @@ export class Player {
         this.sendMsg(msg)
     }
 
-    connectToRoom(room: RoomApi) {
+    connectToRoom(room: Room) {
         this.room = room
         this.isWaiting = false
     }
@@ -102,12 +102,20 @@ export class Player {
             [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
             [MessageTypes.AIM_CLICKED]: this.aimClicked.bind(this),
             [MessageTypes.GET_LIST_OF_PLAYERS]: this.sendListOfPLayers.bind(this),
-            [MessageTypes.CONNECT_WITH_PLAYER]: this.connectWithPlayer.bind(this)
+            [MessageTypes.CONNECT_WITH_PLAYER]: this.connectWithPlayer.bind(this),
+            [MessageTypes.DUEL_ACCEPTED]: this.duelInviteResponse.bind(this, true),
+            [MessageTypes.DUEL_REJECTED]: this.duelInviteResponse.bind(this, false)
+        }
+    }
+
+    private duelInviteResponse(isAccepted: boolean): void {
+        if (isAccepted) {
+            this.room.requestToStart()
         }
     }
 
     private connectWithPlayer(playerName?: string) {
-        if (!this.isWaiting) { return }
+        if (!this.isWaiting || !playerName) { return }
         this.playerList.sendDuelInvite(this, playerName)
     }
 

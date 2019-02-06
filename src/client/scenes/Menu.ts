@@ -58,13 +58,28 @@ export class Menu extends Phaser.Scene {
     }
 
     duelAccepted(): void {
-        const enemyName: string = this.registry.get(RegistryFields.EnemyName)
+        const msg: Message = {
+            type: MessageTypes.DUEL_ACCEPTED
+        }
+        this.sendMsg(msg)
+    }
+
+    duelRejected(): void {
+        const msg: Message = {
+            type: MessageTypes.DUEL_REJECTED
+        }
+        this.sendMsg(msg)
     }
 
     private setupEvents() {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
         this.registry.events.on('changedata', this.updateData, this)
         webSocketService.events.on(GameEvents.AVAILABLE_PLAYER_RESPONSE, this.onAvailablePlayersResponse, this)
+        webSocketService.events.on(GameEvents.DUEL_ACCEPTED, this.onDuelAccepted, this)
+    }
+
+    private onDuelAccepted(): void {
+        this.scene.start(Scenes.Main)
     }
 
     private onAvailablePlayersResponse(playerList: string[]) {

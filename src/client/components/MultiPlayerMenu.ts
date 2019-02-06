@@ -83,12 +83,12 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             hideDuelInvite()
         })
         rejectDuelInvite.addEventListener('pointerdown', (ev: PointerEvent) => {
+            scene.duelRejected()
             hideDuelInvite()
         })
     }
 
     private onSelectedPlayerClicked(name: string): void {
         this.menu.sendMsg({ type: MessageTypes.CONNECT_WITH_PLAYER, payload: name })
-        this.menu.scene.start(Scenes.Main)
     }
 }

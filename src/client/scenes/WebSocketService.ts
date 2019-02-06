@@ -102,6 +102,7 @@ export class WebSocketService extends Phaser.Scene {
 
     private onStartRequestMsg() {
         this.registry.set(RegistryFields.StartGameVisible, true)
+        this.events.emit(GameEvents.DUEL_ACCEPTED)
     }
 
     private close() {

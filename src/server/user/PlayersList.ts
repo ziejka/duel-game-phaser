@@ -1,14 +1,14 @@
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID } from '../../shared/types/types'
-import { RoomsPlayerApi } from '../rooms/interfaces'
+import { Rooms } from '../rooms/Rooms'
 import { Player } from './Player'
 
 export class PlayersList {
     private playersList: Player[] = []
-    private roomsPlayerApi: RoomsPlayerApi
+    private roomsPlayerApi: Rooms
 
-    constructor(roomsPlayerApi: RoomsPlayerApi) {
+    constructor(roomsPlayerApi: Rooms) {
         this.roomsPlayerApi = roomsPlayerApi
     }
 
