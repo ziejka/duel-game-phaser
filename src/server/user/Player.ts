@@ -111,7 +111,10 @@ export class Player {
     private duelInviteResponse(isAccepted: boolean): void {
         if (isAccepted) {
             this.room.requestToStart()
+            return
         }
+        this.room.duelReject()
+        this.playerList.notifyPlayerListUpdate()
     }
 
     private connectWithPlayer(playerName?: string) {

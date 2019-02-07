@@ -31,10 +31,11 @@ export class PlayersList {
 
     sendDuelInvite(player: Player, enemyName: string): void {
         const enemy = this.playersList.find(p => p.name === enemyName)
-        if (!enemy) { return }
+        if (!enemy || !enemy.isWaiting) { return }
 
         enemy.sendMsg({ type: MessageTypes.DUEL_REQUEST, payload: player.name })
         this.roomsPlayerApi.connectPlayers([player, enemy])
+        this.notifyPlayerListUpdate()
     }
 
     playWithPlayer(player: Player, enemyName?: string): void {
@@ -52,7 +53,7 @@ export class PlayersList {
         this.roomsPlayerApi.connectPlayers([player, enemy])
     }
 
-    private notifyPlayerListUpdate(): void {
+    notifyPlayerListUpdate(): void {
         this.playersList.filter(p => p.isWaiting).forEach(p => {
             p.sendListOfPLayers()
         })

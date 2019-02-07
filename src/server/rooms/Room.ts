@@ -54,6 +54,18 @@ export class Room {
         this.sendToAll({ type: MessageTypes.START_REQUEST })
     }
 
+    duelReject() {
+        this.sendToAll({ type: MessageTypes.DUEL_OVER })
+        this.clearRoom()
+    }
+
+    private clearRoom() {
+        this.players.forEach(p => {
+            p.room = null
+            p.isWaiting = true
+        })
+    }
+
     private sendToAll(msg: Message) {
         this.players.forEach(player => {
             player.sendMsg(msg)
