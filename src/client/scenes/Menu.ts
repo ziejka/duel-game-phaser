@@ -5,7 +5,7 @@ import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
 import { menuText } from '../config/textStyles'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
-import { showDuelInvite } from '../utils/HTMLUtils'
+import { hideDuelInvite, hideWaiting, showDuelInvite } from '../utils/HTMLUtils'
 import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
 import { WebSocketService } from './WebSocketService'
@@ -76,9 +76,16 @@ export class Menu extends Phaser.Scene {
         this.registry.events.on('changedata', this.updateData, this)
         webSocketService.events.on(GameEvents.AVAILABLE_PLAYER_RESPONSE, this.onAvailablePlayersResponse, this)
         webSocketService.events.on(GameEvents.DUEL_ACCEPTED, this.onDuelAccepted, this)
+        webSocketService.events.on(GameEvents.DUEL_OVER, this.onDuelOver, this)
+    }
+
+    private onDuelOver(): void {
+        hideWaiting()
+        hideDuelInvite()
     }
 
     private onDuelAccepted(): void {
+        hideWaiting()
         this.scene.start(Scenes.Main)
     }
 

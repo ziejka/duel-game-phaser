@@ -1,8 +1,7 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Menu } from '../scenes/Menu'
-import { Scenes } from '../scenes/scenes'
-import { getNameInputValue, hideDuelInvite, hideNameInput, showNameInput } from '../utils/HTMLUtils'
+import * as HTMLUtils from '../utils/HTMLUtils'
 import { createMenuElement } from '../utils/Utils'
 
 export class MultiPlayerMenu extends Phaser.GameObjects.Container {
@@ -36,11 +35,11 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
 
     showName(): void {
         this.setVisible(true)
-        showNameInput()
+        HTMLUtils.showNameInput()
     }
 
     showMultiOptions() {
-        hideNameInput()
+        HTMLUtils.hideNameInput()
         this.multiMenu.setVisible(true)
     }
 
@@ -71,24 +70,29 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         if (!startBtn || !acceptDuelInvite || !rejectDuelInvite) {
             return
         }
-        startBtn.addEventListener('pointerdown', (ev: PointerEvent) => {
-            const name = getNameInputValue()
+        startBtn.onpointerdown = () => {
+            const name = HTMLUtils.getNameInputValue()
             localStorage.setItem('name', name)
-            hideNameInput()
+            HTMLUtils.hideNameInput()
             scene.openWebSocket(name)
             this.multiMenu.setVisible(true)
-        })
-        acceptDuelInvite.addEventListener('pointerdown', (ev: PointerEvent) => {
+        }
+        acceptDuelInvite.onpointerdown = () => {
             scene.duelAccepted()
-            hideDuelInvite()
-        })
-        rejectDuelInvite.addEventListener('pointerdown', (ev: PointerEvent) => {
+            HTMLUtils.hideDuelInvite()
+        }
+        rejectDuelInvite.onpointerdown = () => {
             scene.duelRejected()
-            hideDuelInvite()
-        })
+            HTMLUtils.hideDuelInvite()
+        }
     }
 
     private onSelectedPlayerClicked(name: string): void {
+        const menu = this.menu
         this.menu.sendMsg({ type: MessageTypes.CONNECT_WITH_PLAYER, payload: name })
+        HTMLUtils.showWaiting(() => {
+            HTMLUtils.hideWaiting()
+            menu.duelRejected()
+        })
     }
 }

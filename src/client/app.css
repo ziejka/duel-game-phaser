@@ -65,7 +65,7 @@ button {
     margin: 16% auto;
 }
 
-#duelInvite {
+.wrapper {
     width: 80%;
     padding: 0 5% 5% 5%;
     flex-wrap: wrap;
@@ -82,4 +82,29 @@ button {
 
 #duelInvite-yes {
     color: rgb(137, 228, 0);
+}
+
+#waiting p {
+    text-align: center;
+    width: 100%;
+}
+
+#waiting-cancel {
+    font-size: 1em;
+}
+
+.dot {
+    animation: dotAnim 1.5s ease infinite ;
+}
+.dot:nth-child(2){
+    animation-delay: .3s;
+}
+.dot:nth-child(3){
+    animation-delay: .6s;
+}
+
+@keyframes dotAnim {
+	0% {opacity: 1;}
+    50% {opacity: .2;}
+    100% {opacity: 1;}
 }
