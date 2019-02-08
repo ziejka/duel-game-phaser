@@ -70,18 +70,18 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         if (!startBtn || !acceptDuelInvite || !rejectDuelInvite) {
             return
         }
-        startBtn.onpointerdown = () => {
+        startBtn.onmousedown = () => {
             const name = HTMLUtils.getNameInputValue()
             localStorage.setItem('name', name)
             HTMLUtils.hideNameInput()
             scene.openWebSocket(name)
             this.multiMenu.setVisible(true)
         }
-        acceptDuelInvite.onpointerdown = () => {
+        acceptDuelInvite.onmousedown = () => {
             scene.duelAccepted()
             HTMLUtils.hideDuelInvite()
         }
-        rejectDuelInvite.onpointerdown = () => {
+        rejectDuelInvite.onmousedown = () => {
             scene.duelRejected()
             HTMLUtils.hideDuelInvite()
         }

@@ -53,7 +53,7 @@ export const showWaiting = (cancelCallback: () => void): void => {
     if (!element) {
         return
     }
-    element.onpointerdown = cancelCallback
+    element.onmousedown = cancelCallback
 }
 
 export const getNameInputValue = (): string => {
