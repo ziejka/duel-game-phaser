@@ -97,7 +97,7 @@ export class Player {
 
     private createOnMsgCallbacks(): { [key: string]: any } {
         return {
-            [MessageTypes.NEW_GAME]: this.connectWithPlayer.bind(this),
+            [MessageTypes.FIND_RANDOM_ENEMY]: this.connectWithPlayer.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
             [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
             [MessageTypes.AIM_CLICKED]: this.aimClicked.bind(this),
@@ -117,9 +117,26 @@ export class Player {
         this.playerList.notifyPlayerListUpdate()
     }
 
-    private connectWithPlayer(playerName?: string) {
-        if (!this.isWaiting || !playerName) { return }
-        this.playerList.sendDuelInvite(this, playerName)
+    private connectWithPlayer(playerName?: string): void {
+        let enemyName: string = playerName
+        if (!this.isWaiting) { return }
+        if (!enemyName) {
+            enemyName = this.getRandomPlayer()
+            if (enemyName === '') {
+                this.sendMsg({ type: MessageTypes.NO_PLAYERS })
+                return
+            }
+        }
+        this.playerList.sendDuelInvite(this, enemyName)
+    }
+
+    private getRandomPlayer(): string {
+        const availablePlayers: string[] = this.playerList.getAvailablePlayers(this)
+        const listLength = availablePlayers.length
+        if (listLength > 0) {
+            return availablePlayers[Math.floor(Math.random() * listLength)]
+        }
+        return ''
     }
 
     private aimClicked(): void {

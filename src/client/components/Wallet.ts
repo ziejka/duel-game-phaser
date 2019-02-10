@@ -48,7 +48,7 @@ export class Wallet extends Phaser.GameObjects.Container {
     }
 
     increaseReward() {
-        const rewardAmount = Math.floor((Date.now() - this.countingStartTime) / 8)
+        const rewardAmount = Math.floor((Date.now() - this.countingStartTime) / 2)
         this.reward = rewardAmount
         this.amount = this.roundStartAmount - (rewardAmount / 2)
         this.updateWallet()
@@ -67,11 +67,11 @@ export class Wallet extends Phaser.GameObjects.Container {
         const enemyWidth = Math.floor((enemyWallet * maxWidth) / (START_AMOUNT * 2))
         this.barsGraphic.clear()
         this.barsGraphic.fillStyle(0x000000)
-        this.barsGraphic.fillRect(10, 38, maxWidth, 9)
-        this.barsGraphic.fillRect(320, 38, maxWidth, 9)
+        this.barsGraphic.fillRect(10, 28, maxWidth, 14)
+        this.barsGraphic.fillRect(320, 28, maxWidth, 14)
         this.barsGraphic.fillStyle(0xFFFFFF)
-        this.barsGraphic.fillRect(12, 40, playerWidth, 5)
-        this.barsGraphic.fillRect(322, 40, enemyWidth, 5)
+        this.barsGraphic.fillRect(12, 30, playerWidth, 10)
+        this.barsGraphic.fillRect(322, 30, enemyWidth, 10)
     }
 
     private createScore(scene: Main): Phaser.GameObjects.Text {

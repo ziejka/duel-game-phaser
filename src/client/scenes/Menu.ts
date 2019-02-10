@@ -34,7 +34,7 @@ export class Menu extends Phaser.Scene {
     }
 
     onPlayRandomClicked(): void {
-        this.sendMsg({ type: MessageTypes.NEW_GAME })
+        this.sendMsg({ type: MessageTypes.FIND_RANDOM_ENEMY })
         this.scene.start(Scenes.Main)
     }
 

@@ -9,7 +9,7 @@ export class Round {
     }
 
     end(endTime: number): number {
-        this.reward = Math.floor((endTime - this.startTime) / 8)
+        this.reward = Math.floor((endTime - this.startTime) / 2)
         return this.reward
     }
 

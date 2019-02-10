@@ -11,12 +11,6 @@ import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
 import { WebSocketService } from './WebSocketService'
 
-interface Callbacks {
-    onMenuClick: () => void
-    onBeginDuelClicked: () => void
-    onAimClicked: () => void
-}
-
 export class Main extends Phaser.Scene {
     player!: Player
     centerX!: number

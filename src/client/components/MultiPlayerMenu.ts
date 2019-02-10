@@ -23,10 +23,10 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     createMultiMenu(scene: Menu): Phaser.GameObjects.Container {
         const container = new Phaser.GameObjects.Container(scene)
 
-        const playWithRandom = createMenuElement(scene, 'Find opponent', scene.createPosition(-50),
-            scene.onPlayRandomClicked)
-        const playWithFriend = createMenuElement(scene, 'Play with friend', scene.createPosition(0),
+        const playWithFriend = createMenuElement(scene, 'Play with friend', scene.createPosition(-50),
             scene.onPlayWithFriendClicked)
+        const playWithRandom = createMenuElement(scene, 'Find opponent', scene.createPosition(20),
+            scene.onPlayRandomClicked)
 
         container.add([playWithRandom, playWithFriend])
         container.setVisible(false)
@@ -51,7 +51,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     updatePlayerList(names: string[]) {
         this.playersList.removeAll()
         names.forEach((name, index) => {
-            const pos = new Phaser.Geom.Point(20, 50 + 40 * index)
+            const pos = new Phaser.Geom.Point(20, 50 + 60 * index)
             this.playersList.add(
                 createMenuElement(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
         })

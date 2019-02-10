@@ -25,9 +25,8 @@ export class PlayersList {
         return player
     }
 
-    getAvailablePlayers = (player: Player): string[] =>
-        this.playersList.reduce((result: string[], p) =>
-            [...result, ...p.isWaiting && p !== player ? [p.name] : []], [])
+    getAvailablePlayers = (player: Player): string[] => this.playersList.reduce((result: string[], p) =>
+        [...result, ...p.isWaiting && p !== player ? [p.name] : []], [])
 
     sendDuelInvite(player: Player, enemyName: string): void {
         const enemy = this.playersList.find(p => p.name === enemyName)
