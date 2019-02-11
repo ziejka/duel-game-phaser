@@ -5,47 +5,26 @@ import * as HTMLUtils from '../utils/HTMLUtils'
 import { createMenuElement } from '../utils/Utils'
 
 export class MultiPlayerMenu extends Phaser.GameObjects.Container {
-    private multiMenu: Phaser.GameObjects.Container
     private playersList: Phaser.GameObjects.Container
     private menu: Menu
+    private randomEnemyBtn: Phaser.GameObjects.Text
 
     constructor(scene: Menu) {
         super(scene)
 
+        this.randomEnemyBtn = createMenuElement(scene, '[ RANDOM ]', new Phaser.Geom.Point(350, 20),
+            this.onPlayRandomClicked, this).setVisible(false)
+
         this.menu = scene
-        this.multiMenu = this.createMultiMenu(scene)
-        this.playersList = new Phaser.GameObjects.Container(scene).setVisible(false)
-        this.add([this.multiMenu, this.playersList])
+        this.playersList = new Phaser.GameObjects.Container(scene)
         this.setVisible(false)
         this.addHTMLListener(scene)
+        this.add([this.randomEnemyBtn, this.playersList])
     }
 
-    createMultiMenu(scene: Menu): Phaser.GameObjects.Container {
-        const container = new Phaser.GameObjects.Container(scene)
-
-        const playWithFriend = createMenuElement(scene, 'Play with friend', scene.createPosition(-50),
-            scene.onPlayWithFriendClicked)
-        const playWithRandom = createMenuElement(scene, 'Find opponent', scene.createPosition(20),
-            scene.onPlayRandomClicked)
-
-        container.add([playWithRandom, playWithFriend])
-        container.setVisible(false)
-        return container
-    }
-
-    showName(): void {
+    show(): void {
         this.setVisible(true)
         HTMLUtils.showNameInput()
-    }
-
-    showMultiOptions() {
-        HTMLUtils.hideNameInput()
-        this.multiMenu.setVisible(true)
-    }
-
-    showPlayerList() {
-        this.playersList.setVisible(true)
-        this.multiMenu.setVisible(false)
     }
 
     updatePlayerList(names: string[]) {
@@ -55,6 +34,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             this.playersList.add(
                 createMenuElement(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
         })
+        this.randomEnemyBtn.visible = names.length > 0
     }
 
     createName(name: string): void {
@@ -75,7 +55,6 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             localStorage.setItem('name', name)
             HTMLUtils.hideNameInput()
             scene.openWebSocket(name)
-            this.multiMenu.setVisible(true)
         }
         acceptDuelInvite.onmousedown = () => {
             scene.duelAccepted()
@@ -94,5 +73,12 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
             HTMLUtils.hideWaiting()
             menu.duelRejected()
         })
+    }
+
+    private onPlayRandomClicked() {
+        const players = this.playersList.list
+        if (players.length < 1) { return }
+        const enemy = players[Math.floor(Math.random() * players.length)] as Phaser.GameObjects.Text
+        this.onSelectedPlayerClicked(enemy.text)
     }
 }

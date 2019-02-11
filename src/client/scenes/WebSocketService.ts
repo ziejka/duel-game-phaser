@@ -33,6 +33,7 @@ export class WebSocketService extends Phaser.Scene {
         this.close()
         this.ws = new WebSocket(`${SERVER}?name=${playerName}`)
         this.ws.onmessage = this.onMessage
+        this.ws.onopen = this.onOpen.bind(this)
         this.registry.set(RegistryFields.StartGameVisible, false)
         this.registry.set(RegistryFields.UserData, {})
         this.registry.set(RegistryFields.EnemyName, '')
@@ -52,6 +53,10 @@ export class WebSocketService extends Phaser.Scene {
         this.send(msg)
     }
 
+    private onOpen() {
+        this.events.emit(GameEvents.CONNECTED)
+    }
+
     private _onMessage(msg: any): void {
         const message: Message = JSON.parse(msg.data)
         try {
@@ -61,7 +66,7 @@ export class WebSocketService extends Phaser.Scene {
 
     private createOnMsgCallback(): { [key: string]: any } {
         return {
-            [MessageTypes.USER_DATA]: this.onInitResponse.bind(this),
+            [MessageTypes.INIT_RESPONSE]: this.onInitResponse.bind(this),
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
             [MessageTypes.START_ROUND]: this.startRound.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),

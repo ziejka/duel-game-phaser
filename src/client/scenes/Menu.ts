@@ -33,20 +33,6 @@ export class Menu extends Phaser.Scene {
         return new Phaser.Geom.Point(this.centerX - 100, this.centerY + yOffset)
     }
 
-    onPlayRandomClicked(): void {
-        this.sendMsg({ type: MessageTypes.FIND_RANDOM_ENEMY })
-        this.scene.start(Scenes.Main)
-    }
-
-    onPlayWithFriendClicked(): void {
-        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
-        this.multiMenu.showPlayerList()
-    }
-
-    onStartMultiClick(): void {
-        this.multiMenu.showMultiOptions()
-    }
-
     openWebSocket(playerName: string): void {
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
         webSocketService.open(playerName)
@@ -77,6 +63,12 @@ export class Menu extends Phaser.Scene {
         webSocketService.events.on(GameEvents.AVAILABLE_PLAYER_RESPONSE, this.onAvailablePlayersResponse, this)
         webSocketService.events.on(GameEvents.DUEL_ACCEPTED, this.onDuelAccepted, this)
         webSocketService.events.on(GameEvents.DUEL_OVER, this.onDuelOver, this)
+        webSocketService.events.on(GameEvents.DUEL_OVER, this.onDuelOver, this)
+        webSocketService.events.on(GameEvents.CONNECTED, this.onConnected, this)
+    }
+
+    private onConnected() {
+        this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
     }
 
     private onDuelOver(): void {
@@ -106,7 +98,7 @@ export class Menu extends Phaser.Scene {
 
     private onMultiClick(): void {
         this.mainMenu.visible = false
-        this.multiMenu.showName()
+        this.multiMenu.show()
     }
 
     private createMainMenu(): Phaser.GameObjects.Container {

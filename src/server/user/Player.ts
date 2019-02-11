@@ -82,7 +82,7 @@ export class Player {
             wallet: this.wallet
         }
         const msg: Message = {
-            type: MessageTypes.USER_DATA,
+            type: MessageTypes.INIT_RESPONSE,
             payload
         }
         this.sendMsg(msg)
@@ -97,7 +97,6 @@ export class Player {
 
     private createOnMsgCallbacks(): { [key: string]: any } {
         return {
-            [MessageTypes.FIND_RANDOM_ENEMY]: this.connectWithPlayer.bind(this),
             [MessageTypes.PLAYER_READY]: this.onPlayerReadyMsg.bind(this),
             [MessageTypes.STOP_COUNTING]: this.onStopCountingRequest.bind(this),
             [MessageTypes.AIM_CLICKED]: this.aimClicked.bind(this),
@@ -118,7 +117,7 @@ export class Player {
     }
 
     private connectWithPlayer(playerName?: string): void {
-        let enemyName: string = playerName
+        let enemyName = playerName
         if (!this.isWaiting) { return }
         if (!enemyName) {
             enemyName = this.getRandomPlayer()

@@ -74,6 +74,7 @@ button {
     border: 1px;
     border-style: dashed;
     display: none;
+    background: black;
 }
 
 #duelInvite button{
