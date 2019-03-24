@@ -32,6 +32,10 @@ export class Room {
             lostPlayer.result(false, this.round.reward / 2)
         }
         player.result(true, this.round.reward / 2)
+        if (this.round.duelFinished) {
+            setTimeout(this.endDuel.bind(this), ROUND_START_DELAY)
+            return
+        }
         setTimeout(this.startNewRound.bind(this), ROUND_START_DELAY)
     }
 
@@ -55,8 +59,12 @@ export class Room {
     }
 
     duelReject() {
-        this.sendToAll({ type: MessageTypes.DUEL_OVER })
+        this.sendToAll({ type: MessageTypes.DUEL_REJECT })
         this.clearRoom()
+    }
+
+    private endDuel() {
+        this.sendToAll({ type: MessageTypes.DUEL_FINISHED })
     }
 
     private clearRoom() {

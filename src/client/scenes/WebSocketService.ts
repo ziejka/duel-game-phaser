@@ -74,12 +74,17 @@ export class WebSocketService extends Phaser.Scene {
             [MessageTypes.ROUND_WON]: this.onRoundEnd(true).bind(this),
             [MessageTypes.WAITING_PLAYERS_LIST]: this.onWaitingPlayerListResponse.bind(this),
             [MessageTypes.DUEL_REQUEST]: this.duelRequest.bind(this),
-            [MessageTypes.DUEL_OVER]: this.duelOver.bind(this)
+            [MessageTypes.DUEL_REJECT]: this.onDuelReject.bind(this),
+            [MessageTypes.DUEL_FINISHED]: this.onDuelFinished.bind(this)
         }
     }
 
-    private duelOver() {
-        this.events.emit(GameEvents.DUEL_OVER)
+    private onDuelFinished() {
+        this.events.emit(GameEvents.DUEL_FINISHED)
+    }
+
+    private onDuelReject() {
+        this.events.emit(GameEvents.DUEL_REJECTED)
     }
 
     private duelRequest(enemyName: string) {

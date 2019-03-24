@@ -69,6 +69,6 @@ export const retrieveNameFromStorage = (): void => {
     if (!element) {
         return
     }
-    const name: string = localStorage.getItem('name') || "Player " + Math.floor(Math.random() * 10000)
+    const name: string = localStorage.getItem('name') || "Player"
     element.value = name
 }

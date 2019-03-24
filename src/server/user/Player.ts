@@ -1,4 +1,5 @@
 import * as WebSocket from 'ws'
+import { BASE_GAME_CONFIG } from '../../shared/gameConfigs'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { GUID, InitResponse, Message, RoundResultPayload } from '../../shared/types/types'
 import { Room } from '../rooms/Room'
@@ -7,12 +8,13 @@ import { PlayersList } from './PlayersList'
 export class Player {
     isReady: boolean = false
     isWaiting: boolean = true
-    room!: Room
+    room!: Room | null
     name: string
     private ID: string
     private ws: WebSocket
     private msgCallbacks: { [key: string]: any }
-    private wallet: number = 1000
+    private wallet: number = BASE_GAME_CONFIG.initialPlayerAmount
+    private maxWalletAmount = BASE_GAME_CONFIG.initialPlayerAmount * 2
     private playerList: PlayersList
 
     constructor(guid: GUID, ws: WebSocket, playerList: PlayersList) {
@@ -108,6 +110,7 @@ export class Player {
     }
 
     private duelInviteResponse(isAccepted: boolean): void {
+        if (!this.room) { return }
         if (isAccepted) {
             this.room.requestToStart()
             return
@@ -139,15 +142,20 @@ export class Player {
     }
 
     private aimClicked(): void {
+        if (!this.room) { return }
         this.room.endRound(this)
     }
 
     private onStopCountingRequest(): void {
+        if (!this.room) {
+            return
+        }
         this.room.stopCounting()
     }
 
     private onPlayerReadyMsg(): void {
         if (this.isReady) { return }
+        if (!this.room) { return }
         this.isReady = true
         this.room.onPlayerReady()
     }

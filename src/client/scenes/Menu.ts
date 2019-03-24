@@ -62,8 +62,7 @@ export class Menu extends Phaser.Scene {
         this.registry.events.on('changedata', this.updateData, this)
         webSocketService.events.on(GameEvents.AVAILABLE_PLAYER_RESPONSE, this.onAvailablePlayersResponse, this)
         webSocketService.events.on(GameEvents.DUEL_ACCEPTED, this.onDuelAccepted, this)
-        webSocketService.events.on(GameEvents.DUEL_OVER, this.onDuelOver, this)
-        webSocketService.events.on(GameEvents.DUEL_OVER, this.onDuelOver, this)
+        webSocketService.events.on(GameEvents.DUEL_REJECTED, this.onDuelRejected, this)
         webSocketService.events.on(GameEvents.CONNECTED, this.onConnected, this)
     }
 
@@ -71,7 +70,7 @@ export class Menu extends Phaser.Scene {
         this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
     }
 
-    private onDuelOver(): void {
+    private onDuelRejected(): void {
         hideWaiting()
         hideDuelInvite()
     }

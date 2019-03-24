@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser'
-import { Main } from 'scenes/Main'
+import { BASE_GAME_CONFIG } from '../../shared/gameConfigs'
+import { Main } from '../scenes/Main'
 import { RegistryFields } from '../state/state'
 
-const START_AMOUNT: number = 1000
+const START_AMOUNT: number = BASE_GAME_CONFIG.initialPlayerAmount
 
 const textStyle = {
     color: '#FFFFFF',
@@ -12,6 +13,7 @@ const textStyle = {
 }
 
 export class Wallet extends Phaser.GameObjects.Container {
+    scene: Main
     private reward: number = 0
     private score: Phaser.GameObjects.Text
     private amount: number = START_AMOUNT
@@ -22,6 +24,7 @@ export class Wallet extends Phaser.GameObjects.Container {
 
     constructor(scene: Main) {
         super(scene)
+        this.scene = scene
         this.score = this.createScore(scene)
         this.walletAmount = this.createWalletAmount(scene)
         this.barsGraphic = scene.add.graphics()
@@ -29,8 +32,8 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.add([this.score, this.walletAmount, this.barsGraphic])
     }
 
-    setWallet(walletAmount: number): any {
-        this.amount = walletAmount
+    setWallet(amount: number): any {
+        this.amount = amount
         this.reward = 0
         this.updateWallet()
     }
@@ -48,7 +51,14 @@ export class Wallet extends Phaser.GameObjects.Container {
     }
 
     increaseReward() {
-        const rewardAmount = Math.floor((Date.now() - this.countingStartTime) / 2)
+        let rewardAmount = Math.floor((Date.now() - this.countingStartTime) / 2)
+        let newAmount = this.roundStartAmount - (rewardAmount / 2)
+        if (newAmount <= 0) {
+            newAmount = 0
+            rewardAmount = Math.round(rewardAmount / 1000) * 1000
+            this.scene.stopCounting()
+        }
+
         this.reward = rewardAmount
         this.amount = this.roundStartAmount - (rewardAmount / 2)
         this.updateWallet()

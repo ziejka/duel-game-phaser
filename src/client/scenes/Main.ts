@@ -61,22 +61,27 @@ export class Main extends Phaser.Scene {
         this.scene.start(Scenes.Menu)
     }
 
-    private setUpEvents() {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
-        webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
-        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
-        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
-
-        this.registry.events.on('changedata', this.updateData, this)
-        this.input.on('pointerdown', this.stopCounting, this)
-    }
-
-    private stopCounting() {
+    stopCounting() {
         if (this.isCountingFaze) {
             const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
             webSocketService.stopCounting()
             this.isCountingFaze = false
         }
+    }
+
+    private setUpEvents() {
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
+        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
+        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
+        webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
+
+        this.registry.events.on('changedata', this.updateData, this)
+        this.input.on('pointerdown', this.stopCounting, this)
+    }
+
+    private duelFinished() {
+        this.player.anims.play(PlayerAnims.idle)
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
