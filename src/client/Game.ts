@@ -5,16 +5,16 @@ import { Preloader } from './scenes/Preloader'
 import { WebSocketService } from './scenes/WebSocketService'
 import { retrieveNameFromStorage } from './utils/HTMLUtils'
 
-const config: GameConfig = {
+const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     parent: "canvas",
     width: 540,
     height: 960,
     scene: [
-        Preloader,
-        WebSocketService,
-        Menu,
-        Main
+        new Preloader(),
+        new WebSocketService(),
+        new Menu(),
+        new Main()
     ]
 }
 
