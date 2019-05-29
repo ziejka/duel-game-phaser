@@ -22,9 +22,11 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         this.add([this.randomEnemyBtn, this.playersList])
     }
 
-    show(): void {
+    show(nameSet: boolean = false): void {
         this.setVisible(true)
-        HTMLUtils.showNameInput()
+        if (!nameSet) {
+            HTMLUtils.showNameInput()
+        }
     }
 
     updatePlayerList(names: string[]) {

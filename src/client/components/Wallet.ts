@@ -30,6 +30,7 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.barsGraphic = scene.add.graphics()
 
         this.add([this.score, this.walletAmount, this.barsGraphic])
+        scene.registry.set(RegistryFields.Reward, this.reward)
     }
 
     setWallet(amount: number): any {
@@ -85,7 +86,6 @@ export class Wallet extends Phaser.GameObjects.Container {
 
     private createScore(scene: Main): Phaser.GameObjects.Text {
         const score = scene.add.text(10, 80, 'Reward: $0', textStyle)
-        scene.registry.set(RegistryFields.Reward, this.reward)
         return score
     }
 

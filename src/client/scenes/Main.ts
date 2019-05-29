@@ -81,7 +81,7 @@ export class Main extends Phaser.Scene {
     }
 
     private duelFinished() {
-        this.scene.start(Scenes.Menu)
+        this.scene.start(Scenes.Menu, { asd: true })
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {

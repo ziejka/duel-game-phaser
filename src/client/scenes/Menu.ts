@@ -15,6 +15,7 @@ export class Menu extends Phaser.Scene {
     private centerY!: number
     private mainMenu!: Phaser.GameObjects.Container
     private multiMenu!: MultiPlayerMenu
+    private connected: boolean = false
 
     constructor() {
         super(Scenes.Menu)
@@ -27,6 +28,10 @@ export class Menu extends Phaser.Scene {
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
         this.setupEvents()
+        if (this.connected) {
+            this.onConnected()
+            this.multiMenu.show(true)
+        }
     }
 
     createPosition(yOffset: number): Phaser.Geom.Point {
@@ -67,6 +72,7 @@ export class Menu extends Phaser.Scene {
     }
 
     private onConnected() {
+        this.connected = true
         this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
     }
 
@@ -96,7 +102,7 @@ export class Menu extends Phaser.Scene {
     }
 
     private onMultiClick(): void {
-        this.mainMenu.visible = false
+        this.mainMenu.setVisible(false)
         this.multiMenu.show()
     }
 
