@@ -4,11 +4,12 @@ import { CountingStopped, Message } from '../../shared/types/types'
 import { RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
 
-const ROUND_START_DELAY: number = 3000
+const ROUND_START_DELAY: number = 1000
 
 export class Room {
     players: Player[] = []
     private round: Round = new Round()
+    private isCounting = false
 
     addPlayer(player: Player) {
         this.players.push(player)
@@ -32,7 +33,7 @@ export class Room {
             lostPlayer.result(false, this.round.reward / 2)
         }
         player.result(true, this.round.reward / 2)
-        if (this.round.duelFinished) {
+        if (player.wonDuel) {
             setTimeout(this.endDuel.bind(this), ROUND_START_DELAY)
             return
         }
@@ -40,6 +41,8 @@ export class Room {
     }
 
     stopCounting() {
+        if (!this.isCounting) { return }
+        this.isCounting = false
         const reward = this.round.end(Date.now())
         const payload: CountingStopped = { reward }
         this.sendToAll({
@@ -64,7 +67,11 @@ export class Room {
     }
 
     private endDuel() {
+        this.players.forEach(player => {
+            player.resetState()
+        })
         this.sendToAll({ type: MessageTypes.DUEL_FINISHED })
+        this.clearRoom()
     }
 
     private clearRoom() {
@@ -81,6 +88,7 @@ export class Room {
     }
 
     private startNewRound() {
+        this.isCounting = true
         this.round.newRound()
         this.round.start(Date.now())
         const payload: RoundStartPayload = { roundNumber: this.round.roundNumber }

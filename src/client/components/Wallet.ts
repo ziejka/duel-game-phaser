@@ -46,21 +46,20 @@ export class Wallet extends Phaser.GameObjects.Container {
 
     setReward(reward: number): any {
         this.reward = reward
-        this.amount = this.roundStartAmount - (reward / 2)
+        const newAmount = this.roundStartAmount - (reward / 2)
+        this.amount = newAmount < 0 ? 0 : newAmount
         this.updateWallet()
     }
 
     increaseReward() {
-        let rewardAmount = Math.floor((Date.now() - this.countingStartTime) / 2)
-        let newAmount = this.roundStartAmount - (rewardAmount / 2)
+        this.reward = Math.floor((Date.now() - this.countingStartTime) / BASE_GAME_CONFIG.counterSpeed)
+        let newAmount = this.roundStartAmount - (this.reward / 2)
         if (newAmount <= 0) {
             newAmount = 0
-            rewardAmount = Math.round(rewardAmount / 1000) * 1000
             this.scene.stopCounting()
         }
 
-        this.reward = rewardAmount
-        this.amount = this.roundStartAmount - (rewardAmount / 2)
+        this.amount = newAmount
         this.updateWallet()
     }
 

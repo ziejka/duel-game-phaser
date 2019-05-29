@@ -15,9 +15,8 @@ export class Round {
 
     end(endTime: number): number {
         this.reward = Math.floor((endTime - this.startTime) / this.counterSpeed)
-        if (this.reward > this.maxReward) {
+        if (this.reward >= this.maxReward) {
             this.reward = this.maxReward
-            this.duelFinished = true
         }
         return this.reward
     }

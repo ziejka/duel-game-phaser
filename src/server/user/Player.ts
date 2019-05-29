@@ -10,6 +10,7 @@ export class Player {
     isWaiting: boolean = true
     room!: Room | null
     name: string
+    wonDuel: boolean = false
     private ID: string
     private ws: WebSocket
     private msgCallbacks: { [key: string]: any }
@@ -33,6 +34,13 @@ export class Player {
         this.sayHi()
     }
 
+    resetState() {
+        this.wallet = 0
+        this.isReady = false
+        this.isWaiting = true
+        this.wonDuel = false
+    }
+
     sendMsg(msg: Message): void {
         try {
             this.ws.send(JSON.stringify(msg))
@@ -46,6 +54,13 @@ export class Player {
 
     result(playerWon: boolean, amount: number) {
         this.wallet += playerWon ? amount : -amount
+        if (this.wallet < 0) {
+            this.wallet = 0
+        }
+        if (this.wallet > this.maxWalletAmount) {
+            this.wallet = this.maxWalletAmount
+            this.wonDuel = true
+        }
         const payload: RoundResultPayload = {
             wallet: this.wallet
         }
