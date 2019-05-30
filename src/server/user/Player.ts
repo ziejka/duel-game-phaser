@@ -73,6 +73,7 @@ export class Player {
     }
 
     connectToRoom(room: Room) {
+        this.wallet = BASE_GAME_CONFIG.initialPlayerAmount
         this.room = room
         this.isWaiting = false
     }

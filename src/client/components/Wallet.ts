@@ -33,6 +33,11 @@ export class Wallet extends Phaser.GameObjects.Container {
         scene.registry.set(RegistryFields.Reward, this.reward)
     }
 
+    destroy() {
+        this.scene.registry.remove(RegistryFields.Reward)
+        super.destroy()
+    }
+
     setWallet(amount: number): any {
         this.amount = amount
         this.reward = 0

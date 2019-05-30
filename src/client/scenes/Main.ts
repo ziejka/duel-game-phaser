@@ -81,6 +81,7 @@ export class Main extends Phaser.Scene {
     }
 
     private duelFinished() {
+        this.children.each(c => c.destroy())
         this.scene.start(Scenes.Menu, { asd: true })
     }
 
