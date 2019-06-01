@@ -6,7 +6,7 @@
         "clean": "rimraf dist",
         "build:dev": "cd ./src/client && webpack --env dev",
         "build:prod": "cd ./src/client && webpack --env prod",
-        "build": "npm run build:prod && .\\node_modules\\.bin\\tsc -p ./src/server",
+        "build": "npm run build:prod && tsc -p ./src/server",
         "serve": "node build/server.js",
         "dev-client": "cd ./src/client && webpack --env dev --watch",
         "dev-server": ".\\node_modules\\.bin\\tsc-watch -p ./src/server --onSuccess \"node ./dist/server/server.js\"",
