@@ -37,21 +37,6 @@ export class PlayersList {
         this.notifyPlayerListUpdate()
     }
 
-    playWithPlayer(player: Player, enemyName?: string): void {
-        let enemy: Player | undefined
-        if (!enemyName) {
-            const availablePlayers = this.playersList.filter(p => p.isWaiting && p !== player)
-            enemy = availablePlayers[Math.floor(Math.random() * availablePlayers.length)]
-        } else {
-            enemy = this.playersList.find(p => p.name === enemyName)
-        }
-        if (!enemy) {
-            player.sendMsg({ type: MessageTypes.PLAYER_UNAVAILABLE })
-            return
-        }
-        this.roomsPlayerApi.connectPlayers([player, enemy])
-    }
-
     notifyPlayerListUpdate(): void {
         this.playersList.filter(p => p.isWaiting).forEach(p => {
             p.sendListOfPLayers()

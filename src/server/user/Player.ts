@@ -35,7 +35,7 @@ export class Player {
     }
 
     resetState() {
-        this.wallet = 0
+        this.wallet = BASE_GAME_CONFIG.initialPlayerAmount
         this.isReady = false
         this.isWaiting = true
         this.wonDuel = false
