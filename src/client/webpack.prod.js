@@ -5,13 +5,15 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        game: './src/Game.ts'
+        game: './Game.ts'
     },
     mode: 'production',
     output: {
-        path: path.resolve(__dirname, 'build'),
-        publicPath: './',
-        filename: '[name].min.js'
+        path: path.resolve(__dirname, '..', '..', 'dist/public'),
+        pathinfo: false,
+        filename: '[name].js',
+        devtoolModuleFilenameTemplate: '../[resource-path]'
+        // publicPath: '/public/'
     },
     module: {
         rules: [
@@ -20,7 +22,7 @@ module.exports = {
                 use: 'ts-loader'
             },
             {
-                test: [ /\.vert$/, /\.frag$/ ],
+                test: [/\.vert$/, /\.frag$/],
                 use: 'raw-loader'
             }
         ]
@@ -29,16 +31,16 @@ module.exports = {
         minimize: true,
         splitChunks: {
             cacheGroups: {
-                commons: { 
-                    test: /[\\/]node_modules[\\/]/, 
-                    name: "vendors", 
-                    chunks: "all" 
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendors",
+                    chunks: "all"
                 }
             }
         }
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
+        extensions: ['.tsx', '.ts', '.js']
     },
     stats: false,
     plugins: [
@@ -48,18 +50,18 @@ module.exports = {
             'typeof WEBGL_RENDERER': JSON.stringify(true)
         }),
         new CopyWebpackPlugin(
-        [
-            {
-                from: './assets',
-                to: './assets',
-                force: true
-            },
-            {
-                from: './app.css',
-                to: './app.css',
-                force: true
-            }
-        ]),
+            [
+                {
+                    from: './assets',
+                    to: './assets',
+                    force: true
+                },
+                {
+                    from: './app.css',
+                    to: './app.css',
+                    force: true
+                }
+            ]),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: 'index.html'
