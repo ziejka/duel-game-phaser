@@ -11,7 +11,7 @@
         "dev-client": "cd ./src/client && webpack --env dev --watch",
         "dev-server": ".\\node_modules\\.bin\\tsc-watch -p ./src/server --onSuccess \"node ./dist/server/server.js\"",
         "dev": "npm run clean && concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run start\"",
-        "start": "node ./dist/server/server.js --production"
+        "start": "node ./dist/server/server.js --env production"
     },
     "author": "Ziejka",
     "devDependencies": {
