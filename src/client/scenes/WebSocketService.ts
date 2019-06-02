@@ -8,7 +8,7 @@ import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { Scenes } from './scenes'
 
-const SERVER = `ws://${window.location.host}`
+const SERVER = window.location.href.replace('http', 'ws')
 
 export class WebSocketService extends Phaser.Scene {
     private msgCallbacks: { [key: string]: any }
