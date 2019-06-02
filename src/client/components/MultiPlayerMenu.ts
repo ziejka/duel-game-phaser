@@ -2,7 +2,7 @@ import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Menu } from '../scenes/Menu'
 import * as HTMLUtils from '../utils/HTMLUtils'
-import { createMenuElement } from '../utils/Utils'
+import { ButtonText } from './ButtonText'
 
 export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     private playersList: Phaser.GameObjects.Container
@@ -12,7 +12,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     constructor(scene: Menu) {
         super(scene)
 
-        this.randomEnemyBtn = createMenuElement(scene, '[ RANDOM ]', new Phaser.Geom.Point(350, 20),
+        this.randomEnemyBtn = new ButtonText(scene, '[ RANDOM ]', new Phaser.Geom.Point(350, 20),
             this.onPlayRandomClicked, this).setVisible(false)
 
         this.menu = scene
@@ -34,7 +34,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         names.forEach((name, index) => {
             const pos = new Phaser.Geom.Point(20, 50 + 60 * index)
             this.playersList.add(
-                createMenuElement(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
+                new ButtonText(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
         })
         this.randomEnemyBtn.visible = names.length > 0
     }

@@ -15,6 +15,5 @@ createWebSocket(server)
 
 server.listen(config.SERVER_PORT, () => {
     // tslint:disable-next-line:no-console
-    console.log(process.env.NODE_ENV)
     console.log(`========== Server listening on http://localhost:${config.SERVER_PORT} ======`)
 })

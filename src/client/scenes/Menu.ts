@@ -1,12 +1,12 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { Message } from '../../shared/types/types'
+import { ButtonText } from '../components/ButtonText'
 import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
 import { menuText } from '../config/textStyles'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { hideDuelInvite, hideWaiting, showDuelInvite } from '../utils/HTMLUtils'
-import { createMenuElement } from '../utils/Utils'
 import { Scenes } from './scenes'
 import { WebSocketService } from './WebSocketService'
 
@@ -110,8 +110,8 @@ export class Menu extends Phaser.Scene {
 
     private createMainMenu(): Phaser.GameObjects.Container {
         const container = this.add.container(0, 0),
-            multi = createMenuElement(this, 'Play multi', this.createPosition(-50), this.onMultiClick),
-            single = createMenuElement(this, 'Play single', this.createPosition(25))
+            multi = new ButtonText(this, 'Play multi', this.createPosition(-70), this.onMultiClick),
+            single = new ButtonText(this, 'Play single', this.createPosition(55))
 
         container.add([multi, single])
 
