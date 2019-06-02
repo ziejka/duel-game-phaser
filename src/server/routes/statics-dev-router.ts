@@ -10,12 +10,5 @@ export function staticsDevRouter() {
             target: 'http://localhost:8080/'
         }))
 
-    // Any route should render the web app html (hosted by by Webpack-dev-server)
-    // router.use('**', proxy(
-    //     {
-    //         target: 'http://localhost:8080/',
-    //         pathRewrite: path => '/public/index.html',
-    //     }))
-
     return router
 }
