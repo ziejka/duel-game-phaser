@@ -21,5 +21,4 @@ export const config: Phaser.Types.Core.GameConfig = {
 
 const game = new Phaser.Game(config)
 retrieveNameFromStorage()
-window.addEventListener('resize', resizeCanvas)
 game.events.once('ready', resizeCanvas)
