@@ -31,6 +31,8 @@ export class Menu extends Phaser.Scene {
         if (this.connected) {
             this.onConnected()
             this.multiMenu.show(true)
+        } else {
+            this.onMultiClick()
         }
     }
 

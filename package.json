@@ -10,8 +10,9 @@
         "serve": "node build/server.js",
         "dev-client": "cd ./src/client && webpack --env dev --watch",
         "dev-server": ".\\node_modules\\.bin\\tsc-watch -p ./src/server --onSuccess \"node ./dist/server/server.js\"",
-        "dev": "npm run clean && concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run start\"",
-        "start": "node ./dist/server/server.js"
+        "dev": "npm run clean && concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run start-dev\"",
+        "start": "node ./dist/server/server.js",
+        "start-dev": "cd ./src/client && webpack-dev-server -d --env dev"
     },
     "author": "Ziejka",
     "devDependencies": {
