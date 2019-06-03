@@ -33,8 +33,6 @@ export const resizeCanvas = () => {
     }
     overlay.style.transform = transformValue
     overlay.style.webkitTransform = transformValue
-    // tslint:disable-next-line: no-console
-    console.log('res', transformValue, Date.now())
 }
 
 // DEBUG ONLY

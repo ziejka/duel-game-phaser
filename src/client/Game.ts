@@ -9,7 +9,7 @@ import { resizeCanvas } from "./utils/Utils"
 export const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     parent: "canvas",
-    width: 540,
+    width: 650,
     height: 960,
     scene: [
         new Preloader(),
