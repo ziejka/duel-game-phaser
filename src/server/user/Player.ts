@@ -34,16 +34,16 @@ export class Player {
         this.sayHi()
     }
 
-    resetState() {
-        this.wallet = BASE_GAME_CONFIG.initialPlayerAmount
-        this.isReady = false
-        this.isWaiting = true
-        this.wonDuel = false
+    finishDuel() {
+        this.sendMsg({
+            type: MessageTypes.DUEL_FINISHED,
+            payload: this.wonDuel
+        }, this.resetState.bind(this))
     }
 
-    sendMsg(msg: Message): void {
+    sendMsg(msg: Message, callback?: () => void): void {
         try {
-            this.ws.send(JSON.stringify(msg))
+            this.ws.send(JSON.stringify(msg), callback)
         } catch (e) { }
 
     }
@@ -85,6 +85,13 @@ export class Player {
             payload: playersNames
         }
         this.sendMsg(msg)
+    }
+
+    private resetState() {
+        this.wallet = BASE_GAME_CONFIG.initialPlayerAmount
+        this.isReady = false
+        this.isWaiting = true
+        this.wonDuel = false
     }
 
     private onConnectionClose() {

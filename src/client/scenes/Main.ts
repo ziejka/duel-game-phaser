@@ -8,6 +8,7 @@ import { Wallet } from '../components/Wallet'
 import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
+import * as HTMLUtils from '../utils/HTMLUtils'
 import { Scenes } from './scenes'
 import { WebSocketService } from './WebSocketService'
 
@@ -80,7 +81,19 @@ export class Main extends Phaser.Scene {
         this.input.on('pointerdown', this.stopCounting, this)
     }
 
-    private duelFinished() {
+    private duelFinished(hasWon: boolean) {
+        this.showOutcome(hasWon)
+    }
+
+    private showOutcome(hasWon: boolean) {
+        HTMLUtils.showOutcome(hasWon)
+        setTimeout(() => {
+            this.endScene()
+            HTMLUtils.hideOutcome()
+        }, 3000)
+    }
+
+    private endScene() {
         this.children.each(c => c.destroy())
         this.scene.start(Scenes.Menu, { asd: true })
     }

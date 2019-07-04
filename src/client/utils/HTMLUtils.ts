@@ -55,6 +55,15 @@ export const showWaiting = (cancelCallback: () => void): void => {
     }
     element.onmousedown = cancelCallback
 }
+export const showOutcome = (hasWon: boolean): void => {
+    const element: HTMLElement | null = window.document.getElementById('outcome-msg')
+    if (!element) {
+        return
+    }
+    element.innerText = `YOU ${hasWon ? 'WON' : 'LOST'}!`
+    showElement('outcome', 'block')
+}
+export const hideOutcome = () => hideElement('outcome')
 
 export const getNameInputValue = (): string => {
     const element: HTMLInputElement | null = window.document.getElementById('name') as HTMLInputElement

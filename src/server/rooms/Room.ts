@@ -68,9 +68,8 @@ export class Room {
 
     private endDuel() {
         this.players.forEach(player => {
-            player.resetState()
+            player.finishDuel()
         })
-        this.sendToAll({ type: MessageTypes.DUEL_FINISHED })
         this.clearRoom()
     }
 

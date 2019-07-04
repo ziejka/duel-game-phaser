@@ -79,8 +79,8 @@ export class WebSocketService extends Phaser.Scene {
         }
     }
 
-    private onDuelFinished() {
-        this.events.emit(GameEvents.DUEL_FINISHED)
+    private onDuelFinished(hasWon: boolean) {
+        this.events.emit(GameEvents.DUEL_FINISHED, hasWon)
     }
 
     private onDuelReject() {

@@ -39,12 +39,12 @@ export class Player extends Phaser.GameObjects.Sprite {
             frameRate: FRAME_RATE
         })
         this.scene.anims.create({
-            key: PlayerAnims.dead,
+            key: PlayerAnims.won,
             frames: this.scene.anims.generateFrameNames(Images.Player, { start: 31, end: 37 }),
             frameRate: FRAME_RATE
         })
         this.scene.anims.create({
-            key: PlayerAnims.won,
+            key: PlayerAnims.dead,
             frames: this.scene.anims.generateFrameNames(Images.Player, { start: 16, end: 29 }),
             repeat: -1,
             frameRate: FRAME_RATE

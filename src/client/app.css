@@ -60,7 +60,7 @@ button {
     cursor: pointer;
 }
 
-#startBtn {
+.base-btn {
     font-size: 35px;
     padding: 10px 30px;
     margin: 16% auto;
@@ -109,4 +109,8 @@ button {
 	0% {opacity: 1;}
     50% {opacity: .2;}
     100% {opacity: 1;}
+}
+
+#outcome-msg {
+    text-align: center;
 }
