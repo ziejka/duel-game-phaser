@@ -12,6 +12,7 @@ export class Player implements PlayerInfo {
     name: string
     wonDuel: boolean = false
     totalAmount: number = BASE_GAME_CONFIG.initialPlayerTotalAmount
+    position: number = 0
     private ID: string
     private ws: WebSocket
     private msgCallbacks: { [key: string]: any }
@@ -38,7 +39,8 @@ export class Player implements PlayerInfo {
     getPlayerInfo(): PlayerInfo {
         return {
             name: this.name,
-            totalAmount: this.totalAmount
+            totalAmount: this.totalAmount,
+            position: this.position
         }
     }
 

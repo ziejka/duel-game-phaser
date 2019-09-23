@@ -35,8 +35,8 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         playersList.forEach((player, index) => {
             const pos = new Phaser.Geom.Point(20, 50 + 60 * index)
             this.playersList.add(
-                new ButtonText(this.scene, `${player.name.slice(0, -5)}  $${player.totalAmount}`, pos,
-                    this.onSelectedPlayerClicked.bind(this, player.name)))
+                new ButtonText(this.scene, `${player.position}. ${player.name.slice(0, -5)}     $${player.totalAmount}`,
+                    pos, this.onSelectedPlayerClicked.bind(this, player.name)))
         })
         this.randomEnemyBtn.visible = playersList.length > 0
     }

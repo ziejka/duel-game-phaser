@@ -25,6 +25,7 @@ export interface CountingStopped {
 export interface PlayerInfo {
     name: string
     totalAmount: number
+    position: number
 }
 
 export type InitResponse = GUID & RoundResultPayload
