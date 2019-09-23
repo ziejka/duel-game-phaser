@@ -1,8 +1,8 @@
 import { MessageTypes } from './messageTypes'
 
-export interface Message {
+export interface Message<P = {}> {
     type: MessageTypes,
-    payload?: any
+    payload?: P
 }
 
 export interface GUID {
@@ -20,6 +20,11 @@ export interface RoundResultPayload {
 
 export interface CountingStopped {
     reward: number
+}
+
+export interface PlayerInfo {
+    name: string
+    totalAmount: number
 }
 
 export type InitResponse = GUID & RoundResultPayload

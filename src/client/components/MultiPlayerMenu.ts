@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
+import { PlayerInfo } from '../../shared/types/types'
 import { Menu } from '../scenes/Menu'
 import * as HTMLUtils from '../utils/HTMLUtils'
 import { ButtonText } from './ButtonText'
@@ -29,14 +30,15 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         }
     }
 
-    updatePlayerList(names: string[]) {
+    updatePlayerList(playersList: PlayerInfo[]) {
         this.playersList.removeAll()
-        names.forEach((name, index) => {
+        playersList.forEach((player, index) => {
             const pos = new Phaser.Geom.Point(20, 50 + 60 * index)
             this.playersList.add(
-                new ButtonText(this.scene, name, pos, this.onSelectedPlayerClicked.bind(this, name)))
+                new ButtonText(this.scene, `${player.name.slice(0, -5)}  $${player.totalAmount}`, pos,
+                    this.onSelectedPlayerClicked.bind(this, player.name)))
         })
-        this.randomEnemyBtn.visible = names.length > 0
+        this.randomEnemyBtn.visible = playersList.length > 0
     }
 
     createName(name: string): void {
@@ -80,7 +82,7 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
     private onPlayRandomClicked() {
         const players = this.playersList.list
         if (players.length < 1) { return }
-        const enemy = players[Math.floor(Math.random() * players.length)] as Phaser.GameObjects.Text
-        this.onSelectedPlayerClicked(enemy.text)
+        const enemy = players[Math.floor(Math.random() * players.length)] as ButtonText
+        enemy.emit('pointerdown')
     }
 }

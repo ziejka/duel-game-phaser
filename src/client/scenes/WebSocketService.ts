@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import {
-    InitResponse, Message, RoundResultPayload,
+    InitResponse, Message, PlayerInfo,
+    RoundResultPayload,
     RoundStartPayload
 } from '../../shared/types/types'
 import { GameEvents } from '../state/events'
@@ -95,7 +96,7 @@ export class WebSocketService extends Phaser.Scene {
         this.registry.set(RegistryFields.UserData, initResponse)
     }
 
-    private onWaitingPlayerListResponse(payload: string[]) {
+    private onWaitingPlayerListResponse(payload: PlayerInfo[]) {
         this.events.emit(GameEvents.AVAILABLE_PLAYER_RESPONSE, payload)
     }
 

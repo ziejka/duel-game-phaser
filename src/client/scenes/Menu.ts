@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message } from '../../shared/types/types'
+import { Message, PlayerInfo } from '../../shared/types/types'
 import { ButtonText } from '../components/ButtonText'
 import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
 import { menuText } from '../config/textStyles'
@@ -88,7 +88,7 @@ export class Menu extends Phaser.Scene {
         this.scene.start(Scenes.Main)
     }
 
-    private onAvailablePlayersResponse(playerList: string[]) {
+    private onAvailablePlayersResponse(playerList: PlayerInfo[]) {
         this.mainMenu.setVisible(false)
         this.multiMenu.updatePlayerList(playerList)
     }

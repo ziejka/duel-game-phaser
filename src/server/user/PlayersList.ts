@@ -1,6 +1,6 @@
 import * as WebSocket from 'ws'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { GUID } from '../../shared/types/types'
+import { GUID, PlayerInfo } from '../../shared/types/types'
 import { Rooms } from '../rooms/Rooms'
 import { Player } from './Player'
 
@@ -25,8 +25,9 @@ export class PlayersList {
         return player
     }
 
-    getAvailablePlayers = (player: Player): string[] => this.playersList.reduce((result: string[], p) =>
-        [...result, ...p.isWaiting && p !== player ? [p.name] : []], [])
+    getAvailablePlayers = (player: Player): PlayerInfo[] => this.playersList.reduce((result: PlayerInfo[], p) =>
+        [...result, ...p.isWaiting && p !== player ? [p.getPlayerInfo()] : []], [])
+        .sort((a, b) => a.totalAmount = b.totalAmount)
 
     sendDuelInvite(player: Player, enemyName: string): void {
         const enemy = this.playersList.find(p => p.name === enemyName)

@@ -1,16 +1,17 @@
 import * as WebSocket from 'ws'
 import { BASE_GAME_CONFIG } from '../../shared/gameConfigs'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { GUID, InitResponse, Message, RoundResultPayload } from '../../shared/types/types'
+import { GUID, InitResponse, Message, PlayerInfo, RoundResultPayload } from '../../shared/types/types'
 import { Room } from '../rooms/Room'
 import { PlayersList } from './PlayersList'
 
-export class Player {
+export class Player implements PlayerInfo {
     isReady: boolean = false
     isWaiting: boolean = true
     room!: Room | null
     name: string
     wonDuel: boolean = false
+    totalAmount: number = BASE_GAME_CONFIG.initialPlayerTotalAmount
     private ID: string
     private ws: WebSocket
     private msgCallbacks: { [key: string]: any }
@@ -32,6 +33,13 @@ export class Player {
         this.ws.on('message', onMessage)
         this.ws.on('close', onConnectionClose)
         this.sayHi()
+    }
+
+    getPlayerInfo(): PlayerInfo {
+        return {
+            name: this.name,
+            totalAmount: this.totalAmount
+        }
     }
 
     finishDuel() {
@@ -64,7 +72,7 @@ export class Player {
         const payload: RoundResultPayload = {
             wallet: this.wallet
         }
-        const msg: Message = {
+        const msg: Message<RoundResultPayload> = {
             type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST,
             payload
         }
@@ -79,8 +87,8 @@ export class Player {
     }
 
     sendListOfPLayers(): void {
-        const playersNames: string[] = this.playerList.getAvailablePlayers(this)
-        const msg: Message = {
+        const playersNames: PlayerInfo[] = this.playerList.getAvailablePlayers(this)
+        const msg: Message<PlayerInfo[]> = {
             type: MessageTypes.WAITING_PLAYERS_LIST,
             payload: playersNames
         }
@@ -106,7 +114,7 @@ export class Player {
             name: this.name,
             wallet: this.wallet
         }
-        const msg: Message = {
+        const msg: Message<InitResponse> = {
             type: MessageTypes.INIT_RESPONSE,
             payload
         }
@@ -143,7 +151,7 @@ export class Player {
     }
 
     private connectWithPlayer(playerName?: string): void {
-        let enemyName = playerName
+        let enemyName: string = playerName
         if (!this.isWaiting) { return }
         if (!enemyName) {
             enemyName = this.getRandomPlayer()
@@ -155,11 +163,11 @@ export class Player {
         this.playerList.sendDuelInvite(this, enemyName)
     }
 
-    private getRandomPlayer(): string {
-        const availablePlayers: string[] = this.playerList.getAvailablePlayers(this)
+    private getRandomPlayer(): string | null {
+        const availablePlayers: PlayerInfo[] = this.playerList.getAvailablePlayers(this)
         const listLength = availablePlayers.length
         if (listLength > 0) {
-            return availablePlayers[Math.floor(Math.random() * listLength)]
+            return availablePlayers[Math.floor(Math.random() * listLength)].name
         }
         return ''
     }
