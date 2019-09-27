@@ -11,7 +11,7 @@ export class Player implements PlayerInfo {
     room!: Room | null
     name: string
     wonDuel: boolean = false
-    totalAmount: number = BASE_GAME_CONFIG.initialPlayerTotalAmount
+    totalAmount: number = Math.round(Math.random() * 10000) // BASE_GAME_CONFIG.initialPlayerTotalAmount
     position: number = 0
     private ID: string
     private ws: WebSocket
@@ -36,6 +36,10 @@ export class Player implements PlayerInfo {
         this.sayHi()
     }
 
+    setPosition(position: number): void {
+        this.position = position
+    }
+
     getPlayerInfo(): PlayerInfo {
         return {
             name: this.name,
@@ -45,10 +49,12 @@ export class Player implements PlayerInfo {
     }
 
     finishDuel() {
+        this.totalAmount += this.maxWalletAmount * (this.wonDuel ? 1 : -1)
         this.sendMsg({
             type: MessageTypes.DUEL_FINISHED,
             payload: this.wonDuel
         }, this.resetState.bind(this))
+        this.playerList.sortPlayers()
     }
 
     sendMsg(msg: Message, callback?: () => void): void {
@@ -71,12 +77,11 @@ export class Player implements PlayerInfo {
             this.wallet = this.maxWalletAmount
             this.wonDuel = true
         }
-        const payload: RoundResultPayload = {
-            wallet: this.wallet
-        }
         const msg: Message<RoundResultPayload> = {
             type: playerWon ? MessageTypes.ROUND_WON : MessageTypes.ROUND_LOST,
-            payload
+            payload: {
+                wallet: this.wallet
+            }
         }
         this.isReady = false
         this.sendMsg(msg)
@@ -89,10 +94,11 @@ export class Player implements PlayerInfo {
     }
 
     sendListOfPLayers(): void {
-        const playersNames: PlayerInfo[] = this.playerList.getAvailablePlayers(this)
+        const playersInfo: PlayerInfo[] = this.playerList.getAvailablePlayers(this)
+
         const msg: Message<PlayerInfo[]> = {
             type: MessageTypes.WAITING_PLAYERS_LIST,
-            payload: playersNames
+            payload: playersInfo
         }
         this.sendMsg(msg)
     }

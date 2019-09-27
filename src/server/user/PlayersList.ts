@@ -10,11 +10,16 @@ export class PlayersList {
 
     constructor(roomsPlayerApi: Rooms) {
         this.roomsPlayerApi = roomsPlayerApi
+        this.playersList.forEach(p => {
+            p.totalAmount = Math.round(Math.random() * 10000)
+        })
+        this.sortPlayers()
     }
 
     addUser(ws: WebSocket, guid: GUID): Player {
         const user = new Player(guid, ws, this)
         this.playersList.push(user)
+        this.sortPlayers()
         this.notifyPlayerListUpdate()
         return user
     }
@@ -27,7 +32,6 @@ export class PlayersList {
 
     getAvailablePlayers = (player: Player): PlayerInfo[] => this.playersList.reduce((result: PlayerInfo[], p) =>
         [...result, ...p.isWaiting && p !== player ? [p.getPlayerInfo()] : []], [])
-        .sort((a, b) => a.totalAmount = b.totalAmount)
 
     sendDuelInvite(player: Player, enemyName: string): void {
         const enemy = this.playersList.find(p => p.name === enemyName)
@@ -44,4 +48,9 @@ export class PlayersList {
         })
     }
 
+    sortPlayers(): void {
+        this.playersList = this.playersList
+            .sort((a, b) => a.totalAmount - b.totalAmount)
+        this.playersList.forEach((player, index) => player.setPosition(index + 1))
+    }
 }
