@@ -31,6 +31,7 @@ export class Wallet extends Phaser.GameObjects.Container {
 
         this.add([this.score, this.walletAmount, this.barsGraphic])
         scene.registry.set(RegistryFields.Reward, this.reward)
+        this.updateWallet()
     }
 
     destroy() {
@@ -76,17 +77,31 @@ export class Wallet extends Phaser.GameObjects.Container {
     }
 
     private drawBars() {
-        const maxWidth = 200
-        const enemyWallet = START_AMOUNT * 2 - this.amount - this.reward
-        const playerWidth = Math.floor((this.amount * maxWidth) / (START_AMOUNT * 2))
-        const enemyWidth = Math.floor((enemyWallet * maxWidth) / (START_AMOUNT * 2))
+        const maxHeight = 500,
+            radius = 6,
+            width = 50,
+            xOffset = 10,
+            yBarPos = this.scene.centerY - maxHeight / 2,
+            xEnemy = this.scene.sys.canvas.width - xOffset - width,
+            xPlayer = xOffset,
+            enemyAmount = START_AMOUNT * 2 - this.amount - this.reward,
+            playerHeight = this.getBarHeight(this.amount, maxHeight),
+            enemyHeight = this.getBarHeight(enemyAmount, maxHeight),
+            yPlayer = yBarPos - 2 + (maxHeight - playerHeight),
+            yEnemy = yBarPos - 2 + (maxHeight - enemyHeight)
+
         this.barsGraphic.clear()
         this.barsGraphic.fillStyle(0x000000)
-        this.barsGraphic.fillRect(10, 28, maxWidth, 14)
-        this.barsGraphic.fillRect(320, 28, maxWidth, 14)
+        this.barsGraphic.fillRoundedRect(xPlayer, yBarPos, width, maxHeight, radius)
+        this.barsGraphic.fillRoundedRect(xEnemy, yBarPos, width, maxHeight, radius)
         this.barsGraphic.fillStyle(0xFFFFFF)
-        this.barsGraphic.fillRect(12, 30, playerWidth, 10)
-        this.barsGraphic.fillRect(322, 30, enemyWidth, 10)
+        this.barsGraphic.fillRoundedRect(xPlayer + 2, yPlayer, width - 4, playerHeight, radius)
+        this.barsGraphic.fillRoundedRect(xEnemy + 2, yEnemy, width - 4, enemyHeight, radius)
+    }
+
+    private getBarHeight(amount: number, maxHeight: number): number {
+        const height = Math.floor((amount * maxHeight) / (START_AMOUNT * 2)) - 4
+        return height < 0 ? 0 : height
     }
 
     private createScore(scene: Main): Phaser.GameObjects.Text {
