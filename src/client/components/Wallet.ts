@@ -68,6 +68,7 @@ export class Wallet extends Phaser.GameObjects.Container {
 
         this.amount = newAmount
         this.updateWallet()
+        this.scene.aim.scaleReward(this.reward)
     }
 
     private updateWallet() {

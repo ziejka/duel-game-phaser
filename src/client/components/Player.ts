@@ -14,11 +14,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     constructor(scene: Phaser.Scene, centerX: number, centerY: number) {
         super(scene, centerX, centerY + 100, Images.Player)
         this.createAnimations()
-        this.setupEvents()
-    }
-
-    private setupEvents() {
-        this.scene.events.on('animationcomplete_shoot', () => { this.anims.play(PlayerAnims.won) }, this)
     }
 
     private createAnimations() {

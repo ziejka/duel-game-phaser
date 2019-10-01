@@ -22,6 +22,7 @@ export class Menu extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.backgroundColor.setTo(42, 65, 82)
         this.add.text(15, 15, "MENU SCENE", menuText)
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
