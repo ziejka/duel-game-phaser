@@ -16,7 +16,10 @@ export const config: Phaser.Types.Core.GameConfig = {
         new WebSocketService(),
         new Menu(),
         new Main()
-    ]
+    ],
+    physics: {
+        default: "arcade"
+    }
 }
 
 const game = new Phaser.Game(config)
