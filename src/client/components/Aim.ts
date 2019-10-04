@@ -56,3 +56,9 @@ export class Aim extends GameObjects.Container {
         return s
     }
 }
+
+/***
+ * TODO:
+ * http://labs.phaser.io/edit.html?src=src\game%20objects\particle%20emitter\electric.js
+ * http://labs.phaser.io/edit.html?src=src\game%20objects\particle%20emitter\death%20zone%20from%20arcade%20body.js
+ * */
