@@ -1,5 +1,6 @@
 export enum Images {
     Player = 'Player',
     Bg = 'Bg',
-    Aim = "Aim"
+    Aim = "Aim",
+    Particle = 'Particle'
 }
