@@ -17,6 +17,7 @@
             true,
             "as-needed"
         ],
+        "max-line-length": false,
         "object-literal-sort-keys": false,
         "quotemark": false,
         "semicolon": [

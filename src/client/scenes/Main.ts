@@ -1,14 +1,14 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { RoundStartPayload } from '../../shared/types/types'
+import { MainSceneData, RoundStartPayload } from '../../shared/types/types'
 import { Aim } from '../components/Aim'
 import { RoundMenu } from '../components/RoundMenu'
 import { Wallet } from '../components/Wallet'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
+import { ComunicationService } from './ComunicationService'
 import { Scenes } from './scenes'
-import { WebSocketService } from './WebSocketService'
 
 export class Main extends Phaser.Scene {
     centerX!: number
@@ -17,15 +17,18 @@ export class Main extends Phaser.Scene {
     private isCountingFaze: boolean = false
     private roundMenu!: RoundMenu
     private wallet!: Wallet
+    private comunicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
 
     constructor() {
         super(Scenes.Main)
     }
 
-    create() {
+    create({ comunicationServiceName }: MainSceneData) {
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.cameras.main.backgroundColor.setTo(42, 65, 82)
+
+        this.comunicationServiceName = comunicationServiceName
 
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.aim = this.add.existing(new Aim(this)) as Aim
@@ -44,12 +47,12 @@ export class Main extends Phaser.Scene {
 
     onAimClicked() {
         this.aim.disable()
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
         webSocketService.aimClicked()
     }
 
     onBeginDuelClicked(): void {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
         webSocketService.send({ type: MessageTypes.PLAYER_READY })
         this.roundMenu.beginDuelBtn.visible = false
     }
@@ -60,14 +63,14 @@ export class Main extends Phaser.Scene {
 
     stopCounting() {
         if (this.isCountingFaze) {
-            const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+            const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
             webSocketService.stopCounting()
             this.isCountingFaze = false
         }
     }
 
     private setUpEvents() {
-        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
         webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
         webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
         webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
@@ -109,6 +112,7 @@ export class Main extends Phaser.Scene {
         this.roundMenu.showRoundNumber(payload.roundNumber)
         this.wallet.startRound()
         this.isCountingFaze = true
+        this.aim.resetAim()
     }
 
     private roundEnd(isWonRound: boolean): (walletAmount: number) => void {

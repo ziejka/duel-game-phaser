@@ -1,7 +1,7 @@
 
-import { GameObjects, Geom, Game } from 'phaser'
-import { Main } from '../scenes/Main'
+import { BlendModes, GameObjects, Geom } from 'phaser'
 import { Images } from '../config/images'
+import { Main } from '../scenes/Main'
 
 export class Aim extends GameObjects.Container {
     scene: Main
@@ -15,22 +15,7 @@ export class Aim extends GameObjects.Container {
         this.aimX = this.scene.centerX
         this.aimY = this.scene.centerY + 200
         this.aimCircle = this.createAim()
-        this.createParticles()
-    }
-
-    createParticles() {
-        const rect = new Phaser.Geom.Rectangle(10, 10, 300, 100)
-        const particle = this.scene.add.particles(Images.Particle)
-        particle.createEmitter({
-            moveToX: this.aimCircle.x,
-            moveToY: this.aimCircle.y,
-            angle: 0,
-            speed: 2000,//{ min: 2000, max: 5000 },
-            scale: 0.4,
-            lifespan: 1000,
-            emitZone: { source: rect }
-        })
-
+        this.resetAim()
     }
 
     scaleReward(reward: number) {
@@ -49,6 +34,11 @@ export class Aim extends GameObjects.Container {
 
     disable() {
         this.aimCircle.disableInteractive()
+    }
+
+    resetAim() {
+        this.aimCircle.setPosition(this.aimX, this.aimY)
+        this.aimCircle.setScale(.2)
     }
 
     private getRandomAimPosition(): Geom.Point {

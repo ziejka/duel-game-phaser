@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { Message, PlayerInfo } from '../../shared/types/types'
+import { MainSceneData, Message, PlayerInfo } from '../../shared/types/types'
 import { ButtonText } from '../components/ButtonText'
 import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
 import { menuText } from '../config/textStyles'
@@ -8,6 +8,7 @@ import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { hideDuelInvite, hideWaiting, showDuelInvite } from '../utils/HTMLUtils'
 import { Scenes } from './scenes'
+import { SinglePlayerService } from './SinglePlayerService'
 import { WebSocketService } from './WebSocketService'
 
 export class Menu extends Phaser.Scene {
@@ -15,7 +16,6 @@ export class Menu extends Phaser.Scene {
     private centerY!: number
     private mainMenu!: Phaser.GameObjects.Container
     private multiMenu!: MultiPlayerMenu
-    private connected: boolean = false
 
     constructor() {
         super(Scenes.Menu)
@@ -29,12 +29,6 @@ export class Menu extends Phaser.Scene {
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
         this.setupEvents()
-        if (this.connected) {
-            this.onConnected()
-            this.multiMenu.show(true)
-        } else {
-            this.onMultiClick()
-        }
     }
 
     createPosition(yOffset: number): Phaser.Geom.Point {
@@ -75,7 +69,6 @@ export class Menu extends Phaser.Scene {
     }
 
     private onConnected() {
-        this.connected = true
         this.sendMsg({ type: MessageTypes.GET_LIST_OF_PLAYERS })
     }
 
@@ -86,7 +79,8 @@ export class Menu extends Phaser.Scene {
 
     private onDuelAccepted(): void {
         hideWaiting()
-        this.scene.start(Scenes.Main)
+        const mainSceneData: MainSceneData = { comunicationServiceName: Scenes.WebSocketService }
+        this.scene.start(Scenes.Main, mainSceneData)
     }
 
     private onAvailablePlayersResponse(playerList: PlayerInfo[]) {
@@ -109,10 +103,18 @@ export class Menu extends Phaser.Scene {
         this.multiMenu.show()
     }
 
+    private onSingleClick(): void {
+        this.mainMenu.setVisible(false)
+        const spService: SinglePlayerService = this.scene.get(Scenes.SinglePlayerService) as SinglePlayerService
+        spService.open("")
+        const mainSceneData: MainSceneData = { comunicationServiceName: Scenes.SinglePlayerService }
+        this.scene.start(Scenes.Main, mainSceneData)
+    }
+
     private createMainMenu(): Phaser.GameObjects.Container {
         const container = this.add.container(0, 0),
             multi = new ButtonText(this, 'Play multi', this.createPosition(-70), this.onMultiClick),
-            single = new ButtonText(this, 'Play single', this.createPosition(55))
+            single = new ButtonText(this, 'Play single', this.createPosition(55), this.onSingleClick)
 
         container.add([multi, single])
 

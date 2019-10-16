@@ -1,4 +1,5 @@
 import { MessageTypes } from './messageTypes'
+import { Scenes } from '../../client/scenes/scenes'
 
 export interface Message<P = {}> {
     type: MessageTypes,
@@ -27,5 +28,10 @@ export interface PlayerInfo {
     totalAmount: number
     position: number
 }
+
+export type MainSceneData = {
+    comunicationServiceName: Scenes.SinglePlayerService | Scenes.WebSocketService
+}
+
 
 export type InitResponse = GUID & RoundResultPayload
