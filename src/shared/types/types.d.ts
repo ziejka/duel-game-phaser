@@ -30,7 +30,7 @@ export interface PlayerInfo {
 }
 
 export type MainSceneData = {
-    comunicationServiceName: Scenes.SinglePlayerService | Scenes.WebSocketService
+    communicationServiceName: Scenes.SinglePlayerService | Scenes.WebSocketService
 }
 
 

@@ -79,7 +79,7 @@ export class Menu extends Phaser.Scene {
 
     private onDuelAccepted(): void {
         hideWaiting()
-        const mainSceneData: MainSceneData = { comunicationServiceName: Scenes.WebSocketService }
+        const mainSceneData: MainSceneData = { communicationServiceName: Scenes.WebSocketService }
         this.scene.start(Scenes.Main, mainSceneData)
     }
 
@@ -107,7 +107,7 @@ export class Menu extends Phaser.Scene {
         this.mainMenu.setVisible(false)
         const spService: SinglePlayerService = this.scene.get(Scenes.SinglePlayerService) as SinglePlayerService
         spService.open("")
-        const mainSceneData: MainSceneData = { comunicationServiceName: Scenes.SinglePlayerService }
+        const mainSceneData: MainSceneData = { communicationServiceName: Scenes.SinglePlayerService }
         this.scene.start(Scenes.Main, mainSceneData)
     }
 

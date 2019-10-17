@@ -7,8 +7,9 @@ import { Wallet } from '../components/Wallet'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
-import { ComunicationService } from './ComunicationService'
+import { CommunicationService } from './CommunicationService'
 import { Scenes } from './scenes'
+import { Images, Spine } from '../config/images'
 
 export class Main extends Phaser.Scene {
     centerX!: number
@@ -17,19 +18,25 @@ export class Main extends Phaser.Scene {
     private isCountingFaze: boolean = false
     private roundMenu!: RoundMenu
     private wallet!: Wallet
-    private comunicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
+    private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
 
     constructor() {
         super(Scenes.Main)
     }
 
-    create({ comunicationServiceName }: MainSceneData) {
+    create({ communicationServiceName }: MainSceneData) {
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.cameras.main.backgroundColor.setTo(42, 65, 82)
 
-        this.comunicationServiceName = comunicationServiceName
+        this.communicationServiceName = communicationServiceName
 
+        this.add.sprite(600, 500, Images.Bg);
+        // @ts-ignore
+        const zomb = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
+        zomb.setSkinByName('zombie2')
+        // @ts-ignore
+        window.zomb = zomb
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.aim = this.add.existing(new Aim(this)) as Aim
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
@@ -47,12 +54,12 @@ export class Main extends Phaser.Scene {
 
     onAimClicked() {
         this.aim.disable()
-        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
+        const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.aimClicked()
     }
 
     onBeginDuelClicked(): void {
-        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
+        const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.send({ type: MessageTypes.PLAYER_READY })
         this.roundMenu.beginDuelBtn.visible = false
     }
@@ -63,14 +70,14 @@ export class Main extends Phaser.Scene {
 
     stopCounting() {
         if (this.isCountingFaze) {
-            const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
+            const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
             webSocketService.stopCounting()
             this.isCountingFaze = false
         }
     }
 
     private setUpEvents() {
-        const webSocketService: ComunicationService = this.scene.get(this.comunicationServiceName) as ComunicationService
+        const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
         webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
         webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
