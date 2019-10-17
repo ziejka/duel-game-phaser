@@ -4,3 +4,7 @@ export enum Images {
     Aim = "Aim",
     Particle = 'Particle'
 }
+
+export enum Spine {
+    zombie = 'Zombie'
+}

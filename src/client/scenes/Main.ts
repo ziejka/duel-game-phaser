@@ -9,6 +9,7 @@ import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
 import { CommunicationService } from './CommunicationService'
 import { Scenes } from './scenes'
+import { Images, Spine } from '../config/images'
 
 export class Main extends Phaser.Scene {
     centerX!: number
@@ -30,6 +31,12 @@ export class Main extends Phaser.Scene {
 
         this.communicationServiceName = communicationServiceName
 
+        this.add.sprite(600, 500, Images.Bg);
+        // @ts-ignore
+        const zomb = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
+        zomb.setSkinByName('zombie2')
+        // @ts-ignore
+        window.zomb = zomb
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.aim = this.add.existing(new Aim(this)) as Aim
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu

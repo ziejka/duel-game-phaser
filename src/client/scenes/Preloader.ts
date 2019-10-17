@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import { Images } from '../config/images'
+import { Images, Spine } from '../config/images'
 import { config } from '../config/preload'
 import { Scenes } from './scenes'
 
@@ -30,12 +30,16 @@ export class Preloader extends Scene {
         })
 
         // load assets declared in the preload config
-        this.load.image(Images.Bg, '../assets/images/bg.jpg')
+        this.load.image(Images.Bg, '../assets/images/bg.png')
         this.load.image(Images.Aim, '../assets/images/aim.png')
         this.load.image(Images.Particle, '../assets/images/p.png')
         this.load.spritesheet(Images.Player, '../assets/spritesheets/player.png',
             { frameHeight: 240, frameWidth: 240 })
+
         this.loadAudio()
+        this.load.setPath('../assets/spine/')
+        // @ts-ignore
+        this.load.spine(Spine.zombie, 'skeleton.json', 'skeleton.atlas', true)
     }
 
     create() {
