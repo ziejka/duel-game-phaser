@@ -7,12 +7,12 @@ import {
 } from '../../shared/types/types'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
-import { ComunicationService } from './ComunicationService'
+import { CommunicationService } from './CommunicationService'
 import { Scenes } from './scenes'
 
 const SERVER = window.location.href.replace('http', 'ws')
 
-export class WebSocketService extends Phaser.Scene implements ComunicationService {
+export class WebSocketService extends Phaser.Scene implements CommunicationService {
     private msgCallbacks: { [key: string]: any }
     private onMessage: (msg: any) => void
     private ws!: WebSocket
