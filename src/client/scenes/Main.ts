@@ -4,12 +4,12 @@ import { MainSceneData, RoundStartPayload } from '../../shared/types/types'
 import { Aim } from '../components/Aim'
 import { RoundMenu } from '../components/RoundMenu'
 import { Wallet } from '../components/Wallet'
+import { Images, Spine } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
 import { CommunicationService } from './CommunicationService'
 import { Scenes } from './scenes'
-import { Images, Spine } from '../config/images'
 
 export class Main extends Phaser.Scene {
     centerX!: number
@@ -31,7 +31,7 @@ export class Main extends Phaser.Scene {
 
         this.communicationServiceName = communicationServiceName
 
-        this.add.sprite(600, 500, Images.Bg);
+        this.add.sprite(this.centerX, this.centerY, Images.Bg)
         // @ts-ignore
         const zomb = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
         zomb.setSkinByName('zombie2')

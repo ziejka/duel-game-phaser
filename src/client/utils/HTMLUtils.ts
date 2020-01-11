@@ -17,24 +17,14 @@ function setInputsAvailable(pointerEvents: PointerEvents): void {
     element.style.pointerEvents = pointerEvents
 }
 
-function setCanvasOpacity(opacity: number): void {
-    const element: HTMLElement | null = window.document.querySelector('canvas')
-    if (!element) {
-        return
-    }
-    element.style.opacity = opacity.toString()
-}
-
 function showElement(elementName: string, display: Display) {
     setVisible(elementName, display)
     setInputsAvailable('all')
-    setCanvasOpacity(0.5)
 }
 
 function hideElement(elementName: string) {
     setVisible(elementName, 'none')
     setInputsAvailable('none')
-    setCanvasOpacity(1)
 }
 
 export const showNameInput = (): void => showElement('nameWrapper', 'block')

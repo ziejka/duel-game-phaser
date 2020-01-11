@@ -7,9 +7,9 @@ export class ButtonText extends Phaser.GameObjects.Text {
         onClickCallback: () => void = () => { },
         context: any = scene
     ) {
-        super(scene, position.x, position.y, text, {})
+        super(scene, position.x, position.y, text, { fontFamily: 'Lobster' })
         this.setFontSize(30)
-        this.setStroke('#000000', 3)
+        this.setStroke('#000000', 4)
         this.setInteractive({ useHandCursor: true })
         this.on('pointerdown', onClickCallback, context)
         this.on('pointerup', this.clearTint, this)
@@ -17,6 +17,6 @@ export class ButtonText extends Phaser.GameObjects.Text {
         this.on('pointerout', this.clearTint, this)
     }
     onOver(): void {
-        this.setTint(0x4286f4, 0x4286f4, 0x4286f4, 0x4286f4)
+        this.setTint(0x1a9980, 0x1a9980, 0x1a9980, 0x1a9980)
     }
 }

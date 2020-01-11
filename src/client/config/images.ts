@@ -2,7 +2,7 @@ export enum Images {
     Player = 'Player',
     Bg = 'Bg',
     Aim = "Aim",
-    Particle = 'Particle'
+    Splash = 'Splash',
 }
 
 export enum Spine {

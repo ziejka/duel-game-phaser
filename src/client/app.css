@@ -2,7 +2,7 @@
     margin: 0;
     background-color: rgb(27, 27, 27);
     color: #dedede;
-    font-family: monospace;
+    font-family: 'Lobster', cursive;
     font-size: 2em;
     box-sizing: border-box;
     overflow: hidden;    
@@ -11,8 +11,7 @@
 #canvas, #overlay, #game {
     margin: 0 auto;
     width: 540px;
-    height: 960px;    
-    background: rgb(42, 65, 82);
+    height: 960px;
     transform-origin: top left;
 }
 
@@ -26,10 +25,10 @@
 
 input {
     background: transparent;
-    border: 1px solid #dedede;
+    border: 3px solid #fabbb9;
     color: #dedede;
     padding: 20px;
-    font-family: monospace;
+    font-family: 'Lobster', cursive;
     font-size: 1.5em;
     max-width: 100%;
 }
@@ -47,7 +46,7 @@ input:focus {
 }
 
 button {    
-    font-family: monospace;
+    font-family: 'Lobster', cursive;
     color: #dedede;
     border: none;
     background: none;    
@@ -75,6 +74,11 @@ button {
 
 #duelInvite button{
     font-size: 1em;
+    transition: .3s all cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+#duelInvite button:hover {
+    transform: scale(1.05);    
 }
 
 #duelInvite-yes {

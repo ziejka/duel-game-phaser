@@ -3,7 +3,7 @@ import { MessageTypes } from '../../shared/types/messageTypes'
 import { MainSceneData, Message, PlayerInfo } from '../../shared/types/types'
 import { ButtonText } from '../components/ButtonText'
 import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
-import { menuText } from '../config/textStyles'
+import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import { hideDuelInvite, hideWaiting, showDuelInvite } from '../utils/HTMLUtils'
@@ -23,16 +23,16 @@ export class Menu extends Phaser.Scene {
 
     create() {
         this.cameras.main.backgroundColor.setTo(42, 65, 82)
-        this.add.text(15, 15, "MENU SCENE", menuText)
-        this.centerX = this.sys.canvas.width / 2
-        this.centerY = this.sys.canvas.height / 2
+        this.centerX = Math.floor(this.sys.canvas.width / 2)
+        this.centerY = Math.floor(this.sys.canvas.height / 2)
+        this.add.sprite(this.centerX, this.centerY, Images.Splash)
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
         this.setupEvents()
     }
 
     createPosition(yOffset: number): Phaser.Geom.Point {
-        return new Phaser.Geom.Point(this.centerX - 100, this.centerY + yOffset)
+        return new Phaser.Geom.Point(this.centerX - 70, this.centerY + yOffset)
     }
 
     openWebSocket(playerName: string): void {
@@ -114,7 +114,7 @@ export class Menu extends Phaser.Scene {
     private createMainMenu(): Phaser.GameObjects.Container {
         const container = this.add.container(0, 0),
             multi = new ButtonText(this, 'Play multi', this.createPosition(-70), this.onMultiClick),
-            single = new ButtonText(this, 'Play single', this.createPosition(55), this.onSingleClick)
+            single = new ButtonText(this, 'Play single', this.createPosition(10), this.onSingleClick)
 
         container.add([multi, single])
 

@@ -43,7 +43,8 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
 
     createName(name: string): void {
         this.add(new Phaser.GameObjects.Text(this.scene, 200, 0, name, {
-            fontSize: "20"
+            fontSize: "20",
+            fontFamily: "Lobster"
         }))
     }
 
