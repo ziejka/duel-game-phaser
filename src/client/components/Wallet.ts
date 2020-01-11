@@ -10,6 +10,7 @@ const textStyle = {
     color: '#FFFFFF',
     stroke: '#000000',
     fontSize: 24,
+    fontFamily: 'Lobster',
     strokeThickness: 3
 }
 
@@ -22,7 +23,6 @@ export class Wallet extends Phaser.GameObjects.Container {
     private amount: number = START_AMOUNT
     private roundStartAmount: number = START_AMOUNT
     private walletAmount: Phaser.GameObjects.Text
-    private barsGraphic: Phaser.GameObjects.Graphics
     private countingStartTime: number = 0
 
     constructor(scene: Main) {
@@ -30,17 +30,10 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.scene = scene
         this.score = this.createScore(scene)
         this.walletAmount = this.createWalletAmount(scene)
-        this.barsGraphic = scene.add.graphics()
         const bars = this.createBars()
 
         this.add([this.score, this.walletAmount, ...bars])
-        scene.registry.set(RegistryFields.Reward, this.reward)
         this.updateWallet()
-    }
-
-    destroy() {
-        this.scene.registry.remove(RegistryFields.Reward)
-        super.destroy()
     }
 
     setWallet(amount: number): any {
@@ -72,7 +65,6 @@ export class Wallet extends Phaser.GameObjects.Container {
 
         this.amount = newAmount
         this.updateWallet()
-        this.scene.aim.scaleReward(this.reward)
     }
 
     private updateWallet() {
@@ -88,7 +80,7 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.playerBar = this.scene.add.sprite(xOffset, this.scene.centerY, Images.PlayerBar)
         this.enemyBar = this.scene.add.sprite(this.scene.sys.canvas.width - xOffset, this.scene.centerY, Images.EnemyBar)
         const bars = [playerBarBg, enemyBarBg, this.playerBar, this.enemyBar]
-        bars.forEach(b => { b.setScale(.7, .9) })
+        bars.forEach(b => { b.setScale(.7) })
 
         return bars
     }
@@ -111,29 +103,6 @@ export class Wallet extends Phaser.GameObjects.Container {
             this.enemyBar.width,
             enemyHealth
         )
-    }
-
-    private drawBars() {
-        const maxHeight = 500,
-            radius = 6,
-            width = 50,
-            xOffset = 10,
-            yBarPos = this.scene.centerY - maxHeight / 2,
-            xEnemy = this.scene.sys.canvas.width - xOffset - width,
-            xPlayer = xOffset,
-            enemyAmount = START_AMOUNT * 2 - this.amount - this.reward,
-            playerHeight = this.getBarHeight(this.amount, maxHeight),
-            enemyHeight = this.getBarHeight(enemyAmount, maxHeight),
-            yPlayer = yBarPos - 2 + (maxHeight - playerHeight),
-            yEnemy = yBarPos - 2 + (maxHeight - enemyHeight)
-
-        this.barsGraphic.clear()
-        this.barsGraphic.fillStyle(0x000000)
-        this.barsGraphic.fillRoundedRect(xPlayer, yBarPos, width, maxHeight, radius)
-        this.barsGraphic.fillRoundedRect(xEnemy, yBarPos, width, maxHeight, radius)
-        this.barsGraphic.fillStyle(0xFFFFFF)
-        this.barsGraphic.fillRoundedRect(xPlayer + 2, yPlayer, width - 4, playerHeight, radius)
-        this.barsGraphic.fillRoundedRect(xEnemy + 2, yEnemy, width - 4, enemyHeight, radius)
     }
 
     private getBarHeight(amount: number, maxHeight: number): number {

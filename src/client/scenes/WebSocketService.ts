@@ -23,6 +23,10 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         this.msgCallbacks = this.createOnMsgCallback()
     }
 
+    isConnected(): boolean {
+        return this.ws && this.ws.readyState === this.ws.OPEN
+    }
+
     send(msg: Message) {
         const message = JSON.stringify(msg)
         this.ws.send(message)
@@ -39,6 +43,7 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         this.registry.set(RegistryFields.StartGameVisible, false)
         this.registry.set(RegistryFields.UserData, {})
         this.registry.set(RegistryFields.EnemyName, '')
+        this.registry.set(RegistryFields.Reward, 0)
     }
 
     stopCounting() {

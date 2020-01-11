@@ -29,6 +29,14 @@ export class Menu extends Phaser.Scene {
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
         this.setupEvents()
+        const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
+
+        if (webSocketService.isConnected()) {
+            this.mainMenu.setVisible(false)
+            this.multiMenu.show(true)
+            this.onConnected()
+        }
+
     }
 
     createPosition(yOffset: number): Phaser.Geom.Point {

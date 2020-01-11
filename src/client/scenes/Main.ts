@@ -19,6 +19,7 @@ export class Main extends Phaser.Scene {
     private roundMenu!: RoundMenu
     private wallet!: Wallet
     private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
+    private enemy!: any
 
     constructor() {
         super(Scenes.Main)
@@ -33,13 +34,12 @@ export class Main extends Phaser.Scene {
 
         this.add.sprite(this.centerX, this.centerY, Images.Bg)
         // @ts-ignore
-        const zomb = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
-        zomb.setSkinByName('zombie2')
-        // @ts-ignore
-        window.zomb = zomb
-        this.wallet = this.add.existing(new Wallet(this)) as Wallet
+        this.enemy = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
+        this.enemy.setSkinByName('zombie2')
         this.aim = this.add.existing(new Aim(this)) as Aim
+        this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
+        this.physics.add.existing(this.enemy)
 
         this.setUpEvents()
 
@@ -78,9 +78,10 @@ export class Main extends Phaser.Scene {
 
     private setUpEvents() {
         const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
+        webSocketService.events.destroy()
         webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
-        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd(false), this)
-        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd(true), this)
+        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd, this)
+        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd, this)
         webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
 
         this.registry.events.on('changedata', this.updateData, this)
@@ -94,14 +95,9 @@ export class Main extends Phaser.Scene {
     private showOutcome(hasWon: boolean) {
         HTMLUtils.showOutcome(hasWon)
         setTimeout(() => {
-            this.endScene()
+            this.scene.start(Scenes.Menu)
             HTMLUtils.hideOutcome()
         }, 3000)
-    }
-
-    private endScene() {
-        this.children.each(c => c.destroy())
-        this.scene.start(Scenes.Menu, { asd: true })
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
@@ -109,9 +105,12 @@ export class Main extends Phaser.Scene {
             this.roundMenu.beginDuelBtn.visible = data
         }
         if (key === RegistryFields.Reward) {
+            this.tweens.killAll()
             this.isCountingFaze = false
-            this.aim.enable()
+            const point = this.getRandomAimPosition()
+            this.aim.enable(point)
             this.wallet.setReward(data.reward)
+            this.moveEnemy(point, 200)
         }
     }
 
@@ -119,12 +118,34 @@ export class Main extends Phaser.Scene {
         this.roundMenu.showRoundNumber(payload.roundNumber)
         this.wallet.startRound()
         this.isCountingFaze = true
-        this.aim.resetAim()
+        this.randomizeEnemy()
     }
 
-    private roundEnd(isWonRound: boolean): (walletAmount: number) => void {
-        return (walletAmount: number) => {
-            this.wallet.setWallet(walletAmount)
-        }
+    private randomizeEnemy() {
+        // tslint:disable-next-line: no-unused-expression
+        this.isCountingFaze && this.moveEnemy(this.getRandomAimPosition(), Math.floor(Math.random() * 1200) + 400)
+    }
+
+    private moveEnemy({ x, y }: Phaser.Geom.Point, duration: number) {
+        this.tweens.add({
+            targets: this.enemy,
+            x,
+            y,
+            duration,
+            ease: 'Power1',
+            onComplete: this.randomizeEnemy,
+            onCompleteScope: this
+        })
+    }
+
+    private roundEnd(walletAmount: number): void {
+        this.aim.disable()
+        this.wallet.setWallet(walletAmount)
+    }
+
+    private getRandomAimPosition(): Phaser.Geom.Point {
+        const x = Math.floor(Math.random() * (this.sys.canvas.width - 200)) + 100
+        const y = Math.floor(Math.random() * (this.sys.canvas.height - 400)) + 200
+        return new Phaser.Geom.Point(x, y)
     }
 }
