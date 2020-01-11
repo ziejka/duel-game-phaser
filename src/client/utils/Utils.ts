@@ -5,34 +5,19 @@ const config = {
 
 const R: number = (config.width as integer) / (config.height as integer)
 export const resizeCanvas = () => {
-    const canvas = document.getElementById("canvas")
-    const overlay = document.getElementById("overlay")
-    if (!canvas) {
+    const game = document.getElementById("game")
+    if (!game) {
         return
     }
-    let width: number = config.width as integer,
-        height: number = config.height as integer
 
-    const ratio = window.innerWidth / window.innerHeight
+    const scaleX = window.innerWidth / config.width,
+        scaleY = window.innerHeight / config.height
 
-    if (ratio < R) {
-        height = height * window.innerWidth / width
-        width = window.innerWidth
-    } else {
-        height = window.innerHeight
-        width = width * window.innerHeight / height
-    }
+    const scale = Math.min(scaleX, scaleY)
 
-    const scale = Math.min(height / (config.height as number))
-
-    const transformValue = `translate(-50%, -50%) scale(${scale})`
-    canvas.style.transform = transformValue
-    canvas.style.webkitTransform = transformValue
-    if (!overlay) {
-        return
-    }
-    overlay.style.transform = transformValue
-    overlay.style.webkitTransform = transformValue
+    const transformValue = `scale(${scale})`
+    game.style.transform = transformValue
+    game.style.webkitTransform = transformValue
 }
 
 // DEBUG ONLY

@@ -12,7 +12,7 @@ window.onload = () => {
     const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
         parent: "canvas",
-        width: 650,
+        width: 540,
         height: 960,
         scene: [
             new Preloader(),
@@ -22,7 +22,7 @@ window.onload = () => {
             new Main()
         ],
         plugins: {
-            //@ts-ignore
+            // @ts-ignore
             scene: [{ key: 'SpinePlugin', plugin: window.SpinePlugin, start: true, mapping: 'spine' }]
         },
         physics: {
@@ -30,8 +30,8 @@ window.onload = () => {
         }
     }
 
-    let game = new Phaser.Game(config);
+    const game = new Phaser.Game(config)
     retrieveNameFromStorage()
-    // game.scale.resize(window.innerWidth, window.innerHeight);
     game.events.once('ready', resizeCanvas)
+    window.addEventListener("resize", resizeCanvas)
 }

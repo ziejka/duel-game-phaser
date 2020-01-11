@@ -8,25 +8,19 @@
     overflow: hidden;    
 }
 
-#canvas {
-    display: block;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    background: rgb(42, 65, 82)
+#canvas, #overlay, #game {
+    margin: 0 auto;
+    width: 540px;
+    height: 960px;    
+    background: rgb(42, 65, 82);
+    transform-origin: top left;
 }
 
 #overlay {
-    width: 540px;
-    height: 960px;
-    display: block;
-    margin: 0;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 0%);
+    top: 0;
+    left: 0;
+    background: none;
     pointer-events: none;
 }
 
