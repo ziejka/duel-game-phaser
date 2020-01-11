@@ -3,6 +3,10 @@ export enum Images {
     Bg = 'Bg',
     Aim = "Aim",
     Splash = 'Splash',
+    PlayerBarBg = 'PlayerBarBg',
+    PlayerBar = 'PlayerBar',
+    EnemyBarBg = 'EnemyBarBg',
+    EnemyBar = 'EnemyBar',
 }
 
 export enum Spine {

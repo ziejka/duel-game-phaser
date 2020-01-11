@@ -7,13 +7,11 @@ export class RoundMenu extends Phaser.GameObjects.Container {
     beginDuelBtn: Phaser.GameObjects.Text
     backBtn: Phaser.GameObjects.Text
     roundNumber: Phaser.GameObjects.Text
-    private title: Phaser.GameObjects.Text
 
     constructor(scene: Main) {
         super(scene)
 
         const { onMenuClick, onBeginDuelClicked } = scene
-        this.title = scene.add.text(15, 0, "MAIN SCENE", gameText)
 
         let pos = new Phaser.Geom.Point(400, 0)
         this.backBtn = new ButtonText(scene, 'BACK TO MENU', pos, onMenuClick)
@@ -25,7 +23,7 @@ export class RoundMenu extends Phaser.GameObjects.Container {
         this.roundNumber = scene.add.text(250, 0, `ROUND`, { color: '#000000' })
         this.roundNumber.visible = false
 
-        this.add([this.title, this.backBtn, this.beginDuelBtn, this.roundNumber])
+        this.add([this.backBtn, this.beginDuelBtn, this.roundNumber])
     }
 
     hide() {

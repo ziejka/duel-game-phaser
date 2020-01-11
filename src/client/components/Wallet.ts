@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
 import { BASE_GAME_CONFIG } from '../../shared/gameConfigs'
+import { Images } from "../config/images"
 import { Main } from '../scenes/Main'
 import { RegistryFields } from '../state/state'
 
@@ -14,6 +15,8 @@ const textStyle = {
 
 export class Wallet extends Phaser.GameObjects.Container {
     scene: Main
+    private playerBar!: Phaser.GameObjects.Sprite
+    private enemyBar!: Phaser.GameObjects.Sprite
     private reward: number = 0
     private score: Phaser.GameObjects.Text
     private amount: number = START_AMOUNT
@@ -28,8 +31,9 @@ export class Wallet extends Phaser.GameObjects.Container {
         this.score = this.createScore(scene)
         this.walletAmount = this.createWalletAmount(scene)
         this.barsGraphic = scene.add.graphics()
+        const bars = this.createBars()
 
-        this.add([this.score, this.walletAmount, this.barsGraphic])
+        this.add([this.score, this.walletAmount, ...bars])
         scene.registry.set(RegistryFields.Reward, this.reward)
         this.updateWallet()
     }
@@ -74,7 +78,39 @@ export class Wallet extends Phaser.GameObjects.Container {
     private updateWallet() {
         this.score.setText(`Reward: $${this.reward.toFixed()}`)
         this.walletAmount.setText(`Wallet: $${this.amount.toFixed()}`)
-        this.drawBars()
+        this.updateBars()
+    }
+
+    private createBars() {
+        const xOffset = 30,
+            playerBarBg = this.scene.add.sprite(xOffset, this.scene.centerY, Images.PlayerBarBg),
+            enemyBarBg = this.scene.add.sprite(this.scene.sys.canvas.width - xOffset, this.scene.centerY, Images.EnemyBarBg)
+        this.playerBar = this.scene.add.sprite(xOffset, this.scene.centerY, Images.PlayerBar)
+        this.enemyBar = this.scene.add.sprite(this.scene.sys.canvas.width - xOffset, this.scene.centerY, Images.EnemyBar)
+        const bars = [playerBarBg, enemyBarBg, this.playerBar, this.enemyBar]
+        bars.forEach(b => { b.setScale(.7, .9) })
+
+        return bars
+    }
+
+    private updateBars() {
+        const barHeight = this.playerBar.height,
+            enemyAmount = START_AMOUNT * 2 - this.amount - this.reward,
+            playerHealth = this.getBarHeight(this.amount, barHeight),
+            enemyHealth = this.getBarHeight(enemyAmount, barHeight)
+
+        this.playerBar.setCrop(
+            0,
+            this.playerBar.height - playerHealth,
+            this.playerBar.width,
+            playerHealth
+        )
+        this.enemyBar.setCrop(
+            0,
+            this.enemyBar.height - enemyHealth,
+            this.enemyBar.width,
+            enemyHealth
+        )
     }
 
     private drawBars() {
