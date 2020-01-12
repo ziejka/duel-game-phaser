@@ -9,6 +9,7 @@ export class Room {
     players: Player[] = []
     private round: Round = new Round()
     private isCounting = false
+    private roundOver = false
 
     addPlayer(player: Player) {
         this.players.push(player)
@@ -27,6 +28,9 @@ export class Room {
     }
 
     endRound(player: Player) {
+        if (this.roundOver) { return }
+
+        this.roundOver = true
         const lostPlayer = this.players.find(p => p !== player)
         if (lostPlayer) {
             lostPlayer.result(false, this.round.reward / 2)
@@ -101,6 +105,7 @@ export class Room {
     }
 
     private startNewRound() {
+        this.roundOver = false
         this.isCounting = true
         this.round.newRound()
         this.round.start(Date.now())

@@ -34,8 +34,7 @@ export class Main extends Phaser.Scene {
         this.add.sprite(this.centerX, this.centerY, Images.Bg)
         this.enemy = this.add.existing(new Enemy(this)) as Enemy
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
-        this.stopButton = this.add.sprite(this.centerX, this.sys.canvas.height - 50, Images.Stop)
-        this.stopButton.setInteractive()
+        this.stopButton = this.add.sprite(this.centerX, this.sys.canvas.height - 120, Images.Stop)
         this.stopButton.on('pointerdown', this.stopCounting, this)
 
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
@@ -75,8 +74,8 @@ export class Main extends Phaser.Scene {
     stopCounting() {
         if (this.isCountingFaze) {
             const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
-            webSocketService.stopCounting()
             this.isCountingFaze = false
+            webSocketService.stopCounting()
         }
     }
 
@@ -118,6 +117,14 @@ export class Main extends Phaser.Scene {
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
         if (key === RegistryFields.Reward) {
+            this.stopButton.disableInteractive()
+            this.tweens.add({
+                targets: this.stopButton,
+                alpha: .8,
+                scale: .95,
+                duration: 100,
+                ease: "Bounce"
+            })
             this.tweens.killTweensOf(this.enemy)
             this.isCountingFaze = false
             const point = this.getRandomAimPosition()
@@ -129,13 +136,23 @@ export class Main extends Phaser.Scene {
 
     private startRound(payload: RoundStartPayload) {
         this.tweens.killTweensOf(this.roundText)
+        this.roundText.setAlpha(1)
         this.roundText.setScale(1)
         this.roundText.setText("GO!")
         this.tweens.add({
             targets: this.roundText,
             scale: .8,
-            duration: 600,
+            alpha: .5,
+            duration: 400,
             onComplete: () => this.roundText.setAlpha(0)
+        })
+        this.stopButton.setInteractive()
+        this.tweens.add({
+            targets: this.stopButton,
+            alpha: 1,
+            scale: 1,
+            duration: 100,
+            ease: "Bounce"
         })
         this.roundMenu.showRoundNumber(payload.roundNumber)
         this.wallet.startRound()
