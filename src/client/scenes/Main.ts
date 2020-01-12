@@ -1,10 +1,10 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { MainSceneData, RoundStartPayload } from '../../shared/types/types'
-import { Aim } from '../components/Aim'
+import { Enemy } from '../components/Enemy'
 import { RoundMenu } from '../components/RoundMenu'
 import { Wallet } from '../components/Wallet'
-import { Images, Spine } from '../config/images'
+import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
@@ -14,12 +14,11 @@ import { Scenes } from './scenes'
 export class Main extends Phaser.Scene {
     centerX!: number
     centerY!: number
-    aim!: Aim
+    enemy!: Enemy
     private isCountingFaze: boolean = false
     private roundMenu!: RoundMenu
     private wallet!: Wallet
     private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
-    private enemy!: any
     private roundText!: Phaser.GameObjects.Text
 
     constructor() {
@@ -30,15 +29,11 @@ export class Main extends Phaser.Scene {
         this.centerX = this.sys.canvas.width / 2
         this.centerY = this.sys.canvas.height / 2
         this.cameras.main.backgroundColor.setTo(42, 65, 82)
-
         this.communicationServiceName = communicationServiceName
-
         this.add.sprite(this.centerX, this.centerY, Images.Bg)
-        // @ts-ignore
-        this.enemy = this.add.spine(this.centerX, this.centerY, Spine.zombie, 'animation_idle', true)
-        this.enemy.setSkinByName('zombie2')
-        this.aim = this.add.existing(new Aim(this)) as Aim
+        this.enemy = this.add.existing(new Enemy(this)) as Enemy
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
+
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
         this.roundText = this.add.text(this.centerX, this.centerY - 200, "New Duel", {
             fontFamily: "Lobster",
@@ -59,7 +54,7 @@ export class Main extends Phaser.Scene {
     }
 
     onAimClicked() {
-        this.aim.disable()
+        this.enemy.disable()
         const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.aimClicked()
     }
@@ -120,12 +115,12 @@ export class Main extends Phaser.Scene {
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
         if (key === RegistryFields.Reward) {
-            this.tweens.killAll()
+            this.tweens.killTweensOf(this.enemy)
             this.isCountingFaze = false
             const point = this.getRandomAimPosition()
-            this.aim.enable(point)
-            this.wallet.setReward(data.reward)
             this.moveEnemy(point, 200)
+            this.enemy.enable()
+            this.wallet.setReward(data.reward)
         }
     }
 
@@ -163,7 +158,7 @@ export class Main extends Phaser.Scene {
     }
 
     private roundEnd(walletAmount: number): void {
-        this.aim.disable()
+        this.enemy.disable()
         this.wallet.setWallet(walletAmount)
     }
 

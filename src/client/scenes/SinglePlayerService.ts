@@ -17,9 +17,7 @@ export class SinglePlayerService extends Phaser.Scene implements CommunicationSe
     }
 
     open(playerName: string): void {
-        this.registry.set(RegistryFields.StartGameVisible, false)
         setTimeout(() => {
-            this.registry.set(RegistryFields.StartGameVisible, true)
             this.events.emit(GameEvents.DUEL_ACCEPTED)
         }, 1000)
     }
