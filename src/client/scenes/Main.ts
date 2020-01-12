@@ -20,6 +20,7 @@ export class Main extends Phaser.Scene {
     private wallet!: Wallet
     private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
     private roundText!: Phaser.GameObjects.Text
+    private stopButton!: Phaser.GameObjects.Sprite
 
     constructor() {
         super(Scenes.Main)
@@ -33,6 +34,9 @@ export class Main extends Phaser.Scene {
         this.add.sprite(this.centerX, this.centerY, Images.Bg)
         this.enemy = this.add.existing(new Enemy(this)) as Enemy
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
+        this.stopButton = this.add.sprite(this.centerX, this.sys.canvas.height - 50, Images.Stop)
+        this.stopButton.setInteractive()
+        this.stopButton.on('pointerdown', this.stopCounting, this)
 
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
         this.roundText = this.add.text(this.centerX, this.centerY - 200, "New Duel", {
@@ -86,7 +90,6 @@ export class Main extends Phaser.Scene {
         webSocketService.events.on(GameEvents.COUNT_DOWN, this.showCountDown, this)
 
         this.registry.events.on('changedata', this.updateData, this)
-        this.input.on('pointerdown', this.stopCounting, this)
     }
 
     private showCountDown(secondsLeft: number) {

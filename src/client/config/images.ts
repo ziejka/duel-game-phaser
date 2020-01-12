@@ -7,6 +7,7 @@ export enum Images {
     PlayerBar = 'PlayerBar',
     EnemyBarBg = 'EnemyBarBg',
     EnemyBar = 'EnemyBar',
+    Stop = 'Stop',
 }
 
 export enum Spine {

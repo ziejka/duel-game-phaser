@@ -37,6 +37,7 @@ export class Preloader extends Scene {
         this.load.image(Images.PlayerBarBg, '../assets/images/p_frame.png')
         this.load.image(Images.EnemyBar, '../assets/images/y_strip.png')
         this.load.image(Images.EnemyBarBg, '../assets/images/y_frame.png')
+        this.load.image(Images.Stop, '../assets/images/stop.png')
         this.load.spritesheet(Images.Player, '../assets/spritesheets/player.png',
             { frameHeight: 240, frameWidth: 240 })
 
