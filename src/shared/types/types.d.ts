@@ -15,6 +15,10 @@ export interface RoundStartPayload {
     roundNumber: number
 }
 
+export interface CountDownNewDuel {
+    secondsLeft: number
+}
+
 export interface RoundResultPayload {
     wallet: number
 }

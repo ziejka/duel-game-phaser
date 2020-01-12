@@ -1,7 +1,6 @@
 import { Round } from '../../shared/core/round'
 import { MessageTypes } from '../../shared/types/messageTypes'
-import { CountingStopped, Message } from '../../shared/types/types'
-import { RoundStartPayload } from '../../shared/types/types'
+import { CountDownNewDuel, CountingStopped, Message, RoundStartPayload } from '../../shared/types/types'
 import { Player } from '../user'
 
 const ROUND_START_DELAY: number = 1000
@@ -53,7 +52,7 @@ export class Room {
 
     onPlayerReady() {
         if (this.players.every(p => p.isReady)) {
-            this.startNewRound()
+            this.countDownNewDuel(3)
         }
     }
 
@@ -84,6 +83,21 @@ export class Room {
         this.players.forEach(player => {
             player.sendMsg(msg)
         })
+    }
+
+    private countDownNewDuel(secondsLeft: number) {
+        if (secondsLeft < 1) {
+            this.startNewRound()
+            return
+        }
+        const payload: CountDownNewDuel = { secondsLeft }
+        this.sendToAll({
+            type: MessageTypes.COUNT_DOWN,
+            payload
+        })
+        setTimeout(() => {
+            this.countDownNewDuel(--secondsLeft)
+        }, 1000)
     }
 
     private startNewRound() {

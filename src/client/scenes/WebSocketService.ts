@@ -1,9 +1,9 @@
 import * as Phaser from 'phaser'
 import { MessageTypes } from '../../shared/types/messageTypes'
 import {
-    InitResponse, Message, PlayerInfo,
-    RoundResultPayload,
-    RoundStartPayload
+    CountDownNewDuel, InitResponse,
+    Message,
+    PlayerInfo, RoundResultPayload, RoundStartPayload
 } from '../../shared/types/types'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
@@ -40,7 +40,6 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         this.ws = new WebSocket(`${SERVER}?name=${playerName}`)
         this.ws.onmessage = this.onMessage
         this.ws.onopen = this.onOpen.bind(this)
-        this.registry.set(RegistryFields.StartGameVisible, false)
         this.registry.set(RegistryFields.UserData, {})
         this.registry.set(RegistryFields.EnemyName, '')
         this.registry.set(RegistryFields.Reward, 0)
@@ -75,6 +74,7 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         return {
             [MessageTypes.INIT_RESPONSE]: this.onInitResponse.bind(this),
             [MessageTypes.START_REQUEST]: this.onStartRequestMsg.bind(this),
+            [MessageTypes.COUNT_DOWN]: this.onCountDownNewDuel.bind(this),
             [MessageTypes.START_ROUND]: this.startRound.bind(this),
             [MessageTypes.COUNTING_STOPPED]: this.onCountingStopped.bind(this),
             [MessageTypes.ROUND_LOST]: this.onRoundEnd(false).bind(this),
@@ -84,6 +84,10 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
             [MessageTypes.DUEL_REJECT]: this.onDuelReject.bind(this),
             [MessageTypes.DUEL_FINISHED]: this.onDuelFinished.bind(this)
         }
+    }
+
+    private onCountDownNewDuel({ secondsLeft }: CountDownNewDuel) {
+        this.events.emit(GameEvents.COUNT_DOWN, secondsLeft)
     }
 
     private onDuelFinished(hasWon: boolean) {
@@ -122,7 +126,6 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
     }
 
     private onStartRequestMsg() {
-        this.registry.set(RegistryFields.StartGameVisible, true)
         this.events.emit(GameEvents.DUEL_ACCEPTED)
     }
 

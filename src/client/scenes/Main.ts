@@ -20,6 +20,7 @@ export class Main extends Phaser.Scene {
     private wallet!: Wallet
     private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
     private enemy!: any
+    private roundText!: Phaser.GameObjects.Text
 
     constructor() {
         super(Scenes.Main)
@@ -39,11 +40,16 @@ export class Main extends Phaser.Scene {
         this.aim = this.add.existing(new Aim(this)) as Aim
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
+        this.roundText = this.add.text(this.centerX, this.centerY - 200, "New Duel", {
+            fontFamily: "Lobster",
+            fontSize: "60px",
+            stroke: "#000000",
+            strokeThickness: 5
+        })
         this.physics.add.existing(this.enemy)
 
         this.setUpEvents()
-
-        this.roundMenu.beginDuelBtn.visible = this.registry.get(RegistryFields.StartGameVisible)
+        this.onBeginDuelRequest()
     }
 
     update() {
@@ -58,10 +64,9 @@ export class Main extends Phaser.Scene {
         webSocketService.aimClicked()
     }
 
-    onBeginDuelClicked(): void {
+    onBeginDuelRequest(): void {
         const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.send({ type: MessageTypes.PLAYER_READY })
-        this.roundMenu.beginDuelBtn.visible = false
     }
 
     onMenuClick(): void {
@@ -83,9 +88,22 @@ export class Main extends Phaser.Scene {
         webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd, this)
         webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd, this)
         webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
+        webSocketService.events.on(GameEvents.COUNT_DOWN, this.showCountDown, this)
 
         this.registry.events.on('changedata', this.updateData, this)
         this.input.on('pointerdown', this.stopCounting, this)
+    }
+
+    private showCountDown(secondsLeft: number) {
+        this.tweens.killTweensOf(this.roundText)
+        this.roundText.setScale(1)
+        this.roundText.setText(secondsLeft.toString())
+        this.tweens.add({
+            targets: this.roundText,
+            scale: .8,
+            duration: 1000,
+            onComplete: () => this.roundText.setAlpha(0)
+        })
     }
 
     private duelFinished(hasWon: boolean) {
@@ -101,9 +119,6 @@ export class Main extends Phaser.Scene {
     }
 
     private updateData(parent: Phaser.Scene, key: string, data: any): void {
-        if (key === RegistryFields.StartGameVisible) {
-            this.roundMenu.beginDuelBtn.visible = data
-        }
         if (key === RegistryFields.Reward) {
             this.tweens.killAll()
             this.isCountingFaze = false
@@ -115,6 +130,15 @@ export class Main extends Phaser.Scene {
     }
 
     private startRound(payload: RoundStartPayload) {
+        this.tweens.killTweensOf(this.roundText)
+        this.roundText.setScale(1)
+        this.roundText.setText("GO!")
+        this.tweens.add({
+            targets: this.roundText,
+            scale: .8,
+            duration: 600,
+            onComplete: () => this.roundText.setAlpha(0)
+        })
         this.roundMenu.showRoundNumber(payload.roundNumber)
         this.wallet.startRound()
         this.isCountingFaze = true
