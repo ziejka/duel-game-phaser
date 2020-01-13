@@ -7,6 +7,7 @@ export class Enemy extends GameObjects.Container {
     scene: Main
     private aim: GameObjects.Sprite
     private enemy: Phaser.GameObjects.Sprite
+    private stain: GameObjects.Sprite
 
     constructor(scene: Main) {
         super(scene)
@@ -19,8 +20,24 @@ export class Enemy extends GameObjects.Container {
         this.aim = scene.add.sprite(0, 0, Images.Aim)
         this.aim.on('pointerdown', scene.onAimClicked, scene)
         this.aim.setAlpha(0)
-        this.add([this.enemy, this.aim])
+
+        this.stain = this.scene.add.sprite(0, 0, Images.SmallStain)
+        this.stain.setScale(.6)
+        this.stain.setVisible(false)
+        this.add([this.enemy, this.aim, this.stain])
         this.setPosition(this.scene.centerX, this.scene.centerY)
+    }
+
+    hit() {
+        this.stain.setVisible(true)
+        this.stain.setAlpha(1)
+        this.scene.tweens.add({
+            targets: this.stain,
+            alpha: 0,
+            duration: 1000,
+            ease: "Quad.easeIn",
+            onComplete: () => this.stain.setVisible(false)
+        })
     }
 
     enable(): void {

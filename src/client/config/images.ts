@@ -8,6 +8,8 @@ export enum Images {
     EnemyBarBg = 'EnemyBarBg',
     EnemyBar = 'EnemyBar',
     Stop = 'Stop',
+    BigStain = 'BigStain',
+    SmallStain = 'SmallStain',
 }
 
 export enum Spine {

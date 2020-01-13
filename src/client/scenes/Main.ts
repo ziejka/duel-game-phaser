@@ -21,6 +21,7 @@ export class Main extends Phaser.Scene {
     private communicationServiceName!: Scenes.SinglePlayerService | Scenes.WebSocketService
     private roundText!: Phaser.GameObjects.Text
     private stopButton!: Phaser.GameObjects.Sprite
+    private stain!: Phaser.GameObjects.Sprite
 
     constructor() {
         super(Scenes.Main)
@@ -36,6 +37,9 @@ export class Main extends Phaser.Scene {
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
         this.stopButton = this.add.sprite(this.centerX, this.sys.canvas.height - 120, Images.Stop)
         this.stopButton.on('pointerdown', this.stopCounting, this)
+
+        this.stain = this.add.sprite(this.centerX, this.centerY, Images.BigStain)
+        this.stain.setVisible(false)
 
         this.roundMenu = this.add.existing(new RoundMenu(this)) as RoundMenu
         this.roundText = this.add.text(this.centerX, this.centerY - 200, "New Duel", {
@@ -83,8 +87,8 @@ export class Main extends Phaser.Scene {
         const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.events.destroy()
         webSocketService.events.on(GameEvents.START_ROUND, this.startRound, this)
-        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundEnd, this)
-        webSocketService.events.on(GameEvents.ROUND_WON, this.roundEnd, this)
+        webSocketService.events.on(GameEvents.ROUND_LOST, this.roundLost, this)
+        webSocketService.events.on(GameEvents.ROUND_WON, this.roundWon, this)
         webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
         webSocketService.events.on(GameEvents.COUNT_DOWN, this.showCountDown, this)
 
@@ -175,6 +179,23 @@ export class Main extends Phaser.Scene {
             onComplete: this.randomizeEnemy,
             onCompleteScope: this
         })
+    }
+
+    private roundWon(walletAmount: number) {
+        this.enemy.hit()
+        this.roundEnd(walletAmount)
+    }
+    private roundLost(walletAmount: number) {
+        this.stain.setVisible(true)
+        this.stain.setAlpha(.7)
+        this.tweens.add({
+            targets: this.stain,
+            alpha: 0,
+            duration: 1000,
+            ease: "Cubic.easeIn",
+            onComplete: () => this.stain.setVisible(false)
+        })
+        this.roundEnd(walletAmount)
     }
 
     private roundEnd(walletAmount: number): void {
