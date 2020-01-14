@@ -8,4 +8,5 @@ export enum GameEvents {
     DUEL_FINISHED = "DUEL_FINISHED",
     CONNECTED = "CONNECTED",
     COUNT_DOWN = "COUNT_DOWN",
+    UPDATE_REWARD = "UPDATE_REWARD"
 }

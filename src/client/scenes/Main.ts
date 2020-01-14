@@ -91,8 +91,7 @@ export class Main extends Phaser.Scene {
         webSocketService.events.on(GameEvents.ROUND_WON, this.roundWon, this)
         webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
         webSocketService.events.on(GameEvents.COUNT_DOWN, this.showCountDown, this)
-
-        this.registry.events.on('changedata', this.updateData, this)
+        webSocketService.events.on(GameEvents.UPDATE_REWARD, this.updateReward, this)
     }
 
     private showCountDown(secondsLeft: number) {
@@ -119,23 +118,21 @@ export class Main extends Phaser.Scene {
         }, 3000)
     }
 
-    private updateData(parent: Phaser.Scene, key: string, data: any): void {
-        if (key === RegistryFields.Reward) {
-            this.stopButton.disableInteractive()
-            this.tweens.add({
-                targets: this.stopButton,
-                alpha: .8,
-                scale: .95,
-                duration: 100,
-                ease: "Bounce"
-            })
-            this.tweens.killTweensOf(this.enemy)
-            this.isCountingFaze = false
-            const point = this.getRandomAimPosition()
-            this.moveEnemy(point, 200)
-            this.enemy.enable()
-            this.wallet.setReward(data.reward)
-        }
+    private updateReward(reward: number): void {
+        this.stopButton.disableInteractive()
+        this.tweens.add({
+            targets: this.stopButton,
+            alpha: .8,
+            scale: .95,
+            duration: 100,
+            ease: "Bounce"
+        })
+        this.tweens.killTweensOf(this.enemy)
+        this.isCountingFaze = false
+        const point = this.getRandomAimPosition()
+        this.moveEnemy(point, 200)
+        this.enemy.enable()
+        this.wallet.setReward(reward)
     }
 
     private startRound(payload: RoundStartPayload) {

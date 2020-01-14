@@ -42,7 +42,6 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         this.ws.onopen = this.onOpen.bind(this)
         this.registry.set(RegistryFields.UserData, {})
         this.registry.set(RegistryFields.EnemyName, '')
-        this.registry.set(RegistryFields.Reward, 0)
     }
 
     stopCounting() {
@@ -118,7 +117,7 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
     }
 
     private onCountingStopped(reward: number) {
-        this.registry.set(RegistryFields.Reward, reward)
+        this.events.emit(GameEvents.UPDATE_REWARD, reward)
     }
 
     private startRound(payload: RoundStartPayload) {
