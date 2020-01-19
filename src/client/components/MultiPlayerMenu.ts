@@ -30,6 +30,11 @@ export class MultiPlayerMenu extends Phaser.GameObjects.Container {
         }
     }
 
+    hide() {
+        this.setVisible(false)
+        HTMLUtils.hideNameInput()
+    }
+
     updatePlayerList(playersList: PlayerInfo[]) {
         this.playersList.removeAll()
         playersList.forEach((player, index) => {

@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
 import { Images } from '../config/images'
 import { Main } from '../scenes/Main'
+import { Menu } from '../scenes/Menu'
 
 export class RoundMenu extends Phaser.GameObjects.Container {
     scene!: Main
@@ -8,7 +9,7 @@ export class RoundMenu extends Phaser.GameObjects.Container {
     private roundNumber: Phaser.GameObjects.Text
     private menuButton: Phaser.GameObjects.Sprite
 
-    constructor(scene: Main) {
+    constructor(scene: Main | Menu) {
         super(scene)
 
         this.menuButton = scene.add.sprite(0, 0, Images.Menu)

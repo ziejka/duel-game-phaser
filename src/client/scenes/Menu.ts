@@ -3,6 +3,7 @@ import { MessageTypes } from '../../shared/types/messageTypes'
 import { MainSceneData, Message, PlayerInfo } from '../../shared/types/types'
 import { ButtonText } from '../components/ButtonText'
 import { MultiPlayerMenu } from '../components/MultiPlayerMenu'
+import { RoundMenu } from '../components/RoundMenu'
 import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
 import { RegistryFields } from '../state/state'
@@ -28,6 +29,8 @@ export class Menu extends Phaser.Scene {
         this.add.sprite(this.centerX, this.centerY, Images.Splash)
         this.mainMenu = this.createMainMenu()
         this.multiMenu = this.add.existing(new MultiPlayerMenu(this)) as MultiPlayerMenu
+        this.add.existing(new RoundMenu(this))
+
         this.setupEvents()
         const webSocketService: WebSocketService = this.scene.get(Scenes.WebSocketService) as WebSocketService
 
@@ -65,6 +68,11 @@ export class Menu extends Phaser.Scene {
             type: MessageTypes.DUEL_REJECTED
         }
         this.sendMsg(msg)
+    }
+
+    private onMenuClick() {
+        this.mainMenu.setVisible(true)
+        this.multiMenu.hide()
     }
 
     private setupEvents() {
