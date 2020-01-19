@@ -102,6 +102,7 @@ export class Main extends Phaser.Scene {
         webSocketService.events.on(GameEvents.DUEL_FINISHED, this.duelFinished, this)
         webSocketService.events.on(GameEvents.COUNT_DOWN, this.showCountDown, this)
         webSocketService.events.on(GameEvents.UPDATE_REWARD, this.updateReward, this)
+        webSocketService.events.on(GameEvents.DUEL_STOPPED, this.onMenuClick, this)
     }
 
     private showCountDown(secondsLeft: number) {
@@ -116,7 +117,10 @@ export class Main extends Phaser.Scene {
         })
     }
 
-    private duelFinished(hasWon: boolean) {
+    private duelFinished(hasWon: boolean, duelStopped: boolean) {
+        if (duelStopped) {
+            this.scene.start(Scenes.Menu)
+        }
         this.showOutcome(hasWon)
     }
 

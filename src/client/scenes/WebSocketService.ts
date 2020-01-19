@@ -59,7 +59,10 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
     }
 
     leaveDuel() {
-        // pass
+        const msg: Message = {
+            type: MessageTypes.LEFT_DUEL
+        }
+        this.send(msg)
     }
 
     private onOpen() {
@@ -85,8 +88,13 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
             [MessageTypes.WAITING_PLAYERS_LIST]: this.onWaitingPlayerListResponse.bind(this),
             [MessageTypes.DUEL_REQUEST]: this.duelRequest.bind(this),
             [MessageTypes.DUEL_REJECT]: this.onDuelReject.bind(this),
-            [MessageTypes.DUEL_FINISHED]: this.onDuelFinished.bind(this)
+            [MessageTypes.DUEL_FINISHED]: this.onDuelFinished.bind(this),
+            [MessageTypes.DUEL_STOPPED]: this.onDuelStopped.bind(this),
         }
+    }
+
+    private onDuelStopped() {
+        this.events.emit(GameEvents.DUEL_STOPPED)
     }
 
     private onCountDownNewDuel({ secondsLeft }: CountDownNewDuel) {

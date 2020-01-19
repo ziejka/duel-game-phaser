@@ -69,9 +69,13 @@ export class Room {
         this.clearRoom()
     }
 
-    private endDuel() {
+    onDuelLeft() {
+        this.endDuel(true)
+    }
+
+    private endDuel(duelStopped: boolean = false) {
         this.players.forEach(player => {
-            player.finishDuel()
+            player.finishDuel(duelStopped)
         })
         this.clearRoom()
     }

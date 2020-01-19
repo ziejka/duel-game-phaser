@@ -48,12 +48,20 @@ export class Player implements PlayerInfo {
         }
     }
 
-    finishDuel() {
-        this.totalAmount += this.maxWalletAmount * (this.wonDuel ? 1 : -1)
-        this.sendMsg({
-            type: MessageTypes.DUEL_FINISHED,
-            payload: this.wonDuel
-        }, this.resetState.bind(this))
+    finishDuel(duelStopped: boolean = false) {
+        let msg: Message
+        if (duelStopped) {
+            msg = {
+                type: MessageTypes.DUEL_STOPPED
+            }
+        } else {
+            this.totalAmount += (this.maxWalletAmount * (this.wonDuel ? 1 : -1))
+            msg = {
+                type: MessageTypes.DUEL_FINISHED,
+                payload: this.wonDuel
+            }
+        }
+        this.sendMsg(msg, this.resetState.bind(this))
         this.playerList.sortPlayers()
     }
 
@@ -144,8 +152,13 @@ export class Player implements PlayerInfo {
             [MessageTypes.GET_LIST_OF_PLAYERS]: this.sendListOfPLayers.bind(this),
             [MessageTypes.CONNECT_WITH_PLAYER]: this.connectWithPlayer.bind(this),
             [MessageTypes.DUEL_ACCEPTED]: this.duelInviteResponse.bind(this, true),
-            [MessageTypes.DUEL_REJECTED]: this.duelInviteResponse.bind(this, false)
+            [MessageTypes.DUEL_REJECTED]: this.duelInviteResponse.bind(this, false),
+            [MessageTypes.LEFT_DUEL]: this.onDuelLeft.bind(this),
         }
+    }
+
+    private onDuelLeft() {
+        this.room.onDuelLeft()
     }
 
     private duelInviteResponse(isAccepted: boolean): void {
