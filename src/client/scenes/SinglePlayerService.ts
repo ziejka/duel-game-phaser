@@ -10,6 +10,7 @@ export class SinglePlayerService extends Phaser.Scene implements CommunicationSe
     private playerAmount: number = 1000
     private stopTimeout: number = 0
     private aimTimeout: number = 0
+    private openTimeout!: number
 
     constructor() {
         super(Scenes.SinglePlayerService)
@@ -24,7 +25,7 @@ export class SinglePlayerService extends Phaser.Scene implements CommunicationSe
         this.playerAmount = 1000
         setTimeout(() => {
             this.countDownNewDuel(3)
-        }, 1000)
+        }, 500)
     }
 
     stopCounting() {
@@ -43,6 +44,12 @@ export class SinglePlayerService extends Phaser.Scene implements CommunicationSe
         this.playerAmount += this.round.reward / 2
         this.events.emit(GameEvents.ROUND_WON, this.playerAmount)
         this.endRound()
+    }
+
+    leaveDuel() {
+        clearTimeout(this.openTimeout)
+        clearTimeout(this.aimTimeout)
+        clearTimeout(this.stopTimeout)
     }
 
     private endRound() {
@@ -78,7 +85,7 @@ export class SinglePlayerService extends Phaser.Scene implements CommunicationSe
             return
         }
         this.events.emit(GameEvents.COUNT_DOWN, secondsLeft)
-        setTimeout(() => {
+        this.openTimeout = setTimeout(() => {
             this.countDownNewDuel(--secondsLeft)
         }, 1000)
     }

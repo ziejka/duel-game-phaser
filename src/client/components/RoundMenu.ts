@@ -1,27 +1,43 @@
 import * as Phaser from 'phaser'
-import { gameText } from '../config/textStyles'
+import { Images } from '../config/images'
 import { Main } from '../scenes/Main'
-import { ButtonText } from './ButtonText'
 
 export class RoundMenu extends Phaser.GameObjects.Container {
-    backBtn: Phaser.GameObjects.Text
-    roundNumber: Phaser.GameObjects.Text
+    scene!: Main
+
+    private roundNumber: Phaser.GameObjects.Text
+    private menuButton: Phaser.GameObjects.Sprite
 
     constructor(scene: Main) {
         super(scene)
 
-        const { onMenuClick, onBeginDuelRequest: onBeginDuelClicked } = scene
+        this.menuButton = scene.add.sprite(0, 0, Images.Menu)
+        this.menuButton.setPosition(scene.sys.canvas.width - this.menuButton.width + 20, this.menuButton.height / 2 + 7)
+        this.menuButton.setInteractive()
+        this.menuButton.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.onMenuClick, this)
 
-        let pos = new Phaser.Geom.Point(400, 0)
-        this.backBtn = new ButtonText(scene, 'BACK TO MENU', pos, onMenuClick)
-        this.backBtn.setFontSize(16)
-
-        pos = new Phaser.Geom.Point(scene.centerX - 100, scene.centerY - 200)
-
-        this.roundNumber = scene.add.text(250, 0, `ROUND`, { color: '#000000' })
+        this.roundNumber = scene.add.text(250, 0, `ROUND`, {
+            color: '#FFFFFF',
+            stroke: "#000000",
+            strokeThickness: 3,
+            fontFamily: 'Lobster'
+        })
         this.roundNumber.visible = false
 
-        this.add([this.backBtn, this.roundNumber])
+        this.add([this.roundNumber])
+    }
+
+    onMenuClick() {
+        this.menuButton.disableInteractive()
+        this.scene.onMenuClick()
+        this.scene.tweens.add({
+            targets: this.menuButton,
+            scale: 0.9,
+            yoyo: true,
+            duration: 100,
+            ease: 'Power2',
+            onComplete: () => this.menuButton.setInteractive()
+        })
     }
 
     showRoundNumber(roundNumber: number) {

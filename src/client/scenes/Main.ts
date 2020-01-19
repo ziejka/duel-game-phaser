@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser'
+
 import { MessageTypes } from '../../shared/types/messageTypes'
 import { MainSceneData, RoundStartPayload } from '../../shared/types/types'
 import { Enemy } from '../components/Enemy'
@@ -6,7 +7,6 @@ import { RoundMenu } from '../components/RoundMenu'
 import { Wallet } from '../components/Wallet'
 import { Images } from '../config/images'
 import { GameEvents } from '../state/events'
-import { RegistryFields } from '../state/state'
 import * as HTMLUtils from '../utils/HTMLUtils'
 import { CommunicationService } from './CommunicationService'
 import { Scenes } from './scenes'
@@ -32,6 +32,7 @@ export class Main extends Phaser.Scene {
         this.centerY = this.sys.canvas.height / 2
         this.cameras.main.backgroundColor.setTo(42, 65, 82)
         this.communicationServiceName = communicationServiceName
+
         this.add.sprite(this.centerX, this.centerY, Images.Bg)
         this.enemy = this.add.existing(new Enemy(this)) as Enemy
         this.wallet = this.add.existing(new Wallet(this)) as Wallet
@@ -51,7 +52,7 @@ export class Main extends Phaser.Scene {
         this.physics.add.existing(this.enemy)
 
         this.setUpEvents()
-        this.onBeginDuelRequest()
+        this.onBeginDuelClicked()
     }
 
     update() {
@@ -66,13 +67,22 @@ export class Main extends Phaser.Scene {
         webSocketService.aimClicked()
     }
 
-    onBeginDuelRequest(): void {
+    onBeginDuelClicked(): void {
         const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
         webSocketService.send({ type: MessageTypes.PLAYER_READY })
     }
 
     onMenuClick(): void {
-        this.scene.start(Scenes.Menu)
+        this.isCountingFaze = false
+        const webSocketService: CommunicationService = this.scene.get(this.communicationServiceName) as CommunicationService
+        webSocketService.leaveDuel()
+        webSocketService.events.destroy()
+
+        this.scene.transition({
+            target: Scenes.Menu,
+            duration: 200,
+            allowInput: false
+        })
     }
 
     stopCounting() {

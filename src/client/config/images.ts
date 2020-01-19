@@ -10,6 +10,7 @@ export enum Images {
     Stop = 'Stop',
     BigStain = 'BigStain',
     SmallStain = 'SmallStain',
+    Menu = "Menu"
 }
 
 export enum Spine {

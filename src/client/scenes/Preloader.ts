@@ -40,6 +40,7 @@ export class Preloader extends Scene {
         this.load.image(Images.Stop, '../assets/images/stop.png')
         this.load.image(Images.BigStain, '../assets/images/bigStan.png')
         this.load.image(Images.SmallStain, '../assets/images/smallStan.png')
+        this.load.image(Images.Menu, '../assets/images/menu.png')
         this.load.spritesheet(Images.Player, '../assets/spritesheets/player.png',
             { frameHeight: 240, frameWidth: 240 })
 

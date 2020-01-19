@@ -58,6 +58,10 @@ export class WebSocketService extends Phaser.Scene implements CommunicationServi
         this.send(msg)
     }
 
+    leaveDuel() {
+        // pass
+    }
+
     private onOpen() {
         this.events.emit(GameEvents.CONNECTED)
     }

@@ -6,4 +6,5 @@ export interface CommunicationService extends Scene {
     open: (playerName: string) => void
     stopCounting: () => void
     aimClicked: () => void
+    leaveDuel: () => void
 }
