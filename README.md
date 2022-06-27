@@ -1,3 +1,5 @@
+# Play the game 
+[Duel](https://duel-game.herokuapp.com/)
 # Phaser 3 TypeScript/Webpack Project Template
 
 A Phaser 3 TypeScript Template
